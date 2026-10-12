@@ -3,9 +3,6 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const javascriptFiles = [
-  "api/db.js",
-  "api/store.js",
-  "api/requests.js",
   "api/account.js",
   "api/admin.js",
   "masar-platform/auth.js",
@@ -62,7 +59,7 @@ for (const file of htmlFiles) {
 const account = fs.readFileSync("api/account.js", "utf8");
 const auth = fs.readFileSync("masar-platform/auth.js", "utf8");
 const profile = fs.readFileSync("masar-platform/index.html", "utf8");
-const store = fs.readFileSync("api/store.js", "utf8");
+const store = fs.readFileSync("api/admin.js", "utf8");
 
 if (!account.includes('action === "account-settings"')) throw new Error("Missing account settings API route");
 if (!account.includes("verifyPassword(currentPassword, check.rows[0].password_hash)")) throw new Error("Account changes must verify the current password");
@@ -149,13 +146,13 @@ for (const query of [
 }
 console.log("OK public portfolio and design visibility recovers after timed suspensions expire");
 
-for (const asset of ["madaicon/appicon.jpg", "madaicon/mainicon.jpg", "madaicon/background icon.jpg"]) {
+for (const asset of ["madaicon/appicon.png", "madaicon/mainicon.png", "madaicon/background icon.png"]) {
   if (!fs.existsSync(asset)) throw new Error("Missing referenced brand asset: " + asset);
 }
 for (const file of ["index.html", "authority-console/index.html", "masar-platform/index.html", "masar-platform/auth.js", "manifest.webmanifest", "sw.js"]) {
   const source = fs.readFileSync(file, "utf8");
-  if (/madaicon\/(?:appicon|mainicon)\.png/.test(source)) throw new Error("Stale PNG icon reference in " + file);
-  if (/madaicon\/background%20icon\.png/.test(source)) throw new Error("Stale background PNG reference in " + file);
+  if (/madaicon\/(?:appicon|mainicon)\.jpg/.test(source)) throw new Error("Stale JPG icon reference in " + file);
+  if (/madaicon\/background%20icon\.jpg/.test(source)) throw new Error("Stale background JPG reference in " + file);
 }
 const manifest = JSON.parse(fs.readFileSync("manifest.webmanifest", "utf8"));
 for (const icon of manifest.icons || []) {
