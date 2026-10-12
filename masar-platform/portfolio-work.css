@@ -1,0 +1,120 @@
+/* Work portfolio additions only. Deliberately scoped away from Creative Studio. */
+#page-portfolio .portfolio-publish-panel{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:26px;align-items:start;margin-top:22px;padding:clamp(20px,3vw,30px);border:1px solid #ddd5ff;border-radius:23px;background:linear-gradient(135deg,#fff 0%,#f1edff 100%)}
+#page-portfolio .portfolio-publish-copy .eyebrow{color:var(--purple)}
+#page-portfolio .portfolio-publish-copy .eyebrow:before{background:var(--purple)}
+#page-portfolio .portfolio-publish-copy h2{font-size:clamp(21px,2.5vw,28px);line-height:1.55;margin:12px 0 8px;letter-spacing:-.5px}
+#page-portfolio .portfolio-publish-copy p{font-size:12px;line-height:2;color:var(--muted);margin:0;max-width:480px}
+#page-portfolio .portfolio-publish-controls{background:#ffffffd9;border:1px solid #e5dff9;border-radius:17px;padding:17px;min-width:0}
+#page-portfolio .portfolio-publish-controls>label{display:block;font-size:11px;font-weight:700;margin-bottom:7px}
+#page-portfolio #portfolioPublishVisibility{width:100%;background:#fff}
+#page-portfolio .portfolio-publish-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#page-portfolio .portfolio-publish-actions button{font-size:11px;padding:10px 12px}
+#page-portfolio #portfolioShareStatus{margin:12px 0 0}
+#page-portfolio .portfolio-share-link{display:block;overflow-wrap:anywhere;font-size:11px;line-height:1.8;color:var(--purple);font-weight:700;margin-top:8px}
+#projectDetailsModal .project-media-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0}
+#projectDetailsModal .project-media-gallery a{display:block;min-width:0;height:115px;border-radius:12px;overflow:hidden;background:#f0edf6}
+#projectDetailsModal .project-media-gallery img{width:100%;height:100%;object-fit:cover;display:block}
+#projectDetailsModal .project-detail-media h4{font-size:12px;margin:18px 0 0}
+#projectDetailsModal .project-detail-link{overflow-wrap:anywhere}
+#projectDetailsModal .project-detail-link a{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}
+#page-portfolio .project-card-actions button[data-download-project]{background:#e2f8f2;color:#35762b}
+#page-portfolio .project-card-actions button[data-duplicate-project]{font-weight:700}
+@media(max-width:760px){#page-portfolio .portfolio-publish-panel{grid-template-columns:1fr;gap:17px;padding:17px}#page-portfolio .portfolio-publish-actions>*{flex:1}#projectDetailsModal .project-media-gallery a{height:85px}}
+
+/* Independent controls for exported portfolio and online gallery. */
+#page-portfolio .portfolio-display-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 14px;margin-top:18px;padding:15px;border:1px solid var(--line);border-radius:15px;background:#fff}#page-portfolio .portfolio-display-settings>strong{grid-column:1/-1;font-size:13px}#page-portfolio .portfolio-display-settings label{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);font-weight:600}#page-portfolio .portfolio-display-settings input,#page-portfolio #projectGalleryVisible{accent-color:var(--purple)}#page-portfolio .project-card-actions{display:flex;flex-wrap:wrap;gap:6px}#page-portfolio .project-card-actions button{flex:1 1 auto;min-width:95px}#page-portfolio .project-card-actions .project-delete{background:#fff0f3;color:#b4233b}@media(max-width:650px){#page-portfolio .portfolio-display-settings{grid-template-columns:1fr}#page-portfolio .project-card-actions button{min-width:calc(50% - 6px)}}
+
+
+/* Portfolio cards refresh — scoped to the portfolio manager; Creative Studio untouched. */
+#page-portfolio .projects-grid,
+#page-portfolio .work-grid,
+#page-portfolio .project-grid{align-items:stretch;gap:18px}
+#page-portfolio .work-card.project-card{display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid #e8e3f3;border-radius:20px;background:#fff;box-shadow:0 8px 26px rgba(33,30,53,.045);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+#page-portfolio .work-card.project-card:hover{transform:translateY(-3px);border-color:#d4c9ff;box-shadow:0 14px 34px rgba(60,42,120,.10)}
+#page-portfolio .project-card-cover{height:auto;aspect-ratio:16/9;min-height:130px;flex-shrink:0}
+#page-portfolio .project-card-cover img{transition:transform .35s ease}
+#page-portfolio .work-card.project-card:hover .project-card-cover img{transform:scale(1.035)}
+#page-portfolio .work-card.project-card .work-body{display:flex;flex:1;flex-direction:column;gap:0;padding:16px}
+#page-portfolio .work-card.project-card .work-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#page-portfolio .work-card.project-card h3{font-size:16px;line-height:1.55;margin:12px 0 7px;overflow-wrap:anywhere}
+#page-portfolio .project-description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;color:#6a6882;font-size:12px;line-height:1.9}
+#page-portfolio .project-card-meta{margin:10px 0 8px}
+#page-portfolio .project-card-tags{margin:8px 0 14px}
+#page-portfolio .project-card-actions{margin-top:auto;padding-top:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#page-portfolio .project-card-actions button,#page-portfolio .project-card-actions a{min-width:0;width:100%;min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.45;overflow-wrap:anywhere;border:1px solid transparent;transition:filter .15s ease,background .15s ease}
+#page-portfolio .project-card-actions button:hover,#page-portfolio .project-card-actions a:hover{filter:brightness(.97)}
+#page-portfolio .project-card-actions button[data-view-project]{grid-column:1/-1;background:#17152b;color:#fff}
+#page-portfolio .project-card-actions button[data-toggle-gallery]{background:#f1edff;color:#4f3ad6}
+#page-portfolio .project-card-actions button[data-download-project]{background:#e2f8f2;color:#35762b}
+#page-portfolio .project-card-actions .project-delete{background:#fff0f3;color:#b4233b}
+#page-portfolio .work-card.project-featured{border-color:#cfc2ff;box-shadow:0 8px 28px rgba(109,74,255,.09)}
+@media(max-width:760px){
+  #page-portfolio .projects-grid,#page-portfolio .work-grid,#page-portfolio .project-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+  #page-portfolio .work-card.project-card{border-radius:16px}
+  #page-portfolio .project-card-cover{aspect-ratio:4/3;min-height:0}
+  #page-portfolio .project-cover-placeholder{font-size:36px}
+  #page-portfolio .work-card.project-card .work-body{padding:11px}
+  #page-portfolio .work-card.project-card .work-top{align-items:flex-start}
+  #page-portfolio .work-card.project-card h3{font-size:14px;margin:9px 0 5px}
+  #page-portfolio .project-description{-webkit-line-clamp:3;font-size:11px;line-height:1.75}
+  #page-portfolio .project-card-meta{font-size:10px}
+  #page-portfolio .project-card-tags{gap:4px;margin:7px 0 10px}
+  #page-portfolio .project-card-tags span{font-size:9px;padding:4px 6px}
+  #page-portfolio .project-card-actions{gap:5px;padding-top:10px}
+  #page-portfolio .project-card-actions button,#page-portfolio .project-card-actions a{min-height:36px;padding:7px 5px;font-size:10px;border-radius:9px}
+}
+@media(max-width:390px){
+  #page-portfolio .projects-grid,#page-portfolio .work-grid,#page-portfolio .project-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  #page-portfolio .project-card-cover{aspect-ratio:16/9}
+  #page-portfolio .work-card.project-card .work-body{padding:14px}
+  #page-portfolio .work-card.project-card h3{font-size:15px}
+  #page-portfolio .project-card-actions button,#page-portfolio .project-card-actions a{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){#page-portfolio .work-card.project-card,#page-portfolio .project-card-cover img{transition:none}}
+
+/* Actual project list container in the manager. */
+#page-portfolio #projectCards{align-items:stretch;gap:18px}
+@media(max-width:760px){#page-portfolio #projectCards{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}}
+@media(max-width:390px){#page-portfolio #projectCards{grid-template-columns:minmax(0,1fr);gap:12px}}
+
+
+/* Compact, shorter cards requested: reduce vertical footprint on all screens. */
+#page-portfolio #projectCards .project-card-cover{aspect-ratio:16/8;min-height:0;height:auto}
+#page-portfolio #projectCards .work-body{padding:12px}
+#page-portfolio #projectCards .work-body h3{margin:7px 0 4px;font-size:14px;line-height:1.4}
+#page-portfolio #projectCards .project-description{-webkit-line-clamp:2;line-height:1.65;font-size:11px}
+#page-portfolio #projectCards .project-card-meta{margin:6px 0}
+#page-portfolio #projectCards .project-card-tags{margin:5px 0 8px}
+#page-portfolio #projectCards .project-card-actions{padding-top:8px;gap:5px}
+#page-portfolio #projectCards .project-card-actions button,#page-portfolio #projectCards .project-card-actions a{min-height:32px;padding:5px 6px;font-size:10px}
+@media(max-width:760px){
+ #page-portfolio #projectCards{gap:9px}
+ #page-portfolio #projectCards .project-card-cover{aspect-ratio:16/7}
+ #page-portfolio #projectCards .work-body{padding:9px}
+ #page-portfolio #projectCards .work-body h3{font-size:13px;margin:6px 0 3px}
+ #page-portfolio #projectCards .project-description{-webkit-line-clamp:2;font-size:10px;line-height:1.6}
+ #page-portfolio #projectCards .project-card-tags{gap:3px;margin:4px 0 7px}
+ #page-portfolio #projectCards .project-card-tags span{font-size:8px;padding:3px 5px}
+ #page-portfolio #projectCards .project-card-actions{gap:4px;padding-top:7px}
+ #page-portfolio #projectCards .project-card-actions button,#page-portfolio #projectCards .project-card-actions a{min-height:30px;padding:5px 3px;font-size:9px;border-radius:7px}
+}
+@media(max-width:390px){
+ #page-portfolio #projectCards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #page-portfolio #projectCards .project-card-cover{aspect-ratio:16/7}
+ #page-portfolio #projectCards .work-body{padding:9px}
+ #page-portfolio #projectCards .work-body h3{font-size:13px}
+}
+
+ 
+/* Public project image gallery and keyboard-friendly viewer. */
+#projectDetailsModal .media-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:10px;margin-top:12px}
+#projectDetailsModal .media-gallery a{display:block;min-width:0;aspect-ratio:4/3;border:1px solid #e7e1f2;border-radius:12px;overflow:hidden;background:#f1eef7;cursor:zoom-in}
+#projectDetailsModal .media-gallery img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .2s ease}
+#projectDetailsModal .media-gallery a:hover img{transform:scale(1.04)}
+#publicMediaModal .public-image-viewer{position:relative;display:flex;align-items:center;justify-content:center;min-height:220px;background:#171522;border-radius:14px;overflow:hidden}
+#publicMediaModal .public-media-image{display:block;max-width:100%;max-height:min(68vh,760px);width:auto;height:auto;object-fit:contain;margin:auto}
+#publicMediaModal .public-image-nav{position:absolute;z-index:2;top:50%;transform:translateY(-50%);width:42px;height:42px;border:1px solid #ffffff55;border-radius:50%;background:#201d2de8;color:#fff;font-size:28px;line-height:1;cursor:pointer;display:grid;place-items:center}
+#publicMediaModal .public-image-prev{left:12px}
+#publicMediaModal .public-image-next{right:12px}
+#publicMediaModal .public-image-counter{text-align:center;padding:8px;color:var(--muted);font-size:12px}
+@media(max-width:600px){#projectDetailsModal .media-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#publicMediaModal .public-image-viewer{min-height:180px}#publicMediaModal .public-image-nav{width:36px;height:36px}}

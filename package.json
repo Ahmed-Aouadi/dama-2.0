@@ -1,0 +1,15 @@
+{
+  "name": "mada",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "@vercel/blob": "^2.6.1"
+  },
+  "scripts": {
+    "check": "node scripts/check-syntax.js"
+  }
+}

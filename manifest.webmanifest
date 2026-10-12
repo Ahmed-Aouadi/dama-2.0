@@ -1,0 +1,17 @@
+{
+  "name": "مَدى — اصنع ما يثبت قدراتك",
+  "short_name": "مَدى",
+  "description": "مساحة واحدة لاكتشاف مهاراتك وصناعة أعمالك وبناء ملف إنجازك.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#17152b",
+  "theme_color": "#17152b",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

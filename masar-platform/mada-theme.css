@@ -1,0 +1,73 @@
+/* Mada theme — aligned with the logo: navy ground, violet / pink arcs, teal dot. Loaded after all other styles. */
+:root{--navy:#17152b;--navy-2:#1d1a36;--violet:#8b7bff;--violet-deep:#5b46e6;--pink:#ff6fa5;--teal:#34d6b0;--paper:#f6f4ff;--ink:#17152b;--muted:#6a6882;--line:#e6e2f4;--display:"Reem Kufi","IBM Plex Sans Arabic",sans-serif}
+body{background:var(--paper);color:var(--ink)}
+:focus-visible{outline:3px solid var(--violet);outline-offset:2px;border-radius:6px}
+.skip-link{position:fixed;top:-60px;right:12px;z-index:10001;background:var(--teal);color:var(--navy);padding:10px 16px;border-radius:10px;font-weight:700;transition:top .15s}
+.skip-link:focus{top:10px}
+body.modal-open{overflow:hidden}
+/* brand */
+.brand-mark{width:50px;height:34px;border-radius:0;background:none;box-shadow:none;display:block;flex-shrink:0}
+.brand strong,.mobile-brand strong{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:0;line-height:1}
+.mobile-brand .brand-mark{width:40px;height:28px;border-radius:0}
+/* sidebar */
+.side{background:var(--navy);border-left:0;color:#fff}
+.side .brand strong{color:#f5f3ff}.side .brand small{color:#b9b4e0}
+.side .nav-label{color:#8d88b8}
+.nav button{color:#c9c5e6}
+.nav button:hover{background:#ffffff12;color:#fff}
+.nav button.active{background:#8b7bff26;color:#fff;box-shadow:inset -3px 0 var(--teal)}
+.upgrade{background:var(--navy-2);border:1px solid #ffffff14}
+.upgrade:after{background:var(--pink);opacity:.22;filter:blur(18px)}
+.upgrade .spark{color:var(--teal)}
+.upgrade p{color:#c9c5e6}
+.upgrade button{background:var(--teal);color:var(--navy)}
+.user-mini strong{color:#fff}.user-mini small{color:#b9b4e0}
+.avatar{background:#8b7bff33;color:#d9d3ff}
+/* buttons & type */
+.primary{background:var(--violet-deep)}
+.secondary{background:#ece9ff;color:var(--violet-deep)}
+h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacing:0}
+.eyebrow{color:var(--violet-deep)}
+.hero .eyebrow,.panel-dark .eyebrow{color:var(--teal)}
+/* hero: the arcs from the logo */
+.hero{background:var(--navy)}
+.hero h1{font-size:clamp(30px,3.6vw,48px);line-height:1.4}
+.hero .primary{background:var(--teal);color:var(--navy)}
+.orb{display:none}
+.hero-arcs{position:absolute;inset:auto 6% 8% auto;width:min(340px,80%);height:auto;overflow:visible}
+.hero-arcs path{fill:none;stroke-width:22;stroke-linecap:round;stroke-dasharray:520;stroke-dashoffset:520;animation:draw 1.1s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-arcs .arc-1{stroke:var(--violet)}
+.hero-arcs .arc-2{stroke:var(--pink);animation-delay:.25s}
+.hero-arcs .arc-dot{fill:var(--teal);transform-origin:160px 170px;animation:pop .5s .75s both}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.float-card{box-shadow:0 14px 34px #0d0b2455}
+/* callouts that used lime */
+.home-bottom-callout{color:var(--navy)}
+.home-bottom-callout .primary{background:var(--navy);color:#fff}
+/* mobile nav */
+.mobile-nav{background:var(--navy);border-top:1px solid #ffffff14}
+.mobile-nav button{color:#b9b4e0}
+.mobile-nav button.active{color:var(--teal)}
+/* auth + gate */
+.mada-auth-mark,.mada-access-mark{background:none!important;width:64px!important;height:44px!important;border-radius:0!important}
+.mada-auth-mark svg,.mada-access-mark svg{width:100%;height:100%;display:block}
+#madaAccessGate{background:rgba(23,21,43,.96)!important}
+#madaAccessGate .mada-access-card{border:0;box-shadow:0 30px 90px #05040f66}
+#madaAccessGate h1{font-family:var(--display)}
+.mada-auth-submit{background:var(--violet-deep)!important}
+/* modals */
+.modal-backdrop{background:#17152bb3}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.hero-arcs path{stroke-dashoffset:0}}
+/* hero arcs placement */
+.hero-arcs{inset:auto auto 14% 12%;width:min(300px,70%)}
+.side .brand{gap:10px}.side .brand strong{font-size:30px}
+@media (max-width:760px){
+  .hero-arcs{inset:auto;left:50%;top:54%;width:170px;transform:translate(-50%,-50%)}
+  .float-card{transform:scale(.88)}
+}
+.mada-auth-mark,.mada-access-mark{display:block!important;width:84px!important;height:58px!important;margin-inline:auto;overflow:visible!important}
+.mada-auth-mark svg,.mada-access-mark svg{overflow:visible}
+/* public portfolio: readable name/kicker on the dark default hero */
+#portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .profile-copy h1{color:var(--gallery-heading,#f5f3ff)}
+#portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .kicker{color:var(--teal)}

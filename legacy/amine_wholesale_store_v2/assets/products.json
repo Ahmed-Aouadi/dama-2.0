@@ -1,0 +1,134 @@
+[
+  {
+    "id": "p01",
+    "name": "حليب كامل الدسم",
+    "unit": "كرتون × 12",
+    "price": 2450,
+    "oldPrice": 2580,
+    "minQty": 1,
+    "category": "الألبان",
+    "stock": 38,
+    "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p02",
+    "name": "ماء معدني 1.5 لتر",
+    "unit": "حزمة × 6",
+    "price": 330,
+    "oldPrice": 360,
+    "minQty": 5,
+    "category": "المشروبات",
+    "stock": 120,
+    "image": "https://images.unsplash.com/photo-1564419320461-6870880221ad?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p03",
+    "name": "زيت مائدة 1 لتر",
+    "unit": "كرتون × 12",
+    "price": 2920,
+    "oldPrice": 3050,
+    "minQty": 2,
+    "category": "الزيوت",
+    "stock": 45,
+    "image": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p04",
+    "name": "سكر أبيض 1 كغ",
+    "unit": "كيس × 10",
+    "price": 1180,
+    "oldPrice": 1250,
+    "minQty": 5,
+    "category": "المواد الأساسية",
+    "stock": 80,
+    "image": "https://images.unsplash.com/photo-1581441363689-1f3c3c414635?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p05",
+    "name": "أرز 1 كغ",
+    "unit": "كرتون × 10",
+    "price": 1750,
+    "oldPrice": 1840,
+    "minQty": 2,
+    "category": "المواد الأساسية",
+    "stock": 52,
+    "image": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p06",
+    "name": "مكرونة 500غ",
+    "unit": "كرتون × 20",
+    "price": 1680,
+    "oldPrice": 1760,
+    "minQty": 2,
+    "category": "المواد الأساسية",
+    "stock": 61,
+    "image": "https://images.unsplash.com/photo-1551462147-ff29053bfc14?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p07",
+    "name": "عصير 1 لتر",
+    "unit": "كرتون × 12",
+    "price": 2850,
+    "oldPrice": 3000,
+    "minQty": 1,
+    "category": "المشروبات",
+    "stock": 30,
+    "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p08",
+    "name": "قهوة مطحونة 250غ",
+    "unit": "كرتون × 20",
+    "price": 6900,
+    "oldPrice": 7200,
+    "minQty": 1,
+    "category": "القهوة",
+    "stock": 22,
+    "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p09",
+    "name": "طماطم مصبرة",
+    "unit": "كرتون × 24",
+    "price": 2280,
+    "oldPrice": 2400,
+    "minQty": 2,
+    "category": "المعلبات",
+    "stock": 35,
+    "image": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p10",
+    "name": "بسكويت مشكل",
+    "unit": "كرتون × 24",
+    "price": 2650,
+    "oldPrice": 2780,
+    "minQty": 1,
+    "category": "الحلويات",
+    "stock": 40,
+    "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p11",
+    "name": "شوكولاتة ألواح",
+    "unit": "كرتون × 24",
+    "price": 3100,
+    "oldPrice": 3300,
+    "minQty": 1,
+    "category": "الحلويات",
+    "stock": 27,
+    "image": "https://images.unsplash.com/photo-1575377427642-087cf684f04d?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": "p12",
+    "name": "مناديل ورقية",
+    "unit": "كرتون × 30",
+    "price": 4200,
+    "oldPrice": 4500,
+    "minQty": 1,
+    "category": "النظافة",
+    "stock": 18,
+    "image": "https://images.unsplash.com/photo-1583947215259-38e31be8751f?auto=format&fit=crop&w=900&q=80"
+  }
+]
