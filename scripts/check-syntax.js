@@ -133,8 +133,7 @@ if (!account.includes("f.disabled=TRUE AND (f.disabled_until IS NULL OR f.disabl
 if (!adminConsole.includes("data-account-delete") || !adminConsole.includes('value="permanent"') || !adminConsole.includes('value="720"')) throw new Error("Admin account controls must offer permanent deletion and suspension durations");
 console.log("OK account deletion, timed/permanent suspension, auto-expiry, and admin audit checks");
 if (!account.includes("try { return decodeURIComponent(item.slice(name.length + 1)); } catch { return \"\"; }")) throw new Error("Malformed session cookies must not crash account requests");
-if (store.includes("process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PIN")) throw new Error("Admin session signing must not fall back to the login PIN");
-if (!store.includes("String(process.env.ADMIN_SESSION_SECRET).length < 32")) throw new Error("Legacy admin login must require a dedicated strong session secret");
+if (!store.includes("MADA_ADMIN_SESSION_SECRET") || !store.includes("secret.length>=32") || !store.includes("p.every(x=>x.value.length>=16") || !store.includes("new Set(p.map(x=>x.value)).size===4")) throw new Error("Admin login must require a dedicated strong session secret and four distinct strong passwords");
 console.log("OK transient database recovery, malformed-cookie handling, and admin-session secret hardening");
 for (const query of [
   "SELECT d.design,d.price_dzd,u.display_name FROM mada_public_designs",
