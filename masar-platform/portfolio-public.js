@@ -6,7 +6,7 @@ const slug=(params.get("id")||"").trim();
 let portfolioData=null;
 function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function safeUrl(value,allowImageData){const raw=String(value||"").trim();if(!raw)return "";if(allowImageData&&/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(raw)&&raw.length<250000)return raw;if(/^data:video\/(?:mp4|webm|ogg);base64,/i.test(raw)&&raw.length<1000000)return raw;if(/^data:application\/(?:pdf|zip|octet-stream|vnd\.[a-z0-9.+-]+);base64,/i.test(raw)&&raw.length<750000)return raw;if(/^data:text\/plain;base64,/i.test(raw)&&raw.length<750000)return raw;try{const u=new URL(raw,location.href);return ["http:","https:"].includes(u.protocol)?u.href:""}catch(e){return ""}}
-function getVideoMarkup(value){const url=safeUrl(value,false);if(!url)return "";try{const u=new URL(url),host=u.hostname.toLowerCase();if(host==="youtu.be"||host.endsWith("youtube.com")){const id=host==="youtu.be"?u.pathname.slice(1):(u.searchParams.get("v")||u.pathname.split("/").filter(Boolean).pop());if(id&&/^[A-Za-z0-9_-]{6,20}$/.test(id))return '<div style="margin-top:14px;aspect-ratio:16/9"><iframe title="فيديو العمل" src="https://www.youtube-nocookie.com/embed/'+esc(id)+'" loading="lazy" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div>'}if(host.endsWith("vimeo.com")){const id=u.pathname.split("/").filter(Boolean).pop();if(/^\d{5,15}$/.test(id||""))return '<div style="margin-top:14px;aspect-ratio:16/9"><iframe title="فيديو العمل" src="https://player.vimeo.com/video/'+esc(id)+'" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div>'}if(/\.(mp4|webm|ogg)(?:$|[?#])/i.test(u.pathname+u.search))return '<div style="margin-top:14px"><video controls preload="metadata" style="width:100%;max-height:320px;border-radius:12px;background:#17152b" src="'+esc(url)+'"></video></div>';return ""}catch(e){return ""}}
+function getVideoMarkup(value){const url=safeUrl(value,false);if(!url)return "";try{const u=new URL(url),host=u.hostname.toLowerCase();if(host==="youtu.be"||host.endsWith("youtube.com")){const id=host==="youtu.be"?u.pathname.slice(1):(u.searchParams.get("v")||u.pathname.split("/").filter(Boolean).pop());if(id&&/^[A-Za-z0-9_-]{6,20}$/.test(id))return '<div style="margin-top:14px;aspect-ratio:16/9"><iframe title="فيديو العمل" src="https://www.youtube-nocookie.com/embed/'+esc(id)+'" loading="lazy" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div>'}if(host.endsWith("vimeo.com")){const id=u.pathname.split("/").filter(Boolean).pop();if(/^\d{5,15}$/.test(id||""))return '<div style="margin-top:14px;aspect-ratio:16/9"><iframe title="فيديو العمل" src="https://player.vimeo.com/video/'+esc(id)+'" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div>'}if(/\.(mp4|webm|ogg)(?:$|[?#])/i.test(u.pathname+u.search))return '<div style="margin-top:14px"><video controls preload="metadata" style="width:100%;max-height:320px;border-radius:12px;background:#211e35" src="'+esc(url)+'"></video></div>';return ""}catch(e){return ""}}
 function projectCard(p,index){
 const cover=safeUrl(p.cover,true)||(Array.isArray(p.mediaImages)&&safeUrl(p.mediaImages[0],true))||(Array.isArray(p.uploadedImages)&&safeUrl(p.uploadedImages[0],true))||"";
 return '<button type="button" class="work project-tile" data-project-index="'+index+'" aria-label="عرض تفاصيل '+esc(p.title||"العمل")+'">'+
@@ -45,7 +45,7 @@ const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},projects=
 ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
-const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
+const accent=safeHex(display.accent,"#6d4aff"),background=safeHex(display.background,"#f7f6fb");
 const template=["classic","editorial","minimal","mosaic"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
@@ -54,8 +54,8 @@ view.className="portfolio-theme portfolio-template-"+template;
 view.style.setProperty("--gallery-accent",accent);
 view.style.setProperty("--gallery-paper",background);
 view.style.setProperty("--gallery-columns",String(columns));
-view.style.setProperty("--gallery-profile-bg",/^#[0-9a-f]{6}$/i.test(display.profileBackground||"")?display.profileBackground:"#17152b");
-view.style.setProperty("--gallery-text",/^#[0-9a-f]{6}$/i.test(display.textColor||"")?display.textColor:"#17152b");
+view.style.setProperty("--gallery-profile-bg",/^#[0-9a-f]{6}$/i.test(display.profileBackground||"")?display.profileBackground:"#211e35");
+view.style.setProperty("--gallery-text",/^#[0-9a-f]{6}$/i.test(display.textColor||"")?display.textColor:"#211e35");
 view.style.setProperty("--gallery-heading",/^#[0-9a-f]{6}$/i.test(display.headingColor||"")?display.headingColor:accent);
 view.style.setProperty("--gallery-name-size",Math.max(22,Math.min(64,Number(display.nameSize)||38))+"px");
 view.style.setProperty("--gallery-body-size",Math.max(12,Math.min(24,Number(display.bodySize)||16))+"px");
