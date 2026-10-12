@@ -19,8 +19,7 @@ async function ensureSchema(){if(!schemaPromise)schemaPromise=(async()=>{const s
 "CREATE TABLE IF NOT EXISTS mada_admin_audit(id BIGSERIAL PRIMARY KEY,password_slot SMALLINT NOT NULL DEFAULT 0,action TEXT NOT NULL,target_type TEXT NOT NULL DEFAULT '',target_id TEXT NOT NULL DEFAULT '',ip_hash TEXT NOT NULL DEFAULT '',created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
 "CREATE INDEX IF NOT EXISTS mada_admin_audit_created_idx ON mada_admin_audit(created_at DESC)",
 "CREATE TABLE IF NOT EXISTS mada_site_settings(key TEXT PRIMARY KEY,value JSONB NOT NULL,updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
-"CREATE TABLE IF NOT EXISTS mada_admin_user_flags(user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE,disabled BOOLEAN NOT NULL DEFAULT FALSE,disabled_until TIMESTAMPTZ,note TEXT NOT NULL DEFAULT '',updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
-"ALTER TABLE mada_admin_user_flags ADD COLUMN IF NOT EXISTS disabled_until TIMESTAMPTZ"
+"CREATE TABLE IF NOT EXISTS mada_admin_user_flags(user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE,disabled BOOLEAN NOT NULL DEFAULT FALSE,note TEXT NOT NULL DEFAULT '',updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())"
 ];for(const statement of statements)await db().query(statement);for(const [key,value]of Object.entries(DEFAULT_SETTINGS))await db().query("INSERT INTO mada_site_settings(key,value) VALUES($1,$2::jsonb) ON CONFLICT(key) DO NOTHING",[key,JSON.stringify(value)]);await db().query("DELETE FROM mada_admin_sessions WHERE expires_at<NOW()")})().catch(e=>{schemaPromise=null;throw e});return schemaPromise}
 function send(res,status,payload,headers={}){res.statusCode=status;res.setHeader("Content-Type","application/json; charset=utf-8");res.setHeader("Cache-Control","no-store, max-age=0");res.setHeader("X-Content-Type-Options","nosniff");res.setHeader("Referrer-Policy","no-referrer");res.setHeader("X-Frame-Options","DENY");for(const[k,v]of Object.entries(headers))res.setHeader(k,v);res.end(JSON.stringify(payload))}
 function clean(v,max=300){return String(v==null?"":v).trim().slice(0,max)}
@@ -72,32 +71,18 @@ module.exports=async function handler(req,res){
    ]);
    return send(res,200,{stats:{users:u.rows[0].count,portfolios:p.rows[0].total,publicPortfolios:p.rows[0].published,designs:d.rows[0].total,publicDesigns:d.rows[0].published,projects:pr.rows[0].count},recentUsers:recent.rows,recentAudit:logs.rows})
   }
-  if(action==="users"&&req.method==="GET"){const q=clean(req.query&&req.query.q,100),r=await db().query("SELECT u.id,u.username,u.display_name,u.created_at,COALESCE(jsonb_array_length(CASE WHEN jsonb_typeof(d.data->'projects')='array' THEN d.data->'projects' ELSE '[]'::jsonb END),0)::int AS projects,COALESCE(jsonb_array_length(CASE WHEN jsonb_typeof(d.data->'designs')='array' THEN d.data->'designs' ELSE '[]'::jsonb END),0)::int AS designs,EXISTS(SELECT 1 FROM mada_public_portfolios p WHERE p.user_id=u.id AND p.is_public=TRUE) AS has_public_portfolio,COALESCE((SELECT f.disabled AND (f.disabled_until IS NULL OR f.disabled_until>NOW()) FROM mada_admin_user_flags f WHERE f.user_id=u.id),FALSE) AS disabled,(SELECT f.disabled_until FROM mada_admin_user_flags f WHERE f.user_id=u.id) AS suspended_until FROM mada_users u LEFT JOIN mada_user_data d ON d.user_id=u.id WHERE ($1='' OR u.username ILIKE $2 OR u.display_name ILIKE $2) ORDER BY u.created_at DESC LIMIT 200",[q,like(q)]);return send(res,200,{users:r.rows})}
+  if(action==="users"&&req.method==="GET"){const q=clean(req.query&&req.query.q,100),r=await db().query("SELECT u.id,u.username,u.display_name,u.created_at,COALESCE(jsonb_array_length(CASE WHEN jsonb_typeof(d.data->'projects')='array' THEN d.data->'projects' ELSE '[]'::jsonb END),0)::int AS projects,COALESCE(jsonb_array_length(CASE WHEN jsonb_typeof(d.data->'designs')='array' THEN d.data->'designs' ELSE '[]'::jsonb END),0)::int AS designs,EXISTS(SELECT 1 FROM mada_public_portfolios p WHERE p.user_id=u.id AND p.is_public=TRUE) AS has_public_portfolio,COALESCE((SELECT f.disabled FROM mada_admin_user_flags f WHERE f.user_id=u.id),FALSE) AS disabled FROM mada_users u LEFT JOIN mada_user_data d ON d.user_id=u.id WHERE ($1='' OR u.username ILIKE $2 OR u.display_name ILIKE $2) ORDER BY u.created_at DESC LIMIT 200",[q,like(q)]);return send(res,200,{users:r.rows})}
   if(action==="portfolios"&&req.method==="GET"){const q=clean(req.query&&req.query.q,100),r=await db().query("SELECT p.user_id,p.username,p.slug,p.is_public,p.updated_at,u.display_name,COALESCE(jsonb_array_length(CASE WHEN jsonb_typeof(p.portfolio->'projects')='array' THEN p.portfolio->'projects' ELSE '[]'::jsonb END),0)::int AS project_count,LEFT(COALESCE(p.portfolio->'profile'->>'name',u.display_name),100) AS author_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id WHERE ($1='' OR p.username ILIKE $2 OR u.display_name ILIKE $2 OR p.slug ILIKE $2) ORDER BY p.updated_at DESC LIMIT 200",[q,like(q)]);return send(res,200,{portfolios:r.rows})}
   if(action==="designs"&&req.method==="GET"){const q=clean(req.query&&req.query.q,100),r=await db().query("SELECT d.design_id,d.user_id,d.is_public,d.price_dzd,d.updated_at,u.username,u.display_name,LEFT(COALESCE(d.design->>'title',d.design->>'name','تصميم بلا عنوان'),120) AS title,LEFT(COALESCE(d.design->>'kind','تصميم'),60) AS kind FROM mada_public_designs d JOIN mada_users u ON u.id=d.user_id WHERE ($1='' OR u.username ILIKE $2 OR u.display_name ILIKE $2 OR d.design_id ILIKE $2 OR COALESCE(d.design->>'title',d.design->>'name','') ILIKE $2) ORDER BY d.updated_at DESC LIMIT 200",[q,like(q)]);return send(res,200,{designs:r.rows})}
   if(action==="account-status"&&req.method==="PATCH"){
    const id=clean(req.body&&req.body.id,100),disabled=req.body&&req.body.disabled===true;
-   const durationRaw=req.body&&req.body.durationHours;
-   const allowedDurations=[1,24,168,720];
-   if(disabled&&durationRaw!==null&&durationRaw!==undefined&&!allowedDurations.includes(Number(durationRaw)))return send(res,400,{error:"مدة الإيقاف غير صالحة."});
    if(!id)return send(res,400,{error:"معرّف الحساب غير صالح."});
    const exists=await db().query("SELECT id FROM mada_users WHERE id=$1 LIMIT 1",[id]);
    if(!exists.rows[0])return send(res,404,{error:"الحساب غير موجود."});
-   const duration=disabled&&durationRaw!==null&&durationRaw!==undefined?Number(durationRaw):null;
-   await db().query("INSERT INTO mada_admin_user_flags(user_id,disabled,disabled_until,note,updated_at) VALUES($1,$2,CASE WHEN $2=TRUE AND $3::int IS NOT NULL THEN NOW()+($3::int * INTERVAL '1 hour') ELSE NULL END,$4,NOW()) ON CONFLICT(user_id) DO UPDATE SET disabled=EXCLUDED.disabled,disabled_until=EXCLUDED.disabled_until,note=EXCLUDED.note,updated_at=NOW()",[id,disabled,duration,disabled?(duration===null?"إيقاف دائم من لوحة إدارة مَدى":"إيقاف مؤقت من لوحة إدارة مَدى"):""]);
+   await db().query("INSERT INTO mada_admin_user_flags(user_id,disabled,note,updated_at) VALUES($1,$2,$3,NOW()) ON CONFLICT(user_id) DO UPDATE SET disabled=EXCLUDED.disabled,note=EXCLUDED.note,updated_at=NOW()",[id,disabled,disabled?"أوقف من لوحة إدارة مَدى":""]);
    if(disabled)await db().query("DELETE FROM mada_sessions WHERE user_id=$1",[id]);
-   await audit(admin,req,disabled?(duration===null?"account_suspended_permanent":"account_suspended_temporary"):"account_reactivated","user",id);
-   return send(res,200,{ok:true,disabled,suspendedUntil:duration===null?null:new Date(Date.now()+duration*3600000).toISOString()});
-  }
-  if(action==="account-delete"&&req.method==="PATCH"){
-   const id=clean(req.body&&req.body.id,100),confirmation=clean(req.body&&req.body.confirmUsername,24).toLowerCase();
-   if(!id||!confirmation)return send(res,400,{error:"معرّف الحساب وتأكيد اسم المستخدم مطلوبان."});
-   const found=await db().query("SELECT id,username FROM mada_users WHERE id=$1 LIMIT 1",[id]);
-   if(!found.rows[0])return send(res,404,{error:"الحساب غير موجود أو حُذف مسبقًا."});
-   if(String(found.rows[0].username).toLowerCase()!==confirmation)return send(res,400,{error:"اسم المستخدم الذي أدخلته لا يطابق الحساب."});
-   await audit(admin,req,"account_deleted","user",id);
-   await db().query("DELETE FROM mada_users WHERE id=$1",[id]);
-   return send(res,200,{ok:true,deleted:true});
+   await audit(admin,req,disabled?"account_suspended":"account_reactivated","user",id);
+   return send(res,200,{ok:true,disabled});
   }
   if(action==="moderate"&&req.method==="PATCH"){const type=clean(req.body&&req.body.type,20),id=clean(req.body&&req.body.id,100),visible=req.body&&req.body.visible===true;let r;if(type==="portfolio")r=await db().query("UPDATE mada_public_portfolios SET is_public=$2,updated_at=NOW() WHERE user_id=$1 RETURNING user_id,is_public",[id,visible]);else if(type==="design")r=await db().query("UPDATE mada_public_designs SET is_public=$2,updated_at=NOW() WHERE design_id=$1 RETURNING design_id,is_public",[id,visible]);else return send(res,400,{error:"نوع المحتوى غير صالح."});if(!r.rows[0])return send(res,404,{error:"لم نعثر على المحتوى المطلوب."});await audit(admin,req,visible?"content_published":"content_hidden",type,id);return send(res,200,{ok:true,visible:r.rows[0].is_public})}
   if(action==="settings"&&req.method==="GET")return send(res,200,{settings:await readSettings()});

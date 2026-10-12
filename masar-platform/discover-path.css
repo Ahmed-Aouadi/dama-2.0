@@ -1,5 +1,5 @@
 /* Scoped redesign for "اكتشف مسارك" only. The Creative Studio is intentionally untouched. */
-#page-careers{--path-ink:#24213b;--path-muted:#747187;--path-line:#e8e5f0;--path-violet:#6d4aff;--path-lime:#d8fb70;color:var(--path-ink)}
+#page-careers{--path-ink:#1d1a36;--path-muted:#747187;--path-line:#e8e5f0;--path-violet:#5b46e6;--path-lime:#34d6b0;color:var(--path-ink)}
 #page-careers .path-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:4px 0 22px}
 #page-careers .path-kicker{display:inline-flex;align-items:center;gap:8px;color:var(--path-violet);font-size:12px;font-weight:700;letter-spacing:.02em}
 #page-careers .path-kicker:before{content:"";width:24px;height:2px;background:currentColor;border-radius:2px}
@@ -7,7 +7,7 @@
 #page-careers .path-head p{max-width:650px;color:var(--path-muted);font-size:14px;line-height:1.9;margin:0}
 #page-careers .path-count{flex-shrink:0;padding:12px 15px;border:1px solid var(--path-line);border-radius:15px;background:#fff;color:var(--path-muted);font-size:12px}
 #page-careers .path-count strong{display:block;color:var(--path-ink);font-size:23px;line-height:1.2}
-#page-careers .path-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(210px,.8fr);gap:22px;align-items:center;padding:clamp(22px,3vw,38px);border-radius:27px;background:#211e35;color:#fff;margin-bottom:18px;isolation:isolate}
+#page-careers .path-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(210px,.8fr);gap:22px;align-items:center;padding:clamp(22px,3vw,38px);border-radius:27px;background:#17152b;color:#fff;margin-bottom:18px;isolation:isolate}
 #page-careers .path-hero:before,#page-careers .path-hero:after{content:"";position:absolute;border:1px solid #ffffff16;border-radius:50%;z-index:-1}
 #page-careers .path-hero:before{width:330px;height:330px;left:-90px;top:-205px;box-shadow:0 0 0 32px #ffffff07,0 0 0 66px #ffffff05}
 #page-careers .path-hero:after{width:170px;height:170px;right:47%;bottom:-130px}
@@ -15,7 +15,7 @@
 #page-careers .path-hero p{max-width:580px;color:#d2cee1;font-size:13px;line-height:1.95;margin:0}
 #page-careers .path-hero .path-kicker{color:var(--path-lime)}
 #page-careers .path-hero-art{position:relative;min-height:160px;display:grid;place-items:center}
-#page-careers .path-orbit{width:142px;height:142px;border-radius:42px;transform:rotate(-9deg);background:linear-gradient(145deg,#a995ff,#6d4aff);box-shadow:0 25px 55px #100c2b60;display:grid;place-items:center;font-size:55px;color:#fff}
+#page-careers .path-orbit{width:142px;height:142px;border-radius:42px;transform:rotate(-9deg);background:linear-gradient(145deg,#a79bff,#5b46e6);box-shadow:0 25px 55px #100c2b60;display:grid;place-items:center;font-size:55px;color:#fff}
 #page-careers .path-orbit:after{content:"";position:absolute;width:55px;height:55px;left:-20px;bottom:-10px;border-radius:18px;transform:rotate(24deg);background:var(--path-lime);box-shadow:0 10px 25px #10102045}
 #page-careers .path-art-note{position:absolute;background:#fff;color:var(--path-ink);padding:10px 13px;border-radius:13px;box-shadow:0 14px 35px #0d0b2045;font-size:11px;font-weight:700}
 #page-careers .path-art-note.one{right:0;top:6px;transform:rotate(4deg)}
@@ -29,9 +29,9 @@
 #page-careers .path-interest-options{display:flex;gap:9px;flex-wrap:wrap}
 #page-careers .path-interest{border:1px solid var(--path-line);background:#fff;border-radius:12px;padding:10px 14px;color:#555168;font-size:12px;font-weight:600;transition:background .18s,border-color .18s,transform .18s}
 #page-careers .path-interest:hover{border-color:#c5b9ff;transform:translateY(-1px)}
-#page-careers .path-interest[aria-pressed="true"]{background:#f0edff;border-color:#a997ff;color:#5635df;box-shadow:inset 0 0 0 1px #a997ff}
+#page-careers .path-interest[aria-pressed="true"]{background:#f0edff;border-color:#a79bff;color:#4a35c8;box-shadow:inset 0 0 0 1px #a79bff}
 #page-careers .path-recommendation{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;margin-top:17px;padding:15px;border-radius:17px;background:#f8f7fc;border:1px solid #efedf6}
-#page-careers .path-recommend-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:#e9e2ff;color:#6244eb;font-size:24px}
+#page-careers .path-recommend-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:#e9e2ff;color:#4f3ad6;font-size:24px}
 #page-careers .path-recommendation small{display:block;font-size:10px;color:var(--path-muted);margin-bottom:4px}
 #page-careers .path-recommendation strong{font-size:14px;display:block}
 #page-careers .path-recommendation p{font-size:11px;color:var(--path-muted);line-height:1.7;margin:4px 0 0}
@@ -44,7 +44,7 @@
 #page-careers .path-search{flex:1;min-width:210px;position:relative}
 #page-careers .path-search:before{content:"⌕";position:absolute;right:13px;top:5px;font-size:23px;color:#9994ac}
 #page-careers .path-search input{width:100%;border:1px solid var(--path-line);border-radius:12px;background:#fff;padding:12px 40px 12px 13px;outline:none;font-size:12px}
-#page-careers .path-search input:focus{border-color:#a997ff;box-shadow:0 0 0 3px #6d4aff12}
+#page-careers .path-search input:focus{border-color:#a79bff;box-shadow:0 0 0 3px #6d4aff12}
 #page-careers .path-filter{border:1px solid var(--path-line);border-radius:12px;background:#fff;padding:10px 12px;color:#625e76;font-size:11px;font-weight:600}
 #page-careers .path-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 #page-careers .path-card{position:relative;overflow:hidden;background:#fff;border:1px solid var(--path-line);border-radius:20px;padding:19px;min-width:0;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .2s}
@@ -52,7 +52,7 @@
 #page-careers .path-card[hidden]{display:none!important}
 #page-careers .path-card-top{display:flex;align-items:start;justify-content:space-between;gap:12px}
 #page-careers .path-card-icon{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;font-size:25px}
-#page-careers .path-card-tag{font-size:10px;font-weight:700;padding:7px 9px;border-radius:99px;background:#f0edff;color:#6244eb}
+#page-careers .path-card-tag{font-size:10px;font-weight:700;padding:7px 9px;border-radius:99px;background:#f0edff;color:#4f3ad6}
 #page-careers .path-card h3{font-size:18px;margin:17px 0 7px}
 #page-careers .path-card>p{font-size:12px;line-height:1.9;color:var(--path-muted);margin:0 0 15px}
 #page-careers .path-card-outcome{background:#faf9fd;border-radius:13px;padding:12px;margin-top:auto}
@@ -73,7 +73,7 @@
 #quizModal .quiz-progress{height:7px;margin:17px 0 22px}
 #quizModal .quiz-question{font-size:clamp(18px,3vw,23px);line-height:1.7}
 #quizModal .answer{transition:background .15s,border-color .15s;line-height:1.7}
-#quizModal .answer:focus-visible,#quizModal .answer:hover{outline:none;border-color:#a997ff;background:#faf9ff}
+#quizModal .answer:focus-visible,#quizModal .answer:hover{outline:none;border-color:#a79bff;background:#faf9ff}
 #quizModal .answer:disabled{cursor:default}
 #quizModal .result .score{font-size:clamp(42px,8vw,58px)}
 @media(max-width:850px){#page-careers .path-hero{grid-template-columns:1fr minmax(150px,.55fr)}#page-careers .path-card-grid{grid-template-columns:1fr 1fr}}
