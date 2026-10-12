@@ -1,5 +1,5 @@
-const CACHE="mada-v3";
-const CORE=["/","/manifest.webmanifest","/masar-platform/index.html","/madaicon/appicon.jpg","/madaicon/mainicon.jpg","/madaicon/background%20icon.jpg"];
+const CACHE="dama-mada-v4";
+const CORE=["/","/manifest.webmanifest","/masar-platform/index.html","/madaicon/appicon.png","/madaicon/mainicon.png","/madaicon/background%20icon.png"];
 self.addEventListener("install",event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",event=>{
