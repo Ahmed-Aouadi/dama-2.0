@@ -3,18 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#17152b">
+<meta name="theme-color" content="#201c39">
 <title>قالب مشترك | مَدى</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f2fa;color:#1d1a36;font-family:Arial,Tahoma,sans-serif;line-height:1.85}.toolbar{position:sticky;top:0;z-index:2;background:#17152b;color:#fff;padding:12px 18px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}.toolbar button,.toolbar a{border:0;border-radius:9px;padding:9px 14px;background:#fff;color:#17152b;font-weight:700;text-decoration:none;cursor:pointer}.page{max-width:850px;margin:28px auto;padding:0 16px}.paper{background:#fff;padding:clamp(22px,5vw,52px);border-top:8px solid var(--accent,#5b46e6);box-shadow:0 18px 55px #201c3910;min-height:65vh}.eyebrow{color:#777;font-size:13px}h1{font-size:clamp(27px,5vw,42px);line-height:1.35;color:var(--accent,#5b46e6);margin:12px 0}h2{font-size:17px;color:var(--accent,#5b46e6);margin:0 0 8px}.subtitle{white-space:pre-wrap;color:#49465d}.field{margin-top:20px;padding:12px 15px;background:#faf9fd;border-right:3px solid var(--accent,#5b46e6);break-inside:avoid}.field-value{white-space:pre-wrap;overflow-wrap:anywhere}.notice{padding:18px;border-radius:14px;background:#fff3d7;color:#684b00;margin-top:18px}.muted{color:#777;font-size:12px}@media print{@page{size:A4;margin:16mm}body{background:#fff}.toolbar{display:none}.page{margin:0;max-width:none;padding:0}.paper{box-shadow:none;min-height:0;padding:0;border-top-width:5px}.notice{border:1px solid #ddd;background:#fff}}
+*{box-sizing:border-box}body{margin:0;background:#f4f2fa;color:#24213b;font-family:Arial,Tahoma,sans-serif;line-height:1.85}.toolbar{position:sticky;top:0;z-index:2;background:#201c39;color:#fff;padding:12px 18px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}.toolbar button,.toolbar a{border:0;border-radius:9px;padding:9px 14px;background:#fff;color:#201c39;font-weight:700;text-decoration:none;cursor:pointer}.page{max-width:850px;margin:28px auto;padding:0 16px}.paper{background:#fff;padding:clamp(22px,5vw,52px);border-top:8px solid var(--accent,#6d4aff);box-shadow:0 18px 55px #201c3910;min-height:65vh}.eyebrow{color:#777;font-size:13px}h1{font-size:clamp(27px,5vw,42px);line-height:1.35;color:var(--accent,#6d4aff);margin:12px 0}h2{font-size:17px;color:var(--accent,#6d4aff);margin:0 0 8px}.subtitle{white-space:pre-wrap;color:#49465d}.field{margin-top:20px;padding:12px 15px;background:#faf9fd;border-right:3px solid var(--accent,#6d4aff);break-inside:avoid}.field-value{white-space:pre-wrap;overflow-wrap:anywhere}.notice{padding:18px;border-radius:14px;background:#fff3d7;color:#684b00;margin-top:18px}.muted{color:#777;font-size:12px}@media print{@page{size:A4;margin:16mm}body{background:#fff}.toolbar{display:none}.page{margin:0;max-width:none;padding:0}.paper{box-shadow:none;min-height:0;padding:0;border-top-width:5px}.notice{border:1px solid #ddd;background:#fff}}
 </style>
-<link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/masar-platform/mada-theme.css">
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
 <div class="toolbar"><strong>مَدى · قالب مشترك</strong><button id="printBtn" hidden>طباعة / حفظ PDF</button><a href="/">العودة إلى مَدى</a></div>
 <main class="page"><article class="paper" id="paper"><p>جارٍ تحميل القالب…</p></article><p class="muted">تمت مشاركة هذا القالب بواسطة مستخدم في مَدى.</p></main>
 <script>
@@ -23,7 +18,7 @@
  const labels={contact:"معلومات التواصل",education:"التعليم والتكوين",experience:"الخبرات المهنية",skills:"المهارات",languages:"اللغات",links:"روابط الأعمال",certificates:"الدورات والشهادات",recipient:"المؤسسة واسم المسؤول",position:"المنصب المطلوب",strengths:"الخبرات والإنجازات",closing:"العبارة الختامية",invoiceNumber:"رقم الفاتورة / عرض السعر",date:"التاريخ",seller:"بيانات البائع",client:"بيانات العميل",items:"تفاصيل البنود",total:"المجموع",payment:"شروط الدفع",subtitle2:"الجمهور المستهدف",notes:"ملاحظات العرض"};
  function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
  function render(data){
-  const d=data.design||{};paper.replaceChildren();paper.style.setProperty("--accent",/^#[0-9a-f]{6}$/i.test(d.color||"")?d.color:"#5b46e6");
+  const d=data.design||{};paper.replaceChildren();paper.style.setProperty("--accent",/^#[0-9a-f]{6}$/i.test(d.color||"")?d.color:"#6d4aff");
   paper.append(el("div","eyebrow",d.author||data.authorName||"قالب من مَدى"));
   paper.append(el("h1","",d.title||"قالب مشترك"));
   paper.append(el("p","subtitle",d.subtitle||""));
