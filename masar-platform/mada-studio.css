@@ -133,3 +133,6 @@
  #customEditorModal .custom-header-actions .close{position:static}
 }
 #customEditorModal .custom-header-actions .close{position:static}
+
+/* Preserve Mada's existing fullscreen control while adopting the Dama 2.0 editor appearance. */
+#customEditorModal .custom-header-actions #customFullscreen{display:inline-flex!important;align-items:center;justify-content:center}

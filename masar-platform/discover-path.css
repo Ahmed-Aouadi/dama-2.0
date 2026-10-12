@@ -79,3 +79,92 @@
 @media(max-width:850px){#page-careers .path-hero{grid-template-columns:1fr minmax(150px,.55fr)}#page-careers .path-card-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){#page-careers .path-head{align-items:start}#page-careers .path-count{padding:9px 10px}#page-careers .path-count strong{font-size:19px}#page-careers .path-hero{grid-template-columns:1fr;padding:23px;gap:5px}#page-careers .path-hero h2{font-size:26px}#page-careers .path-hero-art{min-height:130px;grid-row:1}#page-careers .path-orbit{width:100px;height:100px;border-radius:31px;font-size:39px}#page-careers .path-orbit:after{width:39px;height:39px;left:-12px}#page-careers .path-art-note.one{right:4%;top:0}#page-careers .path-art-note.two{left:4%;bottom:0}#page-careers .path-interest-options{display:grid;grid-template-columns:1fr 1fr}#page-careers .path-interest{padding:11px 9px}#page-careers .path-recommendation{grid-template-columns:auto minmax(0,1fr);gap:10px}#page-careers .path-recommendation button{grid-column:1/-1;width:100%}#page-careers .path-catalog-head{align-items:start;flex-direction:column}#page-careers .path-tools{align-items:stretch}#page-careers .path-search{min-width:100%;flex-basis:100%}#page-careers .path-filter{flex:1}#page-careers .path-card-grid{grid-template-columns:1fr}#page-careers .path-card{padding:16px}#page-careers .path-card h3{margin-top:13px}}
 @media(prefers-reduced-motion:reduce){#page-careers .path-card,#page-careers .path-interest{transition:none}}
+
+
+/* Saved paths, clearer actions, and progress-aware discovery. */
+#page-careers .path-saved-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 12px;border:1px solid var(--path-line);border-radius:12px;background:#fff;color:#5d5676;font-size:11px;font-weight:700;white-space:nowrap;transition:background .18s,border-color .18s,color .18s}
+#page-careers .path-saved-toggle span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#f0edff;color:var(--path-violet);font-size:10px}
+#page-careers .path-saved-toggle[aria-pressed="true"]{background:#f0edff;border-color:#c7bcff;color:#4a35c8}
+#page-careers .path-card-actions{display:flex;align-items:center;gap:7px}
+#page-careers .path-save{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--path-line);border-radius:10px;background:#fff;color:#77718c;font-size:19px;line-height:1;transition:background .18s,border-color .18s,color .18s}
+#page-careers .path-save:hover,#page-careers .path-save.is-saved{background:#fff0f5;border-color:#f3bfd2;color:#d64f83}
+#page-careers .path-save:focus-visible,#page-careers .path-saved-toggle:focus-visible{outline:3px solid #b9adff;outline-offset:2px}
+#page-careers .path-card-bottom{flex-wrap:wrap}
+#page-careers .path-card-bottom small{line-height:1.7}
+@media(max-width:650px){#page-careers .path-saved-toggle{flex:1}#page-careers .path-card-actions{gap:6px}#page-careers .path-card-actions .primary{padding:10px 11px}}
+
+
+/* Global completion metrics for the expanded career catalog. */
+#page-careers .path-count{min-width:105px;text-align:center}
+#page-careers .path-count strong{font-variant-numeric:tabular-nums}
+#page-careers .path-card-tags{display:flex;align-items:flex-end;flex-direction:column;gap:7px}
+#page-careers .path-completion-count{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:99px;background:#f1faf5;color:#247b54;font-size:10px;white-space:nowrap}
+#page-careers .path-completion-count strong{font-size:11px;font-weight:800}
+@media(max-width:650px){#page-careers .path-head{flex-wrap:wrap}#page-careers .path-count{flex:1;min-width:0}#page-careers .path-completion-count{font-size:9px}}
+
+
+/* Expanded career explorer: tactile cards, clear category tools, and surprise discovery. */
+#page-careers .path-catalog-head .pill{background:#f0edff;color:#4a35c8;border:1px solid #e2dcff;font-weight:800}
+#page-careers .path-card{background:linear-gradient(155deg,#fff 0%,#fff 70%,#fbfaff 100%);box-shadow:0 4px 16px #25203d05}
+#page-careers .path-card:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,#34d6b0,#8f7aff);opacity:0;transition:opacity .2s}
+#page-careers .path-card:hover:before{opacity:1}
+#page-careers .path-card-icon{box-shadow:inset 0 0 0 1px #ffffffa6,0 5px 15px #211a3010;transition:transform .22s}
+#page-careers .path-card:hover .path-card-icon{transform:rotate(-5deg) scale(1.06)}
+#page-careers .path-card-tags{min-width:0}
+#page-careers .path-card-tag{max-width:180px;white-space:normal;text-align:center;line-height:1.5}
+#page-careers .path-surprise{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:10px 14px;border:1px solid #d8d0ff;border-radius:12px;background:linear-gradient(135deg,#f2efff,#e9fff8);color:#4b3ac2;font-size:11px;font-weight:800;white-space:nowrap;transition:transform .18s,box-shadow .18s}
+#page-careers .path-surprise:hover{transform:translateY(-2px);box-shadow:0 8px 22px #5b46e61c}
+#page-careers .path-card-surprise{outline:3px solid #8d7aff;outline-offset:3px;box-shadow:0 0 0 8px #8d7aff16,0 22px 48px #25203d14;animation:path-surprise-pulse .55s ease-in-out 2}
+@keyframes path-surprise-pulse{50%{transform:translateY(-4px)}}
+#page-careers .path-search input,#page-careers .path-filter{min-height:43px}
+#page-careers .path-card-bottom .primary{box-shadow:0 4px 10px #5b46e612}
+@media(max-width:650px){#page-careers .path-surprise{flex:1}#page-careers .path-filter{min-width:0;max-width:100%}}
+@media(prefers-reduced-motion:reduce){#page-careers .path-card-surprise{animation:none}#page-careers .path-card-icon,#page-careers .path-surprise{transition:none}}
+
+
+/* Interactive career mission lab */
+#quizModal .mission-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#77728b;font-size:11px;font-weight:700}
+#quizModal .mission-topline strong{color:#5b46e6;background:#f0edff;padding:7px 10px;border-radius:10px;white-space:nowrap}
+#quizModal .mission-progress{height:6px;background:#efedf6;border-radius:99px;overflow:hidden;margin:12px 0 19px}
+#quizModal .mission-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#34d6b0,#7562f3);transition:width .25s}
+#quizModal .mission-brief{padding:18px;border:1px solid #e9e5f4;border-radius:18px;background:radial-gradient(circle at 100% 0,#f0edff 0,transparent 45%),#fcfbff;margin-bottom:16px}
+#quizModal .mission-label{display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:#e7f8f3;color:#237b68;font-size:10px;font-weight:800}
+#quizModal .mission-brief h2{font-size:clamp(18px,3vw,24px);line-height:1.6;margin:11px 0 7px}
+#quizModal .mission-brief p{font-size:12px;line-height:1.95;color:#716d84;margin:0}
+#quizModal .mission-context{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;border-top:1px solid #ebe7f4;margin-top:14px;padding-top:12px;font-size:11px}
+#quizModal .mission-context span{color:#8b869d}
+#quizModal .mission-context strong{color:#37324d}
+#quizModal .mission-choice-list{display:grid;gap:9px}
+#quizModal .mission-choice{width:100%;display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:11px;text-align:right;padding:13px;border:1px solid #e8e5f0;border-radius:14px;background:#fff;color:#302c45;font-size:12px;line-height:1.8;transition:border-color .18s,background .18s,transform .18s}
+#quizModal .mission-choice:hover:not(:disabled){border-color:#b8adff;background:#faf9ff;transform:translateY(-1px)}
+#quizModal .mission-choice-index{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#f0edff;color:#5b46e6;font-weight:800}
+#quizModal .mission-choice-arrow{color:#aaa3c1}
+#quizModal .mission-choice.is-correct{border-color:#75cfb5;background:#f0fbf7}
+#quizModal .mission-choice.is-correct .mission-choice-index{background:#d8f6eb;color:#167b61}
+#quizModal .mission-choice.is-picked-wrong{border-color:#eab5bd;background:#fff7f7}
+#quizModal .mission-feedback{padding:13px 15px;margin-top:14px;border-radius:13px;border:1px solid #e9e5f4;background:#f8f7fc}
+#quizModal .mission-feedback strong{font-size:12px}
+#quizModal .mission-feedback p{font-size:11px;line-height:1.9;color:#6d6881;margin:4px 0 0}
+#quizModal .mission-feedback.is-good{background:#f0fbf7;border-color:#ccefe3}
+#quizModal .mission-feedback.is-learn{background:#fff9ef;border-color:#f2e2c3}
+#quizModal .mission-next,#quizModal .mission-submit{width:100%;margin-top:14px;min-height:45px}
+#quizModal .mission-order-status{display:flex;justify-content:space-between;gap:10px;padding:11px 13px;border-radius:12px;background:#f6f4fc;color:#77728b;font-size:11px}
+#quizModal .mission-order-status strong{color:#5140c2}
+#quizModal .mission-step-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+#quizModal .mission-step-choice{min-width:0;min-height:68px;display:flex;align-items:center;gap:10px;text-align:right;padding:11px;border:1px solid #e8e5f0;border-radius:13px;background:#fff;color:#49445f;font-size:11px;line-height:1.7}
+#quizModal .mission-step-choice.is-selected{border-color:#a79bff;background:#f5f2ff;color:#4a35c8}
+#quizModal .mission-step-number{width:27px;height:27px;flex:0 0 27px;display:grid;place-items:center;border-radius:9px;background:#f1eff7;color:#77728b;font-weight:800}
+#quizModal .mission-step-choice.is-selected .mission-step-number{background:#5b46e6;color:white}
+#quizModal .mission-order-preview{margin-top:12px;padding:12px;border:1px dashed #d8d2e9;border-radius:12px;color:#706b83;font-size:11px;line-height:1.9;overflow-wrap:anywhere}
+#quizModal .mission-budget{padding:15px;border:1px solid #e8e5f0;border-radius:17px;background:#fff}
+#quizModal .mission-budget-total{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:11px;color:#77728b}
+#quizModal .mission-budget-total strong{font-size:16px;color:#237b62;font-variant-numeric:tabular-nums}
+#quizModal .mission-budget-track{height:7px;border-radius:99px;background:#f0edf6;overflow:hidden;margin:11px 0 18px}
+#quizModal .mission-budget-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#34d6b0,#7562f3);transition:width .18s}
+#quizModal .mission-range-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 12px;padding:12px 0;border-top:1px solid #f0edf6;font-size:12px}
+#quizModal .mission-range-row strong{color:#5140c2;font-variant-numeric:tabular-nums}
+#quizModal .mission-range-row input{grid-column:1/-1;width:100%;accent-color:#5b46e6;cursor:pointer}
+#quizModal .mission-range-row small{grid-column:1/-1;color:#9993aa;font-size:10px}
+#quizModal .mission-submit:disabled{opacity:.45;box-shadow:none}
+@media(max-width:560px){#quizModal .mission-brief{padding:14px}#quizModal .mission-step-list{grid-template-columns:1fr}#quizModal .mission-step-choice{min-height:54px}#quizModal .mission-choice{padding:10px;gap:8px}#quizModal .mission-budget{padding:12px}}
+@media(prefers-reduced-motion:reduce){#quizModal .mission-choice,#quizModal .mission-progress span,#quizModal .mission-budget-track span{transition:none}}

@@ -61,7 +61,7 @@ function rowToProduct(row) {
 }
 
 function sessionSecret() {
-  return String(process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PIN || "");
+  return String(process.env.ADMIN_SESSION_SECRET || "");
 }
 
 function signAdminSession(exp) {
@@ -230,6 +230,9 @@ async function uploadImage(req, res) {
 
 function adminLogin(req, res) {
   const pin = String(req.body?.pin || "");
+  if (!process.env.ADMIN_SESSION_SECRET || String(process.env.ADMIN_SESSION_SECRET).length < 32) {
+    return json(res, 503, { ok: false, message: "إعداد سر جلسة الإدارة غير مكتمل. أضف ADMIN_SESSION_SECRET بطول 32 حرفًا على الأقل." });
+  }
   if (!process.env.ADMIN_PIN || pin !== String(process.env.ADMIN_PIN)) {
     return json(res, 401, { ok: false, message: "رمز الإدارة غير صحيح" });
   }

@@ -125,6 +125,21 @@
       finally { syncing = false; if (pending) sync(pending); }
     }, 650);
   }
+  function hasMeaningfulProfile(data) {
+    const profile = data && data.profile && typeof data.profile === "object" ? data.profile : {};
+    return Object.values(profile).some(value => typeof value === "string" ? value.trim().length > 0 : !!value);
+  }
+  function hasMeaningfulGrowth(data) {
+    const growth = data && data.growth && typeof data.growth === "object" ? data.growth : {};
+    for (const key of ["skills", "history", "requests", "customTemplates"]) {
+      if (Array.isArray(growth[key]) && growth[key].length) return true;
+    }
+    if (growth.paths && typeof growth.paths === "object" && Object.keys(growth.paths).length) return true;
+    if (growth.locale && growth.locale !== "ar") return true;
+    const cv = growth.cv && typeof growth.cv === "object" ? growth.cv : {};
+    return ["name", "headline", "email", "phone", "city", "summary", "education", "experience", "projects", "skills"]
+      .some(key => String(cv[key] || "").trim().length > 0);
+  }
   async function restoreAccountData(migrateGuest) {
     if (!user || !window.MadaApp) return;
     const guestState = window.MadaApp.getState();
@@ -138,11 +153,13 @@
     const projectsAddedDuringRestore = (latestState.projects || []).filter(project =>
       !originalProjectIds.has(String(project.id)) && !cloudProjectIds.has(String(project.id))
     );
-    const guestHasContent = !!(guestState.profile && (guestState.profile.name || guestState.profile.role || guestState.profile.bio || guestState.profile.skills || guestState.profile.photo)) ||
-      ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0);
+    const guestHasContent = hasMeaningfulProfile(guestState) ||
+      ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
+      hasMeaningfulGrowth(guestState);
     const cloudIsEmpty = !result.data ||
-      (!(result.data.profile && (result.data.profile.name || result.data.profile.role || result.data.profile.bio || result.data.profile.skills || result.data.profile.photo)) &&
-       !["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0));
+      (!hasMeaningfulProfile(result.data) &&
+       !["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) &&
+       !hasMeaningfulGrowth(result.data));
     if (result.data && !(migrateGuest && cloudIsEmpty && guestHasContent)) {
       const needsName = !result.data.profile || !result.data.profile.name;
       const restoredState = Object.assign({}, result.data, {
@@ -189,7 +206,15 @@
     setUser(user);
     return result;
   }
-  window.MadaAuth = { sync, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount };
+  async function deleteAccount(password) {
+    const result = await request("delete-account", "POST", { password: String(password || "") });
+    user = null; pending = null;
+    if (syncTimer) clearTimeout(syncTimer);
+    setUser(null);
+    if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(null); }
+    return result;
+  }
+  window.MadaAuth = { sync, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount };
   renderMode();
   request("me", "GET").then(async result => {
     if (!result.user) { setUser(null); return; }
