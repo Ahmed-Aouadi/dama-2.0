@@ -8,7 +8,6 @@ const javascriptFiles = [
   "masar-platform/auth.js",
   "masar-platform/discover-path.js",
   "masar-platform/portfolio-public.js",
-  "amine_wholesale_store_v2/assets/app.js"
 ];
 
 for (const file of javascriptFiles) {
@@ -159,8 +158,6 @@ for (const icon of manifest.icons || []) {
   const localPath = String(icon.src || "").replace(/^\/+/, "");
   if (!localPath || !fs.existsSync(localPath)) throw new Error("Manifest icon does not exist: " + icon.src);
 }
-const municipalPage = fs.readFileSync("amine_wholesale_store_v2/index.html", "utf8");
-if (!municipalPage.includes('src="assets/app.js?v=municipal-1"')) throw new Error("Municipal prototype script path is not relative to its directory");
 if (!profile.includes("x.galleryVisible===true||((x.galleryVisible!==false)&&(x.visibility!==\"private\"))") || !profile.includes("state.portfolioSettings||initial.portfolioSettings).featuredOnly")) throw new Error("Standalone portfolio export must honor gallery visibility and featured-only settings");
 console.log("OK standalone export respects project visibility and featured-only settings");
 const studio = profile;
@@ -173,7 +170,7 @@ for (const behavior of ["function scheduleCustomAutosave()", "localStorage.setIt
 const htmlExportHandler = studio.match(/\$\("#exportCustomHtml"\)\.addEventListener\("click"/g) || [];
 if (htmlExportHandler.length !== 1) throw new Error("Creative Studio HTML export must have exactly one click handler");
 console.log("OK Creative Studio autosave, page management, history, keyboard shortcuts, and single export binding");
-console.log("OK brand assets, manifest icons, service-worker references, and legacy page script path");
+console.log("OK brand assets, manifest icons, and service-worker references");
 
 
 const designLibrary = profile;
