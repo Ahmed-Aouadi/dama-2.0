@@ -60,7 +60,13 @@ view.style.setProperty("--gallery-heading",/^#[0-9a-f]{6}$/i.test(display.headin
 view.style.setProperty("--gallery-name-size",Math.max(22,Math.min(64,Number(display.nameSize)||38))+"px");
 view.style.setProperty("--gallery-body-size",Math.max(12,Math.min(24,Number(display.bodySize)||16))+"px");
 view.style.setProperty("--gallery-title-size",Math.max(18,Math.min(48,Number(display.sectionTitleSize)||30))+"px");
-view.style.setProperty("--gallery-font",({system:"system-ui,Arial,sans-serif",cairo:"Cairo,Arial,sans-serif",serif:"Georgia,'Times New Roman',serif",mono:"ui-monospace,SFMono-Regular,monospace"})[display.fontFamily]||"system-ui,Arial,sans-serif");
+view.style.setProperty("--gallery-font",({system:"system-ui,Arial,sans-serif",cairo:"Cairo,Arial,sans-serif",tajawal:"Tajawal,Arial,sans-serif",almarai:"Almarai,Arial,sans-serif",amiri:"Amiri,Georgia,serif",reemkufi:"'Reem Kufi',Cairo,sans-serif",elmessiri:"'El Messiri',Cairo,sans-serif",serif:"Georgia,'Times New Roman',serif",mono:"ui-monospace,SFMono-Regular,monospace"})[display.fontFamily]||"system-ui,Arial,sans-serif");
+view.style.setProperty("--gallery-card-bg",safeHex(display.cardBackground,"#ffffff"));
+if(display.cardRadius!==undefined&&display.cardRadius!==""&&Number.isFinite(Number(display.cardRadius)))view.style.setProperty("--gallery-card-radius",Math.max(0,Math.min(32,Number(display.cardRadius)))+"px");else view.style.removeProperty("--gallery-card-radius");
+view.dataset.density=["compact","comfortable","spacious"].includes(display.density)?display.density:"comfortable";
+view.dataset.heroStyle=["dark","light","accent"].includes(display.heroStyle)?display.heroStyle:"dark";
+view.dataset.pattern=["none","dots","grid"].includes(display.pattern)?display.pattern:"none";
+{const cb=safeHex(display.cardBackground,"#ffffff"),lum=(parseInt(cb.slice(1,3),16)*.299+parseInt(cb.slice(3,5),16)*.587+parseInt(cb.slice(5,7),16)*.114);view.dataset.dark=lum<110?"1":"0"}
 view.style.setProperty("--gallery-align",["right","center","left"].includes(display.textAlign)?display.textAlign:"right");
 const backgroundImage=safeUrl(display.backgroundImage,false);
 view.style.backgroundImage=backgroundImage?'linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.9)),url("'+backgroundImage.replace(/["\\]/g,"")+'")':"";
@@ -142,5 +148,13 @@ document.addEventListener("click",function(e){
 ["publicMediaModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target.id===id)closeDialog(id)}));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDialog("projectDetailsModal");closeDialog("publicMediaModal")}else if($("publicMediaModal")?.classList.contains("open")&&publicImageList.length>1){if(e.key==="ArrowLeft")showPublicImage(publicImageIndex+1);else if(e.key==="ArrowRight")showPublicImage(publicImageIndex-1)}});
 
-load();
+if(location.hash==="#preview"){
+  document.documentElement.classList.add("is-preview");
+  window.addEventListener("message",function(e){
+    if(e.origin!==location.origin||!e.data||e.data.type!=="mada-portfolio-preview")return;
+    try{render({portfolio:e.data.portfolio||{},username:e.data.username||"",authorName:e.data.authorName||""})}catch(err){console.warn("preview render failed",err)}
+  });
+  try{window.parent.postMessage({type:"mada-preview-ready"},location.origin)}catch(e){}
+}else load();
+
 })();

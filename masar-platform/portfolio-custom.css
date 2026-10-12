@@ -1,0 +1,28 @@
+/* Public portfolio: extra customization options (density, hero style, patterns, dark cards, card radius). */
+#portfolioView .work{background:var(--gallery-card-bg,#fff);color:var(--gallery-text,#17152b)}
+#portfolioView .work h3{color:var(--gallery-text,#17152b)}
+#portfolioView[data-dark="1"] .description,#portfolioView[data-dark="1"] .facts{color:color-mix(in srgb,var(--gallery-text,#fff) 72%,transparent)}
+#portfolioView[data-dark="1"] .work{border-color:#ffffff1f}
+#portfolioView[data-dark="1"] .work-cover{filter:saturate(.95)}
+#portfolioView[data-dark="1"] .section-head p{color:color-mix(in srgb,var(--gallery-text,#fff) 70%,transparent)}
+/* density */
+#portfolioView[data-density="compact"] .works-grid{gap:10px}
+#portfolioView[data-density="compact"] .profile-hero{padding:clamp(18px,3vw,30px)}
+#portfolioView[data-density="spacious"] .works-grid{gap:28px}
+#portfolioView[data-density="spacious"] .profile-hero{padding:clamp(34px,6vw,76px)}
+#portfolioView[data-density="spacious"] .section-head{margin-top:44px}
+/* hero style (classic + mosaic only; editorial/minimal define their own) */
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="light"] .profile-hero{background:#fff;color:#17152b;border:1px solid #e6e2f4}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="light"] .profile-hero .kicker{color:var(--gallery-accent,#5b46e6)}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="light"] .profile-hero .profile-copy h1{color:var(--gallery-heading,#17152b)}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="light"] .profile-hero :is(.role,.bio,.meta){color:#6a6882}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="accent"] .profile-hero{background:var(--gallery-accent,#5b46e6);color:#fff}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="accent"] .profile-hero .kicker{color:#fff;opacity:.85}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="accent"] .profile-hero .profile-copy h1{color:#fff}
+/* page patterns */
+#portfolioView[data-pattern="dots"]{background-image:radial-gradient(color-mix(in srgb,var(--gallery-accent,#5b46e6) 24%,transparent) 1.5px,transparent 1.7px);background-size:22px 22px}
+#portfolioView[data-pattern="grid"]{background-image:linear-gradient(color-mix(in srgb,var(--gallery-accent,#5b46e6) 12%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--gallery-accent,#5b46e6) 12%,transparent) 1px,transparent 1px);background-size:32px 32px}
+/* preview mode (inside the designer iframe) */
+html.is-preview .public-top{display:none}
+html.is-preview body{overscroll-behavior:contain}
+#portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="accent"] .profile-hero :is(.role,.bio,.meta,.count){color:#ffffffe6}

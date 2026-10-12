@@ -36,7 +36,7 @@
     document.addEventListener("keydown", function (e) {
       var open = openModals(), top = open[open.length - 1];
       if (!top) return;
-      if (e.key === "Escape") { top.classList.remove("open"); return; }
+      if (e.key === "Escape") { if (top.id === "customEditorModal") return; top.classList.remove("open"); return; }
       if (e.key !== "Tab") return;
       var items = Array.prototype.filter.call(top.querySelectorAll(FOCUSABLE), function (el) { return el.offsetParent !== null; });
       if (!items.length) return;
