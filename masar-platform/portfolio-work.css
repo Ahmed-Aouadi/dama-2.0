@@ -17,7 +17,7 @@
 #projectDetailsModal .project-detail-media h4{font-size:12px;margin:18px 0 0}
 #projectDetailsModal .project-detail-link{overflow-wrap:anywhere}
 #projectDetailsModal .project-detail-link a{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}
-#page-portfolio .project-card-actions button[data-download-project]{background:#e2f8f2;color:#35762b}
+#page-portfolio .project-card-actions button[data-download-project]{background:#eaf8e2;color:#35762b}
 #page-portfolio .project-card-actions button[data-duplicate-project]{font-weight:700}
 @media(max-width:760px){#page-portfolio .portfolio-publish-panel{grid-template-columns:1fr;gap:17px;padding:17px}#page-portfolio .portfolio-publish-actions>*{flex:1}#projectDetailsModal .project-media-gallery a{height:85px}}
 
@@ -37,15 +37,15 @@
 #page-portfolio .work-card.project-card .work-body{display:flex;flex:1;flex-direction:column;gap:0;padding:16px}
 #page-portfolio .work-card.project-card .work-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 #page-portfolio .work-card.project-card h3{font-size:16px;line-height:1.55;margin:12px 0 7px;overflow-wrap:anywhere}
-#page-portfolio .project-description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;color:#6a6882;font-size:12px;line-height:1.9}
+#page-portfolio .project-description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;color:#77758b;font-size:12px;line-height:1.9}
 #page-portfolio .project-card-meta{margin:10px 0 8px}
 #page-portfolio .project-card-tags{margin:8px 0 14px}
 #page-portfolio .project-card-actions{margin-top:auto;padding-top:13px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 #page-portfolio .project-card-actions button,#page-portfolio .project-card-actions a{min-width:0;width:100%;min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.45;overflow-wrap:anywhere;border:1px solid transparent;transition:filter .15s ease,background .15s ease}
 #page-portfolio .project-card-actions button:hover,#page-portfolio .project-card-actions a:hover{filter:brightness(.97)}
-#page-portfolio .project-card-actions button[data-view-project]{grid-column:1/-1;background:#17152b;color:#fff}
-#page-portfolio .project-card-actions button[data-toggle-gallery]{background:#f1edff;color:#4f3ad6}
-#page-portfolio .project-card-actions button[data-download-project]{background:#e2f8f2;color:#35762b}
+#page-portfolio .project-card-actions button[data-view-project]{grid-column:1/-1;background:#211e35;color:#fff}
+#page-portfolio .project-card-actions button[data-toggle-gallery]{background:#f1edff;color:#6244eb}
+#page-portfolio .project-card-actions button[data-download-project]{background:#eaf8e2;color:#35762b}
 #page-portfolio .project-card-actions .project-delete{background:#fff0f3;color:#b4233b}
 #page-portfolio .work-card.project-featured{border-color:#cfc2ff;box-shadow:0 8px 28px rgba(109,74,255,.09)}
 @media(max-width:760px){
