@@ -1284,7 +1284,19 @@ $("#customReferenceOpacity").addEventListener("input",e=>{customReferenceOpacity
 $("#customRemoveReference").addEventListener("click",()=>customSetReference(""));
 $("#customApplyWatermark").addEventListener("click",()=>{if(!customDoc)return toast("افتح تصميمًا أولًا.");const text=$("#customWatermarkText").value.trim();if(!text)return toast("اكتب نص العلامة المائية أولًا.");pushCustomHistory();customDoc.watermark={text,opacity:Math.max(.03,Math.min(.3,Number($("#customWatermarkOpacity").value)||.1)),size:Math.max(10,Math.min(100,Number($("#customWatermarkSize").value)||34)),color:customDoc.watermark?.color||"#5b46e6"};syncCustomPageToDoc();drawCustomPage();scheduleCustomAutoSave();toast("تم تطبيق العلامة المائية وحفظها.")});
 ["customWatermarkOpacity","customWatermarkSize","customWatermarkText"].forEach(id=>{const input=$("#"+id);if(!input)return;input.addEventListener("input",()=>{if(!customDoc||!customDoc.watermark)return;const text=$("#customWatermarkText").value.trim();customDoc.watermark.text=text||customDoc.watermark.text;customDoc.watermark.opacity=Math.max(.03,Math.min(.3,Number($("#customWatermarkOpacity").value)||.1));customDoc.watermark.size=Math.max(10,Math.min(100,Number($("#customWatermarkSize").value)||34));drawCustomPage();});input.addEventListener("change",()=>{if(customDoc&&customDoc.watermark){scheduleCustomAutoSave();}})});
-function positionCustomRulers(){const page=$("#customPage"),workspace=$(".custom-page-workspace"),top=$("#customRulerTop"),left=$("#customRulerLeft");if(!page||!workspace||!top||!left)return;const x=page.offsetLeft,y=page.offsetTop,w=page.clientWidth,h=page.clientHeight;top.style.left=x+"px";top.style.top=y+"px";top.style.width=w+"px";top.style.right="auto";left.style.left=x+"px";left.style.top=y+"px";left.style.height=h+"px";left.style.bottom="auto";}\n$("#customRulersToggle").addEventListener("change",e=>{const visible=!!e.target.checked;const top=$("#customRulerTop"),left=$("#customRulerLeft");if(top)top.hidden=!visible;if(left)left.hidden=!visible;if(visible)positionCustomRulers();});
+function positionCustomRulers(){
+ const page=$("#customPage"),workspace=$(".custom-page-workspace"),top=$("#customRulerTop"),left=$("#customRulerLeft");
+ if(!page||!workspace||!top||!left)return;
+ const x=page.offsetLeft,y=page.offsetTop,w=page.clientWidth,h=page.clientHeight;
+ top.style.left=x+"px";top.style.top=y+"px";top.style.width=w+"px";top.style.right="auto";
+ left.style.left=x+"px";left.style.top=y+"px";left.style.height=h+"px";left.style.bottom="auto";
+}
+$("#customRulersToggle").addEventListener("change",function(e){
+ const visible=!!e.target.checked,top=$("#customRulerTop"),left=$("#customRulerLeft");
+ if(top)top.hidden=!visible;
+ if(left)left.hidden=!visible;
+ if(visible)positionCustomRulers();
+});
 $("#customSafeMarginToggle").addEventListener("change",()=>{if(!customDoc)return;drawCustomPage();scheduleCustomAutoSave()});
 $("#customBrushToggle").addEventListener("click",()=>{customBrushMode=!customBrushMode;$("#customBrushToggle").classList.toggle("active",customBrushMode);$("#customBrushToggle").textContent=customBrushMode?"✕ إيقاف الفرشاة":"🖌 فرشاة الرسم";$("#customPage").style.cursor=customBrushMode?"crosshair":"default";if(customBrushMode&&!$("#customBrushOptions")){const box=document.createElement("div");box.id="customBrushOptions";box.innerHTML='<label>لون الفرشاة <input id="customBrushColor" type="color" value="#5b46e6"></label><label>السماكة <input id="customBrushWidth" type="range" min="0.5" max="12" step="0.5" value="2"></label>';$("#customBrushToggle").insertAdjacentElement("afterend",box)}});
 $("#customPage").addEventListener("pointerdown",e=>{if(!customBrushMode||!customDoc||e.target.closest("[data-custom-element]"))return;const r=$("#customPage").getBoundingClientRect(),d=customDimensions();customBrushPoints=[[Math.max(0,(e.clientX-r.left)/r.width*d[0]),Math.max(0,(e.clientY-r.top)/r.height*d[1])]];e.preventDefault();e.stopImmediatePropagation()},true);
