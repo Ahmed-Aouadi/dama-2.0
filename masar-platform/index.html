@@ -368,6 +368,16 @@ input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select{b
   .shell>.side {display:none!important}
   .mobile-nav {display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important}
 }
+
+/* Creative preset library: visual swatches, richer cards and responsive browsing. */
+#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="presets"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}
+#customEditorModal .custom-added-tools .custom-tool-card{min-width:0;min-height:94px;padding:9px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid #e6e0f4!important;border-radius:14px!important;background:linear-gradient(150deg,#fff 0%,#f8f6ff 100%)!important;color:#30264b!important;box-shadow:0 3px 10px #2b1c5208;transition:transform .18s,border-color .18s,box-shadow .18s}
+#customEditorModal .custom-added-tools .custom-tool-card:hover{transform:translateY(-3px);border-color:#a99aff!important;box-shadow:0 9px 18px #4931a31a;background:#fff!important}
+#customEditorModal .custom-preset-preview{display:grid;place-items:center;width:43px;height:39px;padding:3px;border-radius:11px;background:linear-gradient(135deg,#ede9fe,#dbeafe);color:#5b46e6;font-size:19px;font-weight:800;box-shadow:inset 0 0 0 1px #ffffffb5}
+#customEditorModal .custom-preset-caption{display:block;width:100%;font-size:10px;line-height:1.5;font-weight:700;text-align:center;overflow-wrap:anywhere}
+#customEditorModal .custom-tools-section-tabs{gap:6px}
+#customEditorModal .custom-tools-section-tabs button{border-radius:11px;transition:background .18s,border-color .18s}
+@media(max-width:680px){#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="presets"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#customEditorModal .custom-added-tools .custom-tool-card{min-height:86px;padding:7px 4px}#customEditorModal .custom-preset-preview{width:38px;height:35px;font-size:17px}#customEditorModal .custom-preset-caption{font-size:9px}}
 </style>
   <link rel="stylesheet" href="/masar-platform/discover-path.css?v=20261012-quest">
   <link rel="stylesheet" href="/masar-platform/portfolio-work.css">
@@ -1672,7 +1682,13 @@ $("#year").textContent=new Date().getFullYear();
     group.className="custom-advanced-tools custom-added-tools";
     tools.forEach(item=>{
       const button=document.createElement("button");
-      button.type="button";button.textContent=item.label;button.title=item.title||item.label;
+      button.type="button";button.classList.add("custom-tool-card");button.title=item.title||item.label;
+      if(key==="presets"){
+        const preview=document.createElement("span");preview.className="custom-preset-preview";
+        const symbol=String(item.label||"✦").trim().split(/\\s+/)[0];preview.textContent=symbol;
+        preview.setAttribute("aria-hidden","true");button.appendChild(preview);
+        const caption=document.createElement("span");caption.className="custom-preset-caption";caption.textContent=String(item.label||"").replace(/^\\S+\\s*/,"");button.appendChild(caption);
+      }else button.textContent=item.label;
       button.addEventListener("click",event=>{event.preventDefault();try{item.run.call(button,event)}catch(error){console.error("Mada editor tool failed:",item.label,error);toast("تعذر تنفيذ الأداة: "+item.label)}});
       group.appendChild(button);
     });
@@ -1684,7 +1700,7 @@ $("#year").textContent=new Date().getFullYear();
     pushCustomHistory();const dim=customDimensions();
     const sizes={
       badge:[54,28],price:[78,34],cta:[76,30],divider:[90,2],discount:[48,48],
-      newseason:[76,36],premium:[58,58],bestseller:[82,34],bundle:[88,40],limitededition:[82,36],secure:[58,58],organic:[60,60],priceold:[84,38],tagline:[92,34],instagram:[64,64],hotdeal:[64,64],giftbox:[62,62],members:[82,34],
+      newseason:[76,36],premium:[58,58],bestseller:[82,34],bundle:[88,40],limitededition:[82,36],secure:[58,58],organic:[60,60],priceold:[84,38],tagline:[92,34],instagram:[64,64],hotdeal:[64,64],giftbox:[62,62],members:[82,34],frame:[88,36],circlebadge:[58,42],arrowcta:[92,32],titlebar:[92,34],featurecard:[92,38],quote:[94,38],success:[82,30],notice:[88,32],floral:[84,34],tech:[74,32],summer:[84,32],infocard:[94,34],love:[86,32],
       shipping:[82,30],rating:[78,28],quality:[55,55],new:[62,30],contact:[76,32],
       popular:[76,32],ribbon:[88,30],coupon:[82,42],flash:[62,62],verified:[58,58],
       eco:[64,36],social:[78,30],limited:[86,30],offer:[80,36],feature:[84,38],
@@ -1738,7 +1754,20 @@ $("#year").textContent=new Date().getFullYear();
     {label:"🔥 صفقة ساخنة",run:()=>addPresetElement("hotdeal","صفقة\\nساخنة",{color:"#fff",fill:"#c2410c",fontSize:12})},
     {label:"🎁 صندوق هدية",run:()=>addPresetElement("giftbox","هدية\\nلك",{color:"#fff",fill:"#be185d",fontSize:12})},
     {label:"👑 للأعضاء فقط",run:()=>addPresetElement("members","للأعضاء فقط",{color:"#fff",fill:"#4338ca",fontSize:11})},
-    {label:"━ فاصل تصميمي",run:()=>addPresetElement("divider","",{color:"#5b46e6",fill:"#5b46e6",fontSize:2})}
+    {label:"━ فاصل تصميمي",run:()=>addPresetElement("divider","",{color:"#5b46e6",fill:"#5b46e6",fontSize:2})},
+    {label:"⬟ إطار أنيق",run:()=>addPresetElement("frame","إطار أنيق",{color:"#ffffff",fill:"#111827",fontSize:12,radius:4})},
+    {label:"◉ شارة دائرية",run:()=>addPresetElement("circlebadge","مميز",{color:"#ffffff",fill:"#7c3aed",fontSize:13,radius:28})},
+    {label:"➤ سهم دعوة",run:()=>addPresetElement("arrowcta","اكتشف المزيد  ➜",{color:"#ffffff",fill:"#0f766e",fontSize:12,radius:8})},
+    {label:"▰ شريط عنوان",run:()=>addPresetElement("titlebar","عنوان القسم",{color:"#ffffff",fill:"#312e81",fontSize:14,radius:5})},
+    {label:"✦ بطاقة مميزة",run:()=>addPresetElement("featurecard","✦  اختيار مميز",{color:"#312e81",fill:"#e0e7ff",fontSize:12,radius:9})},
+    {label:"❝ اقتباس",run:()=>addPresetElement("quote","❝  فكرتك تستحق أن تُرى",{color:"#374151",fill:"#f3f4f6",fontSize:11,radius:7})},
+    {label:"✓ شارة نجاح",run:()=>addPresetElement("success","✓  تم بنجاح",{color:"#166534",fill:"#dcfce7",fontSize:12,radius:18})},
+    {label:"⚑ علامة تنبيه",run:()=>addPresetElement("notice","تنبيه مهم  ⚑",{color:"#92400e",fill:"#fef3c7",fontSize:12,radius:5})},
+    {label:"✿ زخرفة ناعمة",run:()=>addPresetElement("floral","✿  لمسة جميلة",{color:"#9d174d",fill:"#fce7f3",fontSize:13,radius:18})},
+    {label:"◆ شارة تقنية",run:()=>addPresetElement("tech","TECH  ◆",{color:"#cffafe",fill:"#164e63",fontSize:12,radius:5})},
+    {label:"☼ شارة صيفية",run:()=>addPresetElement("summer","☼  إصدار الصيف",{color:"#7c2d12",fill:"#fed7aa",fontSize:12,radius:18})},
+    {label:"▱ بطاقة معلومات",run:()=>addPresetElement("infocard","معلومة مهمة  ·  01",{color:"#1e3a8a",fill:"#dbeafe",fontSize:11,radius:7})},
+    {label:"♡ شارة مخصصة",run:()=>addPresetElement("love","صُنع بعناية  ♡",{color:"#9f1239",fill:"#ffe4e6",fontSize:12,radius:18})}
   ]);
   addToolGroup("add",[
     {label:"▣ تكرار المحدد",title:"إنشاء نسخة من العناصر المحددة",run:()=>{
