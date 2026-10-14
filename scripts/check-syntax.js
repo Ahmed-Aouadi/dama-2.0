@@ -208,12 +208,13 @@ console.log("OK Growth Hub account-state restoration after sign-in");
 const studioPage = fs.readFileSync("masar-platform/index.html", "utf8");
 const studioCss = fs.readFileSync("masar-platform/mada-studio.css", "utf8");
 if (!studioPage.includes('href="/masar-platform/mada-studio.css"')) throw new Error("Dama 2.0 Creative Studio stylesheet is not linked");
-for (const id of ["exportCustomImages", "exportCustomPdfTop", "exportCustomArchive",  "addTableElement", "customBackgroundImageBtn", "customReferenceBtn", "customApplyWatermark", "customBrushToggle", "customAddPage", "customLayers", "customAllowTemplateUse", "customFullscreen"]) {
+for (const id of ["openCustomExport", "customExportModal", "customExportFormat", "customExportSelectAll", "customExportClearAll", "runCustomExport", "addTableElement", "customBackgroundImageBtn", "customReferenceBtn", "customApplyWatermark", "customBrushToggle", "customAddPage", "customLayers", "customAllowTemplateUse", "customFullscreen"]) {
   if (!studioPage.includes('id="' + id + '"')) throw new Error("Mada Creative Studio addition was lost: " + id);
 }
 if (!studioCss.includes("#customEditorModal .custom-editor-header") || !studioCss.includes("#customEditorModal .custom-tools") || !studioCss.includes("@media (max-width:980px)")) throw new Error("Dama 2.0 Studio styling or responsive layout is missing");
 if (!studioCss.includes("#customEditorModal .custom-header-actions #customFullscreen{display:inline-flex!important")) throw new Error("Fullscreen control must remain visible after the style migration");
-console.log("OK Dama 2.0 Creative Studio styles with Mada export, layout, page, reference, watermark and fullscreen features preserved");
+for (const feature of ["customExportPageList", "customExportSelectionCount", "customExportOptions", "customExportSelectAll", "customExportClearAll"]) { if (!studioPage.includes('id="' + feature + '"')) throw new Error("Mada export dialog is missing a page-selection control: " + feature); }
+console.log("OK Dama 2.0 Creative Studio unified export dialog, page selection, styles, layout, reference, watermark and fullscreen features preserved");
 
 const growthTemplateEditorRegression = fs.readFileSync("masar-platform/growth-templates.js", "utf8");
 for (const control of ["data-gt-x", "data-gt-y", "data-gt-width", "data-gt-height", "data-gt-font", "data-gt-color"]) {
