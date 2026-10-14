@@ -8,10 +8,10 @@
 
     var historyPanel = page.querySelector("#quizHistory") && page.querySelector("#quizHistory").closest(".panel");
     var paths = [
-      { key: "logic", category: "تقني", title: "حلّ المشكلات", name: "التفكير البرمجي", icon: "⌘", symbol: "{ }", color: "#eee9ff", ink: "#6244eb", description: "تتبّع الأسباب، رتّب الخطوات، وابحث عن حل واضح بدل التخمين.", outcome: "تتدرّب على التفكير المنطقي واكتشاف الأخطاء.", task: "حل 5 مواقف قصيرة", interest: ["problem", "explore"], search: "برمجة تقنية منطق حل المشكلات" },
-      { key: "design", category: "إبداعي", title: "اصنع فكرة مرئية", name: "التصميم والإبداع", icon: "✳", symbol: "◌", color: "#fff0f5", ink: "#d64f83", description: "وازن بين الشكل والرسالة، واختر ما يجعل الفكرة مفهومة للناس.", outcome: "تلاحظ كيف تؤثر الألوان والوضوح وتجربة الجمهور.", task: "5 قرارات تصميمية", interest: ["visual", "explore"], search: "تصميم إبداع رسم ألوان واجهات" },
-      { key: "business", category: "أعمال", title: "اختبر فكرة مشروع", name: "ريادة الأعمال", icon: "↗", symbol: "◉", color: "#eff9e7", ink: "#48853b", description: "ابدأ من حاجة حقيقية، واختبر فكرة صغيرة قبل أن تصرف وقتًا ومالًا.", outcome: "تتعرف على اختبار الفكرة وفهم العميل واختيار الأولويات.", task: "5 مواقف عملية", interest: ["people", "build", "explore"], search: "أعمال تجارة مشروع قيادة عملاء" },
-      { key: "data", category: "تحليل", title: "اكتشف ما تقوله الأرقام", name: "تحليل البيانات", icon: "⌗", symbol: "▤", color: "#edf7ff", ink: "#347fc2", description: "قارن معلومات بسيطة، تحقّق من الافتراضات، واستنتج ما تدعمه الأدلة.", outcome: "تتدرّب على المقارنة وتفسير البيانات دون مبالغة.", task: "5 تحديات تحليل", interest: ["numbers", "problem", "explore"], search: "بيانات إحصاء أرقام تحليل تقارير" }
+      { key: "logic", category: "تقني", title: "حلّ المشكلات", name: "التفكير البرمجي", icon: "⌘", symbol: "{ }", color: "#eee9ff", ink: "#6244eb", description: "تتبّع الأسباب، رتّب الخطوات، وابحث عن حل واضح بدل التخمين.", outcome: "تتدرّب على التفكير المنطقي واكتشاف الأخطاء.", task: "15 سؤالًا وتحديًا", interest: ["problem", "explore"], search: "برمجة تقنية منطق حل المشكلات" },
+      { key: "design", category: "إبداعي", title: "اصنع فكرة مرئية", name: "التصميم والإبداع", icon: "✳", symbol: "◌", color: "#fff0f5", ink: "#d64f83", description: "وازن بين الشكل والرسالة، واختر ما يجعل الفكرة مفهومة للناس.", outcome: "تلاحظ كيف تؤثر الألوان والوضوح وتجربة الجمهور.", task: "15 سؤالًا وتحديًا", interest: ["visual", "explore"], search: "تصميم إبداع رسم ألوان واجهات" },
+      { key: "business", category: "أعمال", title: "اختبر فكرة مشروع", name: "ريادة الأعمال", icon: "↗", symbol: "◉", color: "#eff9e7", ink: "#48853b", description: "ابدأ من حاجة حقيقية، واختبر فكرة صغيرة قبل أن تصرف وقتًا ومالًا.", outcome: "تتعرف على اختبار الفكرة وفهم العميل واختيار الأولويات.", task: "15 سؤالًا وتحديًا", interest: ["people", "build", "explore"], search: "أعمال تجارة مشروع قيادة عملاء" },
+      { key: "data", category: "تحليل", title: "اكتشف ما تقوله الأرقام", name: "تحليل البيانات", icon: "⌗", symbol: "▤", color: "#edf7ff", ink: "#347fc2", description: "قارن معلومات بسيطة، تحقّق من الافتراضات، واستنتج ما تدعمه الأدلة.", outcome: "تتدرّب على المقارنة وتفسير البيانات دون مبالغة.", task: "15 سؤالًا وتحديًا", interest: ["numbers", "problem", "explore"], search: "بيانات إحصاء أرقام تحليل تقارير" }
     ];
 
     var careerStats = {};
@@ -19,7 +19,7 @@
       var careerResponse = await fetch("/api/admin?action=public-config", { credentials: "same-origin", cache: "no-store" });
       if (careerResponse.ok) {
         var careerConfig = await careerResponse.json();
-        if (Array.isArray(careerConfig.careerPaths) && careerConfig.careerPaths.length) paths = careerConfig.careerPaths;
+        if (Array.isArray(careerConfig.careerPaths) && careerConfig.careerPaths.length) paths = careerConfig.careerPaths.slice(0, 4);
         careerStats = careerConfig.careerStats && typeof careerConfig.careerStats === "object" ? careerConfig.careerStats : {};
       }
     } catch (_) {}
@@ -33,6 +33,17 @@
       <section class="path-hero">
         <div><span class="path-kicker">ابدأ من فضولك</span><h2>المسار المناسب يبدأ بتجربة صغيرة.</h2><p>اختر اهتمامًا أوليًا أو استكشف كل المسارات. ستجد في كل تجربة مواقف قصيرة وتفسيرًا للإجابات، ثم يمكنك مقارنة تجاربك السابقة.</p></div>
         <div class="path-hero-art" aria-hidden="true"><div class="path-orbit">✦</div><div class="path-art-note one">جرّب أولًا<small>لا تحتاج خبرة سابقة</small></div><div class="path-art-note two">تعلّم من النتيجة<small>ليست حكمًا نهائيًا</small></div></div>
+      </section>
+      <section class="path-quest" id="pathQuest" aria-labelledby="pathQuestTitle">
+        <div class="path-quest-visual" aria-hidden="true"><div class="path-quest-orbit">✦</div><span class="path-quest-chip chip-a">فضولك</span><span class="path-quest-chip chip-b">تجربتك</span><span class="path-quest-chip chip-c">خطوتك</span></div>
+        <div class="path-quest-content">
+          <div class="path-quest-eyebrow"><span class="path-live-dot"></span> تجربة تفاعلية جديدة · أقل من دقيقة</div>
+          <h2 id="pathQuestTitle">اكتشف طريقة تفكيرك، لا مجرد اسم تخصص.</h2>
+          <p>ثلاثة مواقف قصيرة تكشف نوع التحديات التي قد تستمتع بها. لا توجد إجابات خاطئة، ولن تحتاج إلى خبرة سابقة.</p>
+          <div class="path-quest-progress"><div><span id="pathQuestStepLabel">الموقف 1 من 3</span><strong id="pathQuestPercent">0%</strong></div><div class="path-quest-track"><span id="pathQuestProgress"></span></div></div>
+          <div id="pathQuestBody" class="path-quest-body"></div>
+          <div id="pathQuestResult" class="path-quest-result" hidden aria-live="polite"></div>
+        </div>
       </section>
       <section class="path-choice" aria-labelledby="pathChoiceTitle">
         <div class="path-section-title"><div><h2 id="pathChoiceTitle">ما الذي يجذبك أكثر؟</h2><p>اختيارك يرشّح تجربة للبدء فقط، ويمكنك تغييره في أي وقت.</p></div><span class="path-step-label">خطوة 01</span></div>
@@ -94,7 +105,7 @@
         '<div class="path-card-top"><div class="path-card-icon" style="background:' + safeColor + ';color:' + safeInk + '">' + escapeHTML(path.icon || "✦") + '</div><div class="path-card-tags"><span class="path-card-tag" style="background:' + safeColor + ';color:' + safeInk + '">' + escapeHTML(path.category || "عام") + '</span><span class="path-completion-count" data-completion-count="' + key + '"><strong>' + Number(careerStats[path.key] || 0).toLocaleString("ar-DZ") + '</strong> أكملوه</span></div></div>' +
         '<h3>' + escapeHTML(path.title || path.name) + '</h3><p>' + escapeHTML(path.description || "") + '</p>' +
         '<div class="path-card-outcome"><strong>ماذا ستكتشف؟</strong><span>' + escapeHTML(path.outcome || "تجربة قصيرة لاكتشاف المجال.") + '</span></div>' +
-        '<div class="path-card-bottom"><small>' + escapeHTML(path.task || ((path.questions || []).length + " أسئلة")) + '</small><div class="path-card-actions"><button class="path-save' + (saved ? ' is-saved' : '') + '" type="button" data-save-path="' + key + '" aria-pressed="' + (saved ? 'true' : 'false') + '" aria-label="' + (saved ? 'إزالة من المسارات المحفوظة' : 'حفظ المسار') + '">' + (saved ? '♥' : '♡') + '</button><button class="primary" type="button" data-quiz="' + key + '">جرّب المسار ↗</button></div></div></article>';
+        '<div class="path-card-bottom"><small>' + escapeHTML(path.task || ((path.questions || []).length + " أسئلة")) + '</small><div class="path-card-actions"><button class="path-save' + (saved ? ' is-saved' : '') + '" type="button" data-save-path="' + key + '" aria-pressed="' + (saved ? 'true' : 'false') + '" aria-label="' + (saved ? 'إزالة من المسارات المحفوظة' : 'حفظ المسار') + '">' + (saved ? '♥' : '♡') + '</button><button class="primary" type="button" data-quiz="' + key + '">ابدأ التحديات ↗</button></div></div></article>';
     }
     grid.innerHTML = paths.map(cardMarkup).join("");
     if (historyPanel) {
@@ -105,6 +116,68 @@
       if (disclaimer) disclaimer.classList.add("path-disclaimer");
       page.querySelector("#pathHistoryMount").appendChild(historyPanel);
     }
+
+    var questStep = 0;
+    var questAnswers = [];
+    var questQuestions = [
+      { prompt: "تطبيق تستخدمه لا يعمل كما تتوقع. ما أول شيء تميل إلى فعله؟", options: [
+        { text: "أفكك المشكلة إلى خطوات وأبحث عن السبب", icon: "⌘", scores: { logic: 3, data: 1 } },
+        { text: "أفكر كيف أجعل الشاشة أوضح وأسهل", icon: "✳", scores: { design: 3, business: 1 } },
+        { text: "أسأل المستخدمين متى ولماذا يواجهون المشكلة", icon: "◉", scores: { business: 3, design: 1 } },
+        { text: "أجمع أمثلة وأقارن النتائج لأكتشف النمط", icon: "▤", scores: { data: 3, logic: 1 } }
+      ]},
+      { prompt: "لديك ساعة واحدة لصنع شيء مفيد. أي مهمة تختار؟", options: [
+        { text: "ابتكار نموذج أولي لفكرة جديدة", icon: "✳", scores: { design: 2, business: 1 } },
+        { text: "بناء حل صغير ينجز مهمة متكررة", icon: "{ }", scores: { logic: 2, data: 1 } },
+        { text: "اختبار فكرة منتج مع أشخاص محتملين", icon: "↗", scores: { business: 2, design: 1 } },
+        { text: "تحويل أرقام مبعثرة إلى استنتاج واضح", icon: "▤", scores: { data: 2, logic: 1 } }
+      ]},
+      { prompt: "كيف تعرف أن فكرتك نجحت؟", options: [
+        { text: "لأنها تعمل دون أخطاء وتوفر الوقت", icon: "⌘", scores: { logic: 2, data: 1 } },
+        { text: "لأن الناس يفهمونها ويحبون استخدامها", icon: "✳", scores: { design: 2, business: 1 } },
+        { text: "لأنها تحل حاجة حقيقية ويمكن تطويرها", icon: "↗", scores: { business: 2, design: 1 } },
+        { text: "لأن النتائج والقياسات تدعمها", icon: "▤", scores: { data: 2, logic: 1 } }
+      ]}
+    ];
+    function renderPathQuest() {
+      var body = page.querySelector("#pathQuestBody"), result = page.querySelector("#pathQuestResult");
+      if (!body || !result) return;
+      result.hidden = true;
+      if (questStep >= questQuestions.length) {
+        var totals = { logic: 0, design: 0, business: 0, data: 0 };
+        questAnswers.forEach(function (answer, i) {
+          Object.keys(answer.scores).forEach(function (key) { if (totals[key] !== undefined) totals[key] += answer.scores[key]; });
+        });
+        var ranked = paths.map(function (path) { return { path: path, score: totals[path.key] || 0 }; }).sort(function (a,b) { return b.score-a.score || paths.indexOf(a.path)-paths.indexOf(b.path); });
+        var winner = ranked[0] && ranked[0].path;
+        if (!winner) { questStep = 0; renderPathQuest(); return; }
+        chosenPath = winner.key;
+        page.querySelector("#pathQuestTitle").textContent = "لديك بداية تستحق التجربة.";
+        page.querySelector("#pathQuestStepLabel").textContent = "اكتملت التجربة";
+        page.querySelector("#pathQuestPercent").textContent = "100%";
+        page.querySelector("#pathQuestProgress").style.width = "100%";
+        body.innerHTML = '<div class="path-quest-finish"><span class="path-quest-finish-icon" style="background:'+escapeHTML(winner.color||"#eee9ff")+';color:'+escapeHTML(winner.ink||"#5140a8")+'">'+escapeHTML(winner.icon||"✦")+'</span><div><small>المسار الأقرب لاختياراتك</small><h3>'+escapeHTML(winner.name||winner.title)+'</h3><p>'+escapeHTML(winner.outcome||winner.description||"جرّب تحديًا قصيرًا واكتشف ما يناسبك.")+'</p></div></div>';
+        result.hidden = false;
+        result.innerHTML = '<button type="button" class="primary" id="pathQuestStart">ابدأ تحدي هذا المسار ↗</button><button type="button" class="path-quest-retry" id="pathQuestRetry">أعد التجربة</button><small>اقتراح استكشافي مبني على اختياراتك، وليس اختبار شخصية أو حكمًا على قدراتك.</small>';
+        return;
+      }
+      var q = questQuestions[questStep];
+      page.querySelector("#pathQuestTitle").textContent = "اكتشف طريقة تفكيرك، لا مجرد اسم تخصص.";
+      page.querySelector("#pathQuestStepLabel").textContent = "الموقف " + (questStep+1) + " من " + questQuestions.length;
+      page.querySelector("#pathQuestPercent").textContent = Math.round(questStep/questQuestions.length*100) + "%";
+      page.querySelector("#pathQuestProgress").style.width = (questStep/questQuestions.length*100) + "%";
+      body.innerHTML = '<div class="path-quest-question"><span>0'+(questStep+1)+'</span><h3>'+escapeHTML(q.prompt)+'</h3></div><div class="path-quest-options">'+q.options.map(function(option,i){return '<button type="button" class="path-quest-option" data-quest-answer="'+i+'"><span class="path-quest-option-icon">'+escapeHTML(option.icon)+'</span><span>'+escapeHTML(option.text)+'</span><span class="path-quest-arrow">←</span></button>'}).join("")+'</div><div class="path-quest-foot"><span>اختر الإجابة الأقرب لطبيعتك</span><button type="button" class="path-quest-back" id="pathQuestBack" '+(questStep===0?'disabled':'')+'>→ السابق</button></div>';
+    }
+    page.querySelector("#pathQuestBody").addEventListener("click", function(event) {
+      var option = event.target.closest("[data-quest-answer]");
+      if (option) { questAnswers[questStep] = questQuestions[questStep].options[Number(option.getAttribute("data-quest-answer"))]; questStep++; renderPathQuest(); return; }
+      if (event.target.closest("#pathQuestBack") && questStep > 0) { questStep--; questAnswers.pop(); renderPathQuest(); }
+    });
+    page.querySelector("#pathQuestResult").addEventListener("click", function(event) {
+      if (event.target.closest("#pathQuestStart")) { if (typeof window.MadaStartQuiz === "function") window.MadaStartQuiz(chosenPath); else { var button=page.querySelector('[data-path-key="'+chosenPath+'"] [data-quiz]'); if(button)button.click(); } }
+      if (event.target.closest("#pathQuestRetry")) { questStep=0; questAnswers=[]; page.querySelector("#pathQuestTitle").textContent="اكتشف طريقة تفكيرك، لا مجرد اسم تخصص."; renderPathQuest(); }
+    });
+    renderPathQuest();
 
     function updateRecommendation() {
       var candidates = paths.filter(function (path) { return path.interest.indexOf(interest) !== -1; });

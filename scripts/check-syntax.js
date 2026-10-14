@@ -12,7 +12,8 @@ const javascriptFiles = [
   "masar-platform/portfolio-public.js",
   "masar-platform/mada-ux.js",
   "masar-platform/growth-hub.js",
-  "masar-platform/growth-templates.js"
+  "masar-platform/growth-templates.js",
+  "masar-platform/development-template-editor.js"
 ];
 
 for (const retiredRoute of ["api/db.js", "api/store.js", "api/requests.js"]) {
@@ -67,7 +68,25 @@ for (const file of htmlFiles) {
 const account = fs.readFileSync("api/account.js", "utf8");
 const auth = fs.readFileSync("masar-platform/auth.js", "utf8");
 const profile = fs.readFileSync("masar-platform/index.html", "utf8");
+const invalidCollectionSelectors = [...profile.matchAll(/(?<!\$)\$\([^)]{0,180}\)\.(?:forEach|map|filter|some|every|reduce)\s*\(/g)];
+if (invalidCollectionSelectors.length) throw new Error("Collection operations must use querySelectorAll helper $, not single-element querySelector: " + invalidCollectionSelectors.map(match => match[0]).join("; "));
 const adminApi = fs.readFileSync("api/admin.js", "utf8");
+const growthTemplates = fs.readFileSync("masar-platform/growth-templates.js", "utf8");
+const imageGuardLine = growthTemplates.split("\n").find(line => line.startsWith("const safeImageDataUrl="));
+if (!imageGuardLine || (growthTemplates.match(/safeImageDataUrl/g) || []).length < 3) throw new Error("Custom template images must use strict data-URL validation and escaped HTML attributes");
+if (growthTemplates.split("src=\"'+esc(image)+'\"").length - 1 !== 2) throw new Error("Both custom template image src attributes must be escaped");
+const safeImageDataUrl = vm.runInNewContext(imageGuardLine + "; safeImageDataUrl");
+if (safeImageDataUrl("data:image/png;base64,AAAA") !== "data:image/png;base64,AAAA") throw new Error("Valid base64 image data URLs must remain supported");
+if (safeImageDataUrl('data:image/png;base64,AAAA" onerror="alert(1)') !== "") throw new Error("Malformed image data URLs must be rejected before HTML rendering");
+if (safeImageDataUrl("data:image/png;base64," + "A".repeat(8000001)) !== "") throw new Error("Oversized image data URLs must be rejected before HTML rendering");
+console.log("OK custom template image data URLs are validated before HTML rendering");
+const devEditor = fs.readFileSync("masar-platform/development-template-editor.js", "utf8");
+const safeIdLine = devEditor.split("\n").find(line => line.startsWith("var safeId="));
+if (!safeIdLine || !devEditor.includes("id=safeId(rawId")) throw new Error("Custom template field IDs must be sanitized before HTML rendering");
+const safeFieldId = vm.runInNewContext(safeIdLine + "; safeId");
+const sanitizedFieldId = safeFieldId('a"b c', "f0");
+if (!/^[A-Za-z0-9_-]{1,80}$/.test(sanitizedFieldId)) throw new Error("Unsafe custom template field ID was not sanitized");
+console.log("OK custom template field IDs are sanitized before HTML rendering");
 const adminConsole = fs.readFileSync("authority-console/index.html", "utf8");
 const securityHeaders = fs.readFileSync("vercel.json", "utf8");
 
@@ -88,7 +107,9 @@ console.log("OK account restoration preserves custom templates, CV, skills, path
 if (!account.includes('if (!origin || !host) return false') || !account.includes('req.headers.host || ""')) throw new Error("Account API must reject missing origins and compare against the request host");
 if (!account.includes("4 * 1024 * 1024") || !account.includes("encoded.length > 3500000") || !account.includes("Retry-After") || !account.includes("allowedActions") || !account.includes("methodsByAction") || !account.includes("SameSite=Strict") || !account.includes("parsed.protocol === \"https:\"")) throw new Error("Account API request size, method/action allowlists, strict cookies/origin, and write-rate protections are required");
 if (!adminApi.includes('req.headers.host||""') || !adminApi.includes("INTERVAL '5 minutes'") || !adminApi.includes("Retry-After") || !adminApi.includes("public-config") || !adminApi.includes("methodsByAction") || !adminApi.includes('u.protocol==="https:"')) throw new Error("Admin API origin, method/action allowlist, and write-rate protections are required");
-if (!securityHeaders.includes("Strict-Transport-Security") || !securityHeaders.includes("default-src 'self'") || !securityHeaders.includes("object-src 'none'") || !securityHeaders.includes("frame-ancestors 'none'") || !securityHeaders.includes('"value": "DENY"') || !securityHeaders.includes("X-XSS-Protection") || securityHeaders.includes("unsafe-eval")) throw new Error("Required browser security headers/CSP are missing or weakened");
+if (!adminApi.includes("mada_career_progress_attempts") || !adminApi.includes('update("career-progress:"+sourceIp)') || !adminApi.includes('attempts||0)>60') || !adminApi.includes('"Retry-After":"300"')) throw new Error("Public career progress endpoint must enforce a per-IP rate limit");
+if (!securityHeaders.includes("Strict-Transport-Security") || !securityHeaders.includes("default-src 'self'") || !securityHeaders.includes("object-src 'none'") || !securityHeaders.includes("frame-ancestors 'self'") || !securityHeaders.includes('"value": "SAMEORIGIN"') || !securityHeaders.includes("X-XSS-Protection") || securityHeaders.includes("unsafe-eval")) throw new Error("Required browser security headers/CSP are missing or weakened");
+if (!profile.includes('sandbox="allow-forms allow-scripts allow-popups allow-presentation"') || profile.includes('sandbox="allow-forms allow-scripts allow-same-origin')) throw new Error("Untrusted media previews must not combine allow-scripts with allow-same-origin");
 
 if (!account.includes('action === "account-settings"')) throw new Error("Missing account settings API route");
 if (!account.includes("verifyPassword(currentPassword, check.rows[0].password_hash)")) throw new Error("Account changes must verify the current password");
@@ -132,7 +153,8 @@ if (!profile.includes("state.portfolioSettings") || !profile.includes("settings.
 console.log("OK project editing, downloads, per-project gallery visibility, and gallery content settings");
 console.log("OK modal-first work gallery actions and media previews");
 console.log("OK public portfolio publishing, media, routing, and copy integration");
-if (!portfolioPage.includes('id="publishPortfolioBtn"') || !/const portfolioPublishButton=\$\("#publishPortfolioBtn"\);if\(portfolioPublishButton\)portfolioPublishButton\.addEventListener\("click",function\(event\)\{event\.preventDefault\(\);publishPortfolio\(\)\}\)/.test(portfolioPage)) throw new Error("Gallery publish button must be bound to the publish workflow");
+if (!portfolioPage.includes('id="publishPortfolioBtn"') || !portfolioPage.includes('event.target.closest("#publishPortfolioBtn")') || !portfolioPage.includes('Promise.resolve(publishPortfolio())')) throw new Error("Gallery publish button must be bound to the delegated publish workflow");
+if (!portfolioPage.includes('event.target.closest("#newBlankDesign")') || !portfolioPage.includes('event.target.closest("[data-delete-design]")')) throw new Error("Studio create/delete buttons must use resilient delegated click handlers");
 if (!portfolioPage.includes('typeof result.shareUrl!=="string"') || !portfolioPage.includes('Mada portfolio publish failed:')) throw new Error("Gallery publishing must validate the returned share URL and report runtime failures");
 if (!portfolioPage.includes("new TextEncoder().encode(requestBody).length>3900000") || !portfolioPage.includes("aria-busy") || !portfolioApi.includes('module.exports.config = { api: { bodyParser: { sizeLimit: "4mb" } } }')) throw new Error("Portfolio publishing must support bounded media payloads and expose a clear size error");
 if (!portfolioViewer.includes("const normalizeWhatsAppNumber=function(value)") || !portfolioViewer.includes("https://wa.me/") || !portfolioViewer.includes("?text=") || !portfolioViewer.includes("راسلني على واتساب") || !portfolioPage.includes("يفتح زر المعرض محادثة واتساب مباشرة")) throw new Error("WhatsApp contact must open a direct chat using a normalized international number");
@@ -192,3 +214,12 @@ for (const id of ["exportCustomImages", "exportCustomPdfTop", "exportCustomArchi
 if (!studioCss.includes("#customEditorModal .custom-editor-header") || !studioCss.includes("#customEditorModal .custom-tools") || !studioCss.includes("@media (max-width:980px)")) throw new Error("Dama 2.0 Studio styling or responsive layout is missing");
 if (!studioCss.includes("#customEditorModal .custom-header-actions #customFullscreen{display:inline-flex!important")) throw new Error("Fullscreen control must remain visible after the style migration");
 console.log("OK Dama 2.0 Creative Studio styles with Mada export, layout, page, reference, watermark and fullscreen features preserved");
+
+const growthTemplateEditorRegression = fs.readFileSync("masar-platform/growth-templates.js", "utf8");
+for (const control of ["data-gt-x", "data-gt-y", "data-gt-width", "data-gt-height", "data-gt-font", "data-gt-color"]) {
+  if (!growthTemplateEditorRegression.includes(control)) throw new Error("Growth template editor is missing a layout/style control: " + control);
+}
+if (!growthTemplateEditorRegression.includes("function setupBuilderModal()") || !growthTemplateEditorRegression.includes('modal.hidden=true') || !growthTemplateEditorRegression.includes("openBuilderModal(true)")) throw new Error("Growth template creation/editing must use a modal that is hidden until requested");
+if (!growthTemplateEditorRegression.includes("raw.length<=8000000") || !growthTemplateEditorRegression.includes("safeHttpUrl")) throw new Error("Growth template images and links must pass the updated size and URL handling");
+if (!growthTemplateEditorRegression.includes('localStorage.setItem("mada-platform-v1",JSON.stringify(s))') || !growthTemplateEditorRegression.includes("closeBuilderModal()")) throw new Error("Growth template save must persist locally and close the modal after a successful save");
+console.log("OK Growth Hub template editor modal, element geometry/style controls, image-size handling, URL validation and local persistence");

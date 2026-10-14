@@ -8,7 +8,7 @@
 <title>معرض أعمال | مَدى</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800&family=El+Messiri:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#17152b;--muted:#6a6882;--paper:#f6f4ff;--line:#e9e6f1;--purple:#5b46e6;--lime:#34d6b0;--card:#fff}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Tajawal","IBM Plex Sans Arabic",sans-serif;line-height:1.8}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}.public-top{position:sticky;top:0;z-index:5;background:#17152b;color:#fff;padding:12px clamp(14px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:10px;font-weight:700}.brand-mark{width:37px;height:37px;border-radius:13px;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:20px}.brand small{display:block;color:#c8c4db;font-size:10px;font-weight:400}.top-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #ffffff24;border-radius:11px;padding:9px 13px;background:#ffffff10;color:#fff;font-weight:700;font-size:12px}.btn.primary{background:var(--lime);color:var(--ink);border-color:var(--lime)}.btn:disabled{opacity:.6;cursor:wait}.wrap{max-width:1100px;margin:auto;padding:26px 18px 70px}.status{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--muted);font-size:13px}.profile-hero{position:relative;overflow:hidden;background:#17152b;color:#fff;border-radius:28px;padding:clamp(24px,5vw,54px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:25px;align-items:center;margin-bottom:24px}.profile-hero:before{content:"";position:absolute;width:330px;height:330px;border:1px solid #ffffff15;border-radius:50%;left:-120px;top:-200px;box-shadow:0 0 0 36px #ffffff08,0 0 0 72px #ffffff05}.profile-copy,.profile-avatar{position:relative;z-index:1}.kicker{font-size:11px;font-weight:700;color:var(--lime);letter-spacing:.02em}.profile-copy h1{font-size:clamp(29px,5vw,49px);line-height:1.3;letter-spacing:-1px;margin:10px 0 5px}.role{font-size:14px;color:#d4d0e5;font-weight:600;margin:0}.bio{font-size:13px;color:#c8c4db;line-height:2;max-width:680px;white-space:pre-wrap;margin:15px 0}.profile-meta{display:flex;gap:8px;flex-wrap:wrap}.meta-chip{font-size:11px;border:1px solid #ffffff23;border-radius:999px;padding:5px 10px;color:#eeebfa}.profile-avatar{width:112px;height:112px;border-radius:30px;background:linear-gradient(145deg,#a79bff,#5b46e6);color:#fff;display:grid;place-items:center;font-size:40px;font-weight:700;overflow:hidden;box-shadow:0 18px 45px #0d0b2340}.profile-avatar img{width:100%;height:100%;object-fit:cover}.skills{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}.skill{background:#eee9ff;color:#4f3ad6;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:700}.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:30px 0 15px}.section-head h2{font-size:22px;margin:0}.section-head p{font-size:12px;color:var(--muted);margin:4px 0 0}.count{font-size:11px;background:#eee9ff;color:var(--purple);border-radius:999px;padding:6px 10px;font-weight:700}.works-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.work{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;min-width:0;box-shadow:0 12px 35px #211e3506}.work-cover{height:var(--gallery-cover-height,clamp(125px,15vw,175px));background:linear-gradient(135deg,#eee9ff,#f7f5ff);display:grid;place-items:center;overflow:hidden;position:relative}#portfolioView[data-image-ratio="classic"] .work-cover{height:auto;aspect-ratio:4/3}#portfolioView[data-image-ratio="square"] .work-cover{height:auto;aspect-ratio:1/1}#portfolioView[data-image-ratio="landscape"] .work-cover{height:auto;aspect-ratio:16/9}
@@ -61,7 +61,7 @@
 #portfolioView.portfolio-template-mosaic .work-cover{height:175px}
 #portfolioView .section-head h2{color:var(--gallery-accent,#5b46e6)}
 @media(max-width:850px){#portfolioView .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#portfolioView.portfolio-template-mosaic .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#portfolioView.portfolio-template-mosaic .work:nth-child(5n+1){grid-column:span 2}}
-@media(max-width:700px){#portfolioView .works-grid{grid-template-columns:1fr}#portfolioView.portfolio-template-mosaic .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#portfolioView.portfolio-template-mosaic .work:nth-child(5n+1) .work-cover{height:190px}#portfolioView.portfolio-template-mosaic .work-cover{height:135px}#portfolioView .profile-hero{border-radius:20px}}
+@media(max-width:700px){#portfolioView .works-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#portfolioView.portfolio-template-mosaic .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#portfolioView.portfolio-template-mosaic .work:nth-child(5n+1) .work-cover{height:190px}#portfolioView.portfolio-template-mosaic .work-cover{height:135px}#portfolioView .profile-hero{border-radius:20px}}
 
 /* Custom public portfolio typography, positioning, and backgrounds */
 #portfolioView{font-family:var(--gallery-font,Tajawal,Arial,sans-serif);font-size:var(--gallery-body-size,16px);color:var(--gallery-text,#17152b);text-align:var(--gallery-align,right);background-color:var(--gallery-paper,#f6f4ff);background-repeat:no-repeat;background-attachment:fixed;min-height:70vh}
@@ -70,6 +70,8 @@
 #portfolioView .profile-copy h1{font-size:var(--gallery-name-size,38px);line-height:1.3;color:var(--gallery-heading,#5b46e6);overflow-wrap:anywhere}
 #portfolioView .profile-copy .role,#portfolioView .profile-copy .bio{font-size:var(--gallery-body-size,16px);line-height:1.9}
 #portfolioView .section-head h2{font-size:var(--gallery-title-size,30px);color:var(--gallery-heading,#5b46e6)}
+/* Keep the profile name and selected-work heading in the user-selected gallery font, regardless of template typography. */
+#portfolioView .profile-copy h1,#portfolioView .section-head h2{font-family:var(--gallery-font,Tajawal,Arial,sans-serif)!important}
 #portfolioView .section-head p{font-size:var(--gallery-body-size,16px);color:var(--gallery-text,#17152b)}
 #portfolioView .meta-chip,#portfolioView .skill{max-width:100%;overflow-wrap:anywhere}
 #portfolioView[data-profile-layout="stacked"] .profile-hero{flex-direction:column;align-items:flex-start}
@@ -83,7 +85,71 @@
 #portfolioView .project-detail-heading h2{font-size:var(--gallery-title-size,30px);color:var(--gallery-heading,#5b46e6)}
 #portfolioView .project-detail-section h3{color:var(--gallery-heading,#5b46e6)}
 @media(max-width:640px){#portfolioView .profile-copy h1{font-size:clamp(22px,var(--gallery-name-size,38px),42px)}#portfolioView .section-head h2{font-size:clamp(18px,var(--gallery-title-size,30px),34px)}}
+/* Compact profile card: keep the identity and actions visible, with optional details revealed on demand. */
+#portfolioView .profile-hero{padding:clamp(18px,3vw,30px);gap:18px;margin-bottom:18px;border-radius:22px}
+#portfolioView .profile-copy h1{font-family:var(--gallery-font,Tajawal,Arial,sans-serif)!important;font-size:var(--gallery-profile-name-size,var(--gallery-name-size,38px))!important;margin:4px 0;line-height:1.25}
+#portfolioView .section-head h2{font-family:var(--gallery-font,Tajawal,Arial,sans-serif)!important;font-size:var(--gallery-title-size,30px)!important}
+#portfolioView .profile-copy .bio-preview{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:7px 0 10px;line-height:1.7;opacity:.9}
+#portfolioView .profile-extra{margin-top:12px;max-width:100%}
+#portfolioView .profile-extra summary{display:inline-flex;align-items:center;gap:8px;cursor:pointer;list-style:none;border:1px solid currentColor;border-color:color-mix(in srgb,currentColor 24%,transparent);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;opacity:.92;transition:background .2s ease}
+#portfolioView .profile-extra summary::-webkit-details-marker{display:none}
+#portfolioView .profile-extra summary:after{content:"＋";font-size:15px;line-height:1}
+#portfolioView .profile-extra[open] summary:after{content:"−"}
+#portfolioView .profile-extra summary:hover{background:color-mix(in srgb,currentColor 8%,transparent)}
+#portfolioView .profile-extra summary:focus-visible{outline:3px solid var(--gallery-accent,#5b46e6);outline-offset:3px}
+#portfolioView .profile-extra-content{margin-top:12px;padding:14px;border:1px solid color-mix(in srgb,currentColor 15%,transparent);border-radius:15px;background:color-mix(in srgb,var(--gallery-profile-bg,#17152b) 4%,transparent)}
+#portfolioView .profile-extra-content .bio{margin:0 0 12px;max-width:75ch}
+#portfolioView .profile-extra-content .profile-meta{margin:8px 0}
+#portfolioView .profile-extra-content .skills{margin-top:10px}
+#portfolioView .gallery-contact-actions{margin-top:12px}
+@media(max-width:640px){#portfolioView .profile-hero{grid-template-columns:minmax(0,1fr) auto;padding:17px;gap:12px}#portfolioView .profile-avatar{width:76px;height:76px;border-radius:22px;font-size:28px}#portfolioView .profile-copy h1{font-size:clamp(22px,var(--gallery-name-size,38px),34px)!important}#portfolioView .profile-extra-content{padding:10px}#portfolioView .profile-meta{gap:6px}#portfolioView .meta-chip{padding:4px 8px}}
 
+
+/* Responsive profile fix: keep portrait and profile details on separate rows on phones. */
+@media (max-width: 640px) {
+  #portfolioView .profile-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: start;
+    gap: 14px;
+    padding: 18px 16px;
+  }
+  #portfolioView .profile-avatar {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 2px;
+    flex: none;
+  }
+  #portfolioView .profile-copy {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  #portfolioView .profile-copy h1,
+  #portfolioView .profile-copy .role,
+  #portfolioView .profile-copy .bio {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  #portfolioView .profile-copy h1 { letter-spacing: 0; }
+  #portfolioView .profile-meta,
+  #portfolioView .skills,
+  #portfolioView .gallery-contact-actions {
+    max-width: 100%;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  #portfolioView .contact-action {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}
 </style>
 <style>
 .modal-backdrop{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:#151225b8;backdrop-filter:blur(6px)}.modal-backdrop.open{display:flex}.dialog-card{width:min(520px,100%);max-height:86vh;overflow:auto;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 25px 90px #0c092b40}.dialog-head{display:flex;align-items:start;justify-content:space-between;gap:14px;margin-bottom:12px}.dialog-head small{font-size:10px;color:var(--purple);font-weight:700}.dialog-head h2{font-size:20px;margin:5px 0 0}.dialog-close{border:0;width:36px;height:36px;border-radius:10px;background:#f0edf6;color:var(--ink);font-size:22px}.dialog-hint{font-size:12px;color:var(--muted);line-height:1.9}.dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.dialog-actions>*{flex:1;min-width:130px;text-align:center;justify-content:center}.media-dialog{width:min(940px,100%)}.public-media-image,.public-media-video{display:block;max-width:100%;max-height:64vh;margin:auto;border-radius:13px;object-fit:contain;background:#17152b}.public-media-frame{display:block;width:100%;height:min(62vh,620px);border:1px solid var(--line);border-radius:12px;background:white}.sign-in-dialog{width:min(850px,100%)}.sign-in-dialog iframe{display:block;width:100%;height:min(62vh,650px);border:1px solid var(--line);border-radius:12px;background:white}.media-gallery a{cursor:zoom-in}@media(max-width:700px){.dialog-card{padding:16px;border-radius:18px;max-height:84vh}.dialog-actions>*{flex-basis:100%}.public-media-frame{height:54vh}.sign-in-dialog iframe{height:55vh}.media-gallery a{height:82px}}
@@ -219,12 +285,75 @@
 #portfolioView[data-dark="1"] .project-tile-title{color:#f6f4ff}
 #portfolioView[data-dark="1"] .project-tile{border-color:#ffffff24}
 @media(max-width:700px){#portfolioView[data-density="spacious"] .works-grid{gap:12px}}
+
+/* Contact buttons are configurable by the gallery owner. */
+#portfolioView .gallery-contact-actions{justify-content:flex-start}
+#portfolioView[data-contact-button-position="right"] .gallery-contact-actions{justify-content:flex-end}
+#portfolioView[data-contact-button-position="center"] .gallery-contact-actions{justify-content:center}
+#portfolioView[data-contact-button-position="left"] .gallery-contact-actions{justify-content:flex-start}
+/* Contact-position setting must override the hero-alignment setting, which otherwise pins these buttons. */
+#portfolioView[data-contact-button-position="right"][data-hero-align] .gallery-contact-actions{justify-content:flex-end!important}
+#portfolioView[data-contact-button-position="center"][data-hero-align] .gallery-contact-actions{justify-content:center!important}
+#portfolioView[data-contact-button-position="left"][data-hero-align] .gallery-contact-actions{justify-content:flex-start!important}
+#portfolioView .contact-action{background:var(--gallery-contact-button-bg,var(--gallery-accent,#5b46e6))!important;color:var(--gallery-contact-button-text,#fff)!important;border-color:transparent!important}
+#portfolioView[data-contact-button-size="compact"] .contact-action{min-height:32px;padding:6px 9px;font-size:10px;border-radius:8px}
+#portfolioView[data-contact-button-size="normal"] .contact-action{min-height:42px;padding:10px 15px;font-size:12px}
+#portfolioView[data-contact-button-size="large"] .contact-action{min-height:50px;padding:13px 19px;font-size:14px;border-radius:14px}
 </style>
 
 <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/masar-platform/mada-theme.css">
+
+<style id="custom-gallery-sections">.gallery-work-group{margin-top:24px}.gallery-group-heading{margin:0 0 13px!important}.gallery-group-heading h2{font-size:clamp(17px,2.5vw,23px)!important}.gallery-group-heading p{font-size:11px}.gallery-work-group .works-grid{margin-top:0}@media(max-width:700px){#portfolioView .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.gallery-work-group{margin-top:20px}.gallery-group-heading{gap:8px}.gallery-group-heading .count{font-size:10px;padding:5px 7px}.project-tile .work-cover{aspect-ratio:4/3}.project-tile-title{font-size:12px;padding:8px}}@media(max-width:350px){#portfolioView .works-grid{gap:6px!important}.project-tile-title{font-size:11px}}</style>
+<style id="profile-card-customization">
+#portfolioView .profile-hero{
+ font-family:var(--gallery-profile-font,var(--gallery-font,Tajawal,Arial,sans-serif));
+ background:var(--gallery-profile-bg,#17152b)!important;
+ color:var(--gallery-profile-name-color,#fff);
+ border-radius:var(--gallery-profile-radius,28px);
+ padding:var(--gallery-profile-padding,36px);
+ gap:var(--gallery-profile-gap,25px);
+ border:var(--gallery-profile-border-width,0px) solid var(--gallery-profile-border-color,#fff);
+ text-align:var(--gallery-profile-align,right);
+ grid-template-columns:minmax(0,1fr) auto;
+ grid-template-areas:"copy avatar";
+ align-items:center;
+}
+#portfolioView .profile-copy{grid-area:copy;min-width:0;text-align:var(--gallery-profile-align,right)}
+#portfolioView .profile-avatar{grid-area:avatar;width:var(--gallery-profile-avatar-size,112px);height:var(--gallery-profile-avatar-size,112px);max-width:100%;max-height:100%;border-radius:var(--gallery-avatar-radius,28px);flex:none}
+#portfolioView .profile-copy h1{font-family:var(--gallery-profile-font,var(--gallery-font,Tajawal,Arial,sans-serif))!important;color:var(--gallery-profile-name-color,#fff)!important;font-size:var(--gallery-name-size,38px)!important;font-weight:var(--gallery-profile-name-weight,700);overflow-wrap:anywhere}
+#portfolioView .profile-hero .kicker{color:var(--gallery-profile-kicker-color,#a79bff)!important}
+#portfolioView .profile-copy .role{color:var(--gallery-profile-role-color,#d4d0e5)!important;font-size:var(--gallery-profile-body-size,var(--gallery-body-size,16px))!important}
+#portfolioView .profile-copy .bio{color:var(--gallery-profile-bio-color,#c8c4db)!important;font-size:var(--gallery-body-size,16px)!important}
+#portfolioView .profile-meta .meta-chip,#portfolioView .skills .skill{color:var(--gallery-profile-meta-color,#eeebfa)!important}
+#portfolioView .profile-hero:before{display:block}
+#portfolioView[data-profile-decoration="off"] .profile-hero:before{display:none}
+#portfolioView[data-profile-kicker="off"] .profile-hero .kicker{display:none}
+#portfolioView[data-profile-card-shadow="none"] .profile-hero{box-shadow:none}
+#portfolioView[data-profile-card-shadow="soft"] .profile-hero{box-shadow:0 18px 45px #17152b12}
+#portfolioView[data-profile-card-shadow="strong"] .profile-hero{box-shadow:0 22px 55px #17152b35}
+#portfolioView[data-avatar-shape="circle"] .profile-avatar{border-radius:50%}
+#portfolioView[data-avatar-shape="rounded"] .profile-avatar{border-radius:var(--gallery-avatar-radius,28px)}
+#portfolioView[data-avatar-shape="square"] .profile-avatar{border-radius:0}
+#portfolioView[data-profile-layout="stacked"] .profile-hero,
+#portfolioView[data-profile-layout="centered"] .profile-hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"avatar" "copy"}
+#portfolioView[data-profile-layout="stacked"] .profile-hero{align-items:start}
+#portfolioView[data-profile-layout="centered"] .profile-hero{align-items:center;text-align:center}
+#portfolioView[data-profile-layout="centered"] .profile-copy{ text-align:center}
+#portfolioView[data-profile-layout="centered"] .profile-meta,
+#portfolioView[data-profile-layout="centered"] .skills,
+#portfolioView[data-profile-layout="centered"] .gallery-contact-actions{justify-content:center}
+@media(max-width:640px){
+ #portfolioView .profile-hero{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"avatar" "copy"!important;gap:min(var(--gallery-profile-gap,25px),16px);padding:min(var(--gallery-profile-padding,36px),24px)}
+ #portfolioView .profile-avatar{width:min(var(--gallery-profile-avatar-size,112px),84px);height:min(var(--gallery-profile-avatar-size,112px),84px);justify-self:center}
+ #portfolioView .profile-copy{width:100%;min-width:0}
+ #portfolioView .profile-copy h1{font-size:clamp(20px,min(var(--gallery-profile-name-size,var(--gallery-name-size,38px)),34px),34px)!important}
+ #portfolioView[data-profile-layout="centered"] .profile-copy{ text-align:center}
+}
+</style>
+
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -249,6 +378,6 @@
   <div class="mada-footer-bottom"><span>مَدى · مساحة تصنع مستقبلك</span><a href="/">الصفحة الرئيسية</a></div>
 </footer>
 </main>
-<script src="/masar-platform/portfolio-public.js" defer></script>
+<script src="/masar-platform/portfolio-public.js?v=20261013f" defer></script>
 </body>
 </html>

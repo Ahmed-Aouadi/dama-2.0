@@ -3,6 +3,7 @@
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 const slug=(params.get("id")||"").trim();
+const isPreview=params.get("preview")==="1";
 let portfolioData=null;
 function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function safeUrl(value,allowImageData){const raw=String(value||"").trim();if(!raw)return "";if(allowImageData&&/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(raw)&&raw.length<250000)return raw;if(/^data:video\/(?:mp4|webm|ogg);base64,/i.test(raw)&&raw.length<1000000)return raw;if(/^data:application\/(?:pdf|zip|octet-stream|vnd\.[a-z0-9.+-]+);base64,/i.test(raw)&&raw.length<750000)return raw;if(/^data:text\/plain;base64,/i.test(raw)&&raw.length<750000)return raw;try{const u=new URL(raw,location.href);return ["http:","https:"].includes(u.protocol)?u.href:""}catch(e){return ""}}
@@ -55,9 +56,10 @@ modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");moda
 modal.innerHTML='<section class="dialog-card project-details-dialog"><div class="dialog-head"><div><small>مَدى · معرض الأعمال</small><h2 id="projectDetailsTitle">تفاصيل العمل</h2></div><button class="dialog-close" type="button" data-modal-close="projectDetailsModal" aria-label="إغلاق">×</button></div><div id="projectDetailsContent"></div><div class="dialog-actions"><button class="btn" type="button" data-modal-close="projectDetailsModal">إغلاق التفاصيل</button></div></section>';
 document.body.appendChild(modal);modal.addEventListener("click",e=>{if(e.target===modal)closeDialog("projectDetailsModal")});
 }
+/* Custom work sections only appear when the owner assigns at least one section. */
 function render(data){
 portfolioData=data;
-const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},projects=(Array.isArray(p.projects)?p.projects:[]).filter(function(x){return !display.featuredOnly||x.featured});
+const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},projects=(Array.isArray(p.projects)?p.projects:[]).filter(function(x){const id=String(x.gallerySection||"general"),sections=Array.isArray(display.gallerySections)?display.gallerySections:[];const section=sections.find(function(item){return String(item.id)===id});return (id==="general"||!section||section.visible!==false)&&(!display.featuredOnly||x.featured)});
 ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
@@ -73,11 +75,34 @@ view.style.setProperty("--gallery-columns",String(columns));
 view.style.setProperty("--gallery-profile-bg",/^#[0-9a-f]{6}$/i.test(display.profileBackground||"")?display.profileBackground:"#17152b");
 view.style.setProperty("--gallery-text",/^#[0-9a-f]{6}$/i.test(display.textColor||"")?display.textColor:"#17152b");
 view.style.setProperty("--gallery-heading",/^#[0-9a-f]{6}$/i.test(display.headingColor||"")?display.headingColor:accent);
-view.style.setProperty("--gallery-name-size",Math.max(22,Math.min(64,Number(display.nameSize)||38))+"px");
+view.style.setProperty("--gallery-name-size",Math.max(22,Math.min(64,Number(display.profileNameSize)||38))+"px");
+view.style.setProperty("--gallery-profile-name-size",Math.max(20,Math.min(64,Number(display.profileNameSize)||38))+"px");
 view.style.setProperty("--gallery-body-size",Math.max(12,Math.min(24,Number(display.bodySize)||16))+"px");
+view.style.setProperty("--gallery-profile-body-size",Math.max(11,Math.min(24,Number(display.profileBodySize)||16))+"px");
 view.style.setProperty("--gallery-title-size",Math.max(18,Math.min(48,Number(display.sectionTitleSize)||30))+"px");
+view.style.setProperty("--gallery-profile-name-color",safeHex(display.profileNameColor,"#ffffff"));
+view.style.setProperty("--gallery-profile-kicker-color",safeHex(display.profileKickerColor,"#a79bff"));
+view.style.setProperty("--gallery-profile-font",({system:"system-ui,Arial,sans-serif",cairo:"Cairo,Arial,sans-serif",tajawal:"Tajawal,Arial,sans-serif",almarai:"Almarai,Arial,sans-serif",amiri:"Amiri,Georgia,serif",reemkufi:"\'Reem Kufi\',Cairo,sans-serif",elmessiri:"\'El Messiri\',Cairo,sans-serif",serif:"Georgia,\'Times New Roman\',serif",mono:"ui-monospace,SFMono-Regular,monospace"})[display.profileFontFamily]||"Tajawal,Arial,sans-serif");
+view.style.setProperty("--gallery-profile-role-color",safeHex(display.profileRoleColor,"#d4d0e5"));
+view.style.setProperty("--gallery-profile-bio-color",safeHex(display.profileBioColor,"#c8c4db"));
+view.style.setProperty("--gallery-profile-meta-color",safeHex(display.profileMetaColor,"#eeebfa"));
+view.style.setProperty("--gallery-profile-avatar-size",Math.max(56,Math.min(200,Number(display.profileAvatarSize)||112))+"px");
+view.style.setProperty("--gallery-profile-radius",Math.max(0,Math.min(48,Number.isFinite(Number(display.profileCardRadius))?Number(display.profileCardRadius):28))+"px");
+view.style.setProperty("--gallery-profile-padding",Math.max(12,Math.min(64,Number(display.profileCardPadding)||36))+"px");
+view.style.setProperty("--gallery-profile-gap",Math.max(0,Math.min(56,Number.isFinite(Number(display.profileCardGap))?Number(display.profileCardGap):25))+"px");
+view.style.setProperty("--gallery-profile-border-color",safeHex(display.profileCardBorderColor,"#ffffff"));
+view.style.setProperty("--gallery-profile-border-width",Math.max(0,Math.min(6,Number(display.profileCardBorderWidth)||0))+"px");
+view.style.setProperty("--gallery-profile-name-weight",["600","700","800","900"].includes(String(display.profileNameWeight))?String(display.profileNameWeight):"700");
+view.style.setProperty("--gallery-profile-align",["right","center","left"].includes(display.profileTextAlign)?display.profileTextAlign:"right");
+view.dataset.profileCardShadow=["none","soft","strong"].includes(display.profileCardShadow)?display.profileCardShadow:"soft";
+view.dataset.profileDecoration=display.profileShowDecoration===false?"off":"on";
+view.dataset.profileKicker=display.profileShowKicker===false?"off":"on";
 view.style.setProperty("--gallery-font",({system:"Tajawal,Arial,sans-serif",cairo:"Cairo,Arial,sans-serif",tajawal:"Tajawal,Arial,sans-serif",almarai:"Almarai,Arial,sans-serif",amiri:"Amiri,Georgia,serif",reemkufi:"'Reem Kufi',Cairo,sans-serif",elmessiri:"'El Messiri',Cairo,sans-serif",serif:"Georgia,'Times New Roman',serif",mono:"ui-monospace,SFMono-Regular,monospace"})[display.fontFamily]||"Tajawal,Arial,sans-serif");
 view.style.setProperty("--gallery-card-bg",safeHex(display.cardBackground,"#ffffff"));
+view.style.setProperty("--gallery-contact-button-bg",safeHex(display.contactButtonColor,accent));
+view.style.setProperty("--gallery-contact-button-text",safeHex(display.contactButtonTextColor,"#ffffff"));
+view.dataset.contactButtonSize=["compact","normal","large"].includes(display.contactButtonSize)?display.contactButtonSize:"normal";
+view.dataset.contactButtonPosition=["right","center","left"].includes(display.contactButtonPosition)?display.contactButtonPosition:"right";
 if(display.cardRadius!==undefined&&display.cardRadius!==""&&Number.isFinite(Number(display.cardRadius)))view.style.setProperty("--gallery-card-radius",Math.max(0,Math.min(32,Number(display.cardRadius)))+"px");else view.style.removeProperty("--gallery-card-radius");
 view.dataset.density=["compact","comfortable","spacious"].includes(display.density)?display.density:"comfortable";
 view.dataset.imageRatio=["landscape","classic","square"].includes(display.cardImageRatio)?display.cardImageRatio:"landscape";view.dataset.hover=display.cardHover===false?"off":"on";
@@ -117,21 +142,37 @@ const contactLinks={
 };
 const contactHtml=contactOrder.filter((key,index,array)=>["phone","whatsapp","email"].includes(key)&&array.indexOf(key)===index).map(key=>contactLinks[key]).filter(Boolean).join("");
 const contactSection=contactHtml?'<nav class="gallery-contact-actions" aria-label="طرق التواصل">'+contactHtml+'</nav>':"";
+const bioHtml=display.showBio!==false&&profile.bio?'<p class="bio">'+esc(profile.bio)+'</p>':"";
+const bioPreview=display.showBio!==false&&profile.bio?'<p class="bio bio-preview">'+esc(profile.bio)+'</p>':"";
+const compactMeta='<div class="profile-meta">'+(display.showCity!==false&&profile.city?'<span class="meta-chip">⌖ '+esc(profile.city)+'</span>':"")+(display.showWorkCount!==false?'<span class="meta-chip">'+projects.length+' أعمال معروضة</span>':"")+'</div>';
+const extraMeta=(display.showEducation!==false&&profile.education?'<span class="meta-chip">▤ '+esc(profile.education)+'</span>':"")+(display.showExperience===true&&profile.experience?'<span class="meta-chip">✦ '+esc(profile.experience)+'</span>':"")+(display.showGoal===true&&profile.goal?'<span class="meta-chip">◎ '+esc(profile.goal)+'</span>':"")+(display.showProfileLink===true&&safeUrl(profile.link,false)?'<a class="meta-chip" href="'+esc(safeUrl(profile.link,false))+'" target="_blank" rel="noopener noreferrer">رابط الملف ↗</a>':"");
+const extraInterests=display.showInterests===true&&profile.interests?'<p class="bio">الاهتمامات: '+esc(profile.interests)+'</p>':"";
+const extraSkills=skills.length?'<div class="skills">'+skills.map(x=>'<span class="skill">'+esc(x)+'</span>').join("")+'</div>':"";
+const extraContent=bioHtml+(extraMeta?'<div class="profile-meta">'+extraMeta+'</div>':"")+extraInterests+extraSkills;
+const extraDetails=extraContent?'<details class="profile-extra"><summary>عرض النبذة والمهارات والتفاصيل</summary><div class="profile-extra-content">'+extraContent+'</div></details>':"";
 const hero='<header class="profile-hero"><div class="profile-copy"><span class="kicker">'+esc(display.brandText||"معرض أعمال شخصي · مَدى")+'</span><h1>'+esc(name)+'</h1>'+
 (display.showRole!==false&&profile.role?'<p class="role">'+esc(profile.role)+'</p>':"")+
-(display.showBio!==false&&profile.bio?'<p class="bio">'+esc(profile.bio)+'</p>':"")+
-'<div class="profile-meta">'+(display.showCity!==false&&profile.city?'<span class="meta-chip">⌖ '+esc(profile.city)+'</span>':"")+(display.showEducation!==false&&profile.education?'<span class="meta-chip">▤ '+esc(profile.education)+'</span>':"")+(display.showExperience===true&&profile.experience?'<span class="meta-chip">✦ '+esc(profile.experience)+'</span>':"")+(display.showGoal===true&&profile.goal?'<span class="meta-chip">◎ '+esc(profile.goal)+'</span>':"")+(display.showProfileLink===true&&safeUrl(profile.link,false)?'<a class="meta-chip" href="'+esc(safeUrl(profile.link,false))+'" target="_blank" rel="noopener noreferrer">رابط الملف ↗</a>':"")+(display.showWorkCount!==false?'<span class="meta-chip">'+projects.length+' أعمال معروضة</span>':"")+'</div>'+
-(display.showInterests===true&&profile.interests?'<p class="bio">الاهتمامات: '+esc(profile.interests)+'</p>':"")+
-(skills.length?'<div class="skills">'+skills.map(x=>'<span class="skill">'+esc(x)+'</span>').join("")+'</div>':"")+
-contactSection+'</div>'+(avatar?'<div class="profile-avatar"><img src="'+esc(avatar)+'" alt="الصورة الشخصية"></div>':"")+'</header>';
+bioPreview+compactMeta+contactSection+extraDetails+'</div>'+(avatar?'<div class="profile-avatar"><img src="'+esc(avatar)+'" alt="الصورة الشخصية"></div>':"")+'</header>';
 const title=String(display.title||"الأعمال المختارة").trim();
 const subtitle=String(display.subtitle||"أعمال وتجارب وروابط شاركها صاحب المعرض.").trim();
 const sectionHead=(display.showSectionTitle===false?"":'<div class="section-head"><div><h2>'+esc(title||"الأعمال المختارة")+'</h2>'+(subtitle?'<p>'+esc(subtitle)+'</p>':"")+'</div>'+(display.showWorkCount!==false?'<span class="count">'+projects.length+' أعمال</span>':"")+'</div>');
-const works=projects.length?'<section class="works-grid">'+projects.map((project,index)=>projectCard(project,index)).join("")+'</section>':'<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>هذا المعرض لا يحتوي على أعمال متاحة للعرض حاليًا.</div>';
+const sectionDefs=Array.isArray(display.gallerySections)?display.gallerySections:[];
+const visibleSections=sectionDefs.filter(function(section){return section.visible!==false});
+const sectionById=new Map(visibleSections.map(function(section){return [String(section.id),section]}));
+const generalSection=sectionById.get("general")||{id:"general",name:"أعمال عامة",description:"أعمال لم تُسند إلى قسم محدد",visible:true,locked:true};
+const groupedProjects=projects.filter(function(project){const id=String(project.gallerySection||"general");return id==="general"||sectionById.has(id)});
+const works=groupedProjects.length?(function(){
+ const groups=new Map();
+ visibleSections.forEach(function(section){groups.set(String(section.id),{section:section,projects:[]})});
+ if(!groups.has("general"))groups.set("general",{section:generalSection,projects:[]});
+ groupedProjects.forEach(function(project){const id=String(project.gallerySection||"general"),key=groups.has(id)?id:"general";groups.get(key).projects.push(project)});
+ return Array.from(groups.values()).filter(function(group){return group.projects.length>0}).map(function(group){const section=group.section;return '<section class="gallery-work-group" data-gallery-section="'+esc(section.id)+'"><div class="section-head gallery-group-heading"><div><h2>'+esc(section.name)+'</h2>'+(section.description?'<p>'+esc(section.description)+'</p>':"")+'</div><span class="count">'+group.projects.length+' أعمال</span></div><div class="works-grid">'+group.projects.map(function(project){return projectCard(project,projects.indexOf(project))}).join("")+'</div></section>'}).join("");
+})():'<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>هذا المعرض لا يحتوي على أعمال متاحة للعرض حاليًا.</div>';
 const profileFirst=display.sectionOrder!=="works-first";
 view.innerHTML=profileFirst?hero+sectionHead+works:sectionHead+works+hero;
 }
 async function load(){
+if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}
 if(!slug){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
 try{const r=await fetch("/api/account?action=public-portfolio&id="+encodeURIComponent(slug),{credentials:"same-origin",cache:"no-store"});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||"تعذّر تحميل المعرض.");render(data);document.title=(data.portfolio?.profile?.name||data.authorName||data.username)+" | معرض أعمال مَدى"}catch(error){$("loadStatus").textContent=error.message||"تعذّر تحميل المعرض.";const link=document.createElement("a");link.href="/";link.textContent="العودة إلى مَدى";link.style.color="var(--purple)";link.style.fontWeight="700";$("loadStatus").append(" ");$("loadStatus").appendChild(link)}}
 let publicImageList=[],publicImageIndex=0;
@@ -183,5 +224,15 @@ document.addEventListener("click",function(e){
 ["publicMediaModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target.id===id)closeDialog(id)}));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDialog("projectDetailsModal");closeDialog("publicMediaModal")}else if($("publicMediaModal")?.classList.contains("open")&&publicImageList.length>1){if(e.key==="ArrowLeft")showPublicImage(publicImageIndex+1);else if(e.key==="ArrowRight")showPublicImage(publicImageIndex-1)}});
 
+window.addEventListener("message",function(event){
+ if(!isPreview||event.source!==window.parent||event.origin!==window.location.origin)return;
+ const message=event.data;
+ if(!message||message.type!=="mada-portfolio-preview"||!message.payload||typeof message.payload!=="object")return;
+ try{
+  render(message.payload);
+  document.title=(message.payload.portfolio&&message.payload.portfolio.profile&&message.payload.portfolio.profile.name||"معاينة معرض الأعمال")+" | معاينة مَدى";
+  const status=$("loadStatus");if(status)status.hidden=true;
+ }catch(error){const status=$("loadStatus");if(status){status.hidden=false;status.textContent="تعذّر عرض المعاينة. تحقق من بيانات المعرض."}console.error("Mada live portfolio preview failed:",error)}
+});
 load();
 })();

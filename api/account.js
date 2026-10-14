@@ -357,7 +357,7 @@ module.exports = async function handler(req, res) {
       const projects = projectSource.filter(p => p && typeof p === "object" && (p.galleryVisible === true || (p.galleryVisible !== false && p.visibility !== "private"))).slice(0, 80).map(p => ({
         id: String(p.id || crypto.randomUUID()).slice(0, 100),
         title: String(p.title || "عمل بدون عنوان").slice(0, 90),
-        category: String(p.category || "other").slice(0, 30), workType: String(p.workType || "general").slice(0, 30),
+        category: String(p.category || "other").slice(0, 30), gallerySection: String(p.gallerySection || "").normalize("NFC").trim().slice(0, 50), workType: String(p.workType || "general").slice(0, 30),
         status: String(p.status || "done").slice(0, 30),
         description: String(p.description || "").slice(0, 1600),
         role: String(p.role || "").slice(0, 140),
@@ -380,6 +380,25 @@ module.exports = async function handler(req, res) {
         accent: validHex(displaySource.accent, "#5b46e6"),
         background: validHex(displaySource.background, "#f6f4ff"),
         profileBackground: validHex(displaySource.profileBackground, "#17152b"),
+        profileNameColor: validHex(displaySource.profileNameColor, "#ffffff"),
+        profileKickerColor: validHex(displaySource.profileKickerColor, "#a79bff"),
+        profileRoleColor: validHex(displaySource.profileRoleColor, "#d4d0e5"),
+        profileBioColor: validHex(displaySource.profileBioColor, "#c8c4db"),
+        profileMetaColor: validHex(displaySource.profileMetaColor, "#eeebfa"),
+        profileFontFamily: ["system", "cairo", "tajawal", "almarai", "amiri", "reemkufi", "elmessiri", "serif", "mono"].includes(displaySource.profileFontFamily) ? displaySource.profileFontFamily : "tajawal",
+        profileNameSize: Math.max(22, Math.min(64, Number(displaySource.profileNameSize) || 38)),
+        profileBodySize: Math.max(11, Math.min(24, Number(displaySource.profileBodySize) || 16)),
+        profileAvatarSize: Math.max(56, Math.min(200, Number(displaySource.profileAvatarSize) || 112)),
+        profileCardRadius: Math.max(0, Math.min(48, Number.isFinite(Number(displaySource.profileCardRadius)) ? Number(displaySource.profileCardRadius) : 28)),
+        profileCardPadding: Math.max(12, Math.min(64, Number(displaySource.profileCardPadding) || 36)),
+        profileCardGap: Math.max(0, Math.min(56, Number.isFinite(Number(displaySource.profileCardGap)) ? Number(displaySource.profileCardGap) : 25)),
+        profileCardBorderColor: validHex(displaySource.profileCardBorderColor, "#ffffff"),
+        profileCardBorderWidth: Math.max(0, Math.min(6, Number(displaySource.profileCardBorderWidth) || 0)),
+        profileCardShadow: ["none", "soft", "strong"].includes(displaySource.profileCardShadow) ? displaySource.profileCardShadow : "soft",
+        profileTextAlign: ["right", "center", "left"].includes(displaySource.profileTextAlign) ? displaySource.profileTextAlign : "right",
+        profileNameWeight: ["600", "700", "800", "900"].includes(String(displaySource.profileNameWeight)) ? String(displaySource.profileNameWeight) : "700",
+        profileShowDecoration: displaySource.profileShowDecoration !== false,
+        profileShowKicker: displaySource.profileShowKicker !== false,
         textColor: validHex(displaySource.textColor, "#17152b"),
         headingColor: validHex(displaySource.headingColor, "#5b46e6"),
         cardStyle: ["rounded", "square", "shadow"].includes(displaySource.cardStyle) ? displaySource.cardStyle : "rounded",
@@ -394,6 +413,35 @@ module.exports = async function handler(req, res) {
         showInterests: displaySource.showInterests === true, showProfileLink: displaySource.showProfileLink === true,
         featuredOnly: displaySource.featuredOnly === true, showSectionTitle: displaySource.showSectionTitle !== false,
         showWorkCount: displaySource.showWorkCount !== false, showWorkType: displaySource.showWorkType !== false,
+        gallerySections: (() => {
+          const sourceSections = Array.isArray(displaySource.gallerySections) ? displaySource.gallerySections : [];
+          const sections = sourceSections.filter(section => section && typeof section === "object" && !Array.isArray(section)).slice(0, 40).map(section => {
+            const id = String(section.id || "").normalize("NFC").trim().slice(0, 50);
+            return {
+              id,
+              name: String(section.name || "قسم").normalize("NFC").trim().slice(0, 60) || "قسم",
+              description: String(section.description || "").normalize("NFC").trim().slice(0, 180),
+              visible: id === "general" ? true : section.visible !== false,
+              locked: id === "general" ? true : section.locked === true
+            };
+          }).filter(section => section.id);
+          let general = sections.find(section => section.id === "general");
+          if (!general) {
+            general = { id: "general", name: "أعمال عامة", description: "أعمال لم تُسند إلى قسم محدد", visible: true, locked: true };
+            sections.unshift(general);
+          } else {
+            general.visible = true;
+            general.locked = true;
+            sections.splice(sections.indexOf(general), 1);
+            sections.unshift(general);
+          }
+          return sections;
+        })(),
+        defaultGallerySection: (() => {
+          const wanted = String(displaySource.defaultGallerySection || "general").slice(0, 50);
+          const sections = Array.isArray(displaySource.gallerySections) ? displaySource.gallerySections : [];
+          return wanted === "general" || sections.some(section => section && String(section.id) === wanted) ? wanted : "general";
+        })(),
         showWorkCategory: displaySource.showWorkCategory !== false, showWorkStatus: displaySource.showWorkStatus !== false,
         showWorkRole: displaySource.showWorkRole !== false, showWorkTools: displaySource.showWorkTools !== false,
         showWorkTags: displaySource.showWorkTags !== false, showWorkOutcome: displaySource.showWorkOutcome !== false,
@@ -405,7 +453,25 @@ module.exports = async function handler(req, res) {
         showContactWhatsapp: displaySource.showContactWhatsapp === true,
         showContactEmail: displaySource.showContactEmail === true,
         contactOrder: Array.isArray(displaySource.contactOrder) ? ["phone", "whatsapp", "email"].filter(key => displaySource.contactOrder.includes(key)) : ["phone", "whatsapp", "email"],
-        fontFamily: ["system", "cairo", "serif", "mono"].includes(displaySource.fontFamily) ? displaySource.fontFamily : "system",
+        contactButtonColor: validHex(displaySource.contactButtonColor, "#5b46e6"),
+        contactButtonTextColor: validHex(displaySource.contactButtonTextColor, "#ffffff"),
+        contactButtonSize: ["compact", "normal", "large"].includes(displaySource.contactButtonSize) ? displaySource.contactButtonSize : "normal",
+        contactButtonPosition: ["right", "center", "left"].includes(displaySource.contactButtonPosition) ? displaySource.contactButtonPosition : "right",
+        cardBackground: validHex(displaySource.cardBackground, "#ffffff"),
+        cardRadius: Math.max(0, Math.min(32, Number(displaySource.cardRadius) || 20)),
+        density: ["compact", "comfortable", "spacious"].includes(displaySource.density) ? displaySource.density : "comfortable",
+        heroStyle: ["dark", "light", "accent"].includes(displaySource.heroStyle) ? displaySource.heroStyle : "dark",
+        pattern: ["none", "dots", "grid"].includes(displaySource.pattern) ? displaySource.pattern : "none",
+        brandText: String(displaySource.brandText || "معرض أعمال شخصي · مَدى").slice(0, 90),
+        cardImageRatio: ["landscape", "classic", "square"].includes(displaySource.cardImageRatio) ? displaySource.cardImageRatio : "landscape",
+        cardHover: displaySource.cardHover !== false,
+        contentWidth: ["narrow", "standard", "wide"].includes(displaySource.contentWidth) ? displaySource.contentWidth : "wide",
+        cardShadow: ["none", "soft", "strong"].includes(displaySource.cardShadow) ? displaySource.cardShadow : "soft",
+        borderStyle: ["none", "subtle", "contrast"].includes(displaySource.borderStyle) ? displaySource.borderStyle : "subtle",
+        avatarShape: ["circle", "rounded", "square"].includes(displaySource.avatarShape) ? displaySource.avatarShape : "rounded",
+        heroAlign: ["right", "center", "left"].includes(displaySource.heroAlign) ? displaySource.heroAlign : "right",
+        sectionSpacing: Math.max(16, Math.min(80, Number(displaySource.sectionSpacing) || 32)),
+        fontFamily: ["system", "cairo", "tajawal", "almarai", "amiri", "reemkufi", "elmessiri", "serif", "mono"].includes(displaySource.fontFamily) ? displaySource.fontFamily : "tajawal",
         nameSize: Math.max(22, Math.min(64, Number(displaySource.nameSize) || 38)),
         bodySize: Math.max(12, Math.min(24, Number(displaySource.bodySize) || 16)),
         sectionTitleSize: Math.max(18, Math.min(48, Number(displaySource.sectionTitleSize) || 30)),

@@ -168,3 +168,66 @@
 #quizModal .mission-submit:disabled{opacity:.45;box-shadow:none}
 @media(max-width:560px){#quizModal .mission-brief{padding:14px}#quizModal .mission-step-list{grid-template-columns:1fr}#quizModal .mission-step-choice{min-height:54px}#quizModal .mission-choice{padding:10px;gap:8px}#quizModal .mission-budget{padding:12px}}
 @media(prefers-reduced-motion:reduce){#quizModal .mission-choice,#quizModal .mission-progress span,#quizModal .mission-budget-track span{transition:none}}
+
+
+/* Minimal Discover Your Path: focus on the four core experiences. */
+#page-careers .path-hero,
+#page-careers .path-choice,
+#page-careers .path-head .path-count,
+#page-careers .path-tools,
+#page-careers .path-card-tags,
+#page-careers .path-card-outcome,
+#page-careers .path-card-bottom small,
+#page-careers .path-save{display:none!important}
+#page-careers .path-head{margin-bottom:22px}
+#page-careers .path-catalog{margin-top:18px}
+#page-careers .path-catalog-head .pill{display:none}
+#page-careers .path-card-bottom{justify-content:flex-end}
+#page-careers .path-card h3{margin-top:12px}
+
+
+/* Signature interactive discovery quest */
+#page-careers .path-quest{display:grid;grid-template-columns:minmax(190px,.72fr) minmax(0,1.5fr);gap:clamp(20px,3vw,42px);align-items:center;position:relative;overflow:hidden;margin:24px 0 30px;padding:clamp(22px,3vw,38px);border:1px solid #e8e2ff;border-radius:30px;background:radial-gradient(circle at 8% 12%,#e9e4ff 0,transparent 34%),linear-gradient(135deg,#fff 0%,#f7f5ff 55%,#f1fff9 100%);box-shadow:0 22px 60px #32245b0b}
+#page-careers .path-quest:after{content:"";position:absolute;width:210px;height:210px;border:1px solid #725ce51b;border-radius:50%;left:-105px;bottom:-140px;box-shadow:0 0 0 25px #725ce508,0 0 0 50px #725ce505;pointer-events:none}
+#page-careers .path-quest-visual{min-height:250px;position:relative;display:grid;place-items:center;isolation:isolate}
+#page-careers .path-quest-visual:before,#page-careers .path-quest-visual:after{content:"";position:absolute;width:190px;height:190px;border:1px dashed #a69af0;border-radius:50%;transform:rotate(-25deg);z-index:-1}
+#page-careers .path-quest-visual:after{width:145px;height:145px;border-style:solid;opacity:.6;transform:rotate(35deg)}
+#page-careers .path-quest-orbit{width:112px;height:112px;border-radius:34px;display:grid;place-items:center;background:linear-gradient(145deg,#8877ff,#4b35d2);color:#fff;font-size:51px;box-shadow:0 22px 42px #5944d640;transform:rotate(-8deg);animation:pathQuestFloat 5s ease-in-out infinite}
+#page-careers .path-quest-chip{position:absolute;display:flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid #fff;border-radius:13px;background:#fff;box-shadow:0 10px 28px #24184c13;font-size:11px;font-weight:800;color:#383052}
+#page-careers .path-quest-chip:before{content:"";width:7px;height:7px;border-radius:50%;background:#35caa7}
+#page-careers .path-quest-chip.chip-a{top:17px;right:0;transform:rotate(5deg)}
+#page-careers .path-quest-chip.chip-b{bottom:20px;right:4px;transform:rotate(-4deg)}
+#page-careers .path-quest-chip.chip-c{left:0;top:48%;transform:rotate(-6deg)}
+#page-careers .path-quest-content{min-width:0;position:relative;z-index:1}
+#page-careers .path-quest-eyebrow{display:flex;align-items:center;gap:8px;color:#5a46d5;font-size:11px;font-weight:800;margin-bottom:12px}
+#page-careers .path-live-dot{width:8px;height:8px;border-radius:50%;background:#34c7a2;box-shadow:0 0 0 4px #34c7a21c}
+#page-careers .path-quest-content>h2{font-size:clamp(24px,2.8vw,36px);letter-spacing:-.8px;line-height:1.45;margin:0 0 9px;color:#211c3e}
+#page-careers .path-quest-content>p{font-size:13px;line-height:1.9;color:#77718e;margin:0 0 21px;max-width:650px}
+#page-careers .path-quest-progress{margin-bottom:16px}
+#page-careers .path-quest-progress>div:first-child{display:flex;justify-content:space-between;gap:12px;font-size:10px;color:#817b98;margin-bottom:8px}
+#page-careers .path-quest-progress strong{color:#5a46d5;font-size:11px}
+#page-careers .path-quest-track{height:5px;border-radius:99px;background:#e9e5f8;overflow:hidden}
+#page-careers .path-quest-track span{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b7bff,#4e3bd3);transition:width .35s ease}
+#page-careers .path-quest-question{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px}
+#page-careers .path-quest-question>span{flex-shrink:0;width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:#eae6ff;color:#5b46e6;font-size:11px;font-weight:800}
+#page-careers .path-quest-question h3{font-size:15px;line-height:1.8;margin:0;color:#302a4a}
+#page-careers .path-quest-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#page-careers .path-quest-option{display:flex;align-items:center;gap:10px;min-height:67px;padding:10px;border:1px solid #e9e5f3;border-radius:14px;background:#fff;text-align:right;color:#49435f;font-size:11px;line-height:1.65;transition:border-color .18s,transform .18s,box-shadow .18s}
+#page-careers .path-quest-option:hover{border-color:#a99bff;transform:translateY(-2px);box-shadow:0 9px 22px #5b46e610}
+#page-careers .path-quest-option-icon{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;border-radius:11px;background:#f0edff;color:#5b46e6;font-size:16px;font-weight:800}
+#page-careers .path-quest-arrow{margin-right:auto;color:#a39bbd;font-size:16px;opacity:0;transition:opacity .18s}
+#page-careers .path-quest-option:hover .path-quest-arrow{opacity:1}
+#page-careers .path-quest-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;font-size:10px;color:#8b859f}
+#page-careers .path-quest-back,.path-quest-retry{border:1px solid #e4dff3;background:#fff;border-radius:10px;padding:8px 12px;color:#5b46e6;font-size:11px;font-weight:800}
+#page-careers .path-quest-back:disabled{opacity:.35;cursor:not-allowed}
+#page-careers .path-quest-result{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px;padding-top:15px;border-top:1px solid #e8e2f6}
+#page-careers .path-quest-finish{display:flex;align-items:center;gap:12px;flex:1 1 100%;padding:13px;border:1px solid #e6e0f7;border-radius:15px;background:#fff}
+#page-careers .path-quest-finish-icon{width:47px;height:47px;border-radius:15px;display:grid;place-items:center;flex-shrink:0;font-size:24px}
+#page-careers .path-quest-finish small{font-size:10px;color:#827b98}
+#page-careers .path-quest-finish h3{font-size:16px;margin:3px 0;color:#2b2545}
+#page-careers .path-quest-finish p{font-size:11px;line-height:1.7;margin:0;color:#77718e}
+#page-careers .path-quest-result>small{flex-basis:100%;font-size:10px;line-height:1.7;color:#8b859f}
+@keyframes pathQuestFloat{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(-3deg) translateY(-7px)}}
+@media(max-width:820px){#page-careers .path-quest{grid-template-columns:1fr;gap:10px}#page-careers .path-quest-visual{min-height:170px;order:0}#page-careers .path-quest-visual:before{width:145px;height:145px}#page-careers .path-quest-visual:after{width:112px;height:112px}#page-careers .path-quest-orbit{width:86px;height:86px;border-radius:27px;font-size:39px}#page-careers .path-quest-chip.chip-a{right:calc(50% + 42px);top:6px}#page-careers .path-quest-chip.chip-b{right:calc(50% + 32px);bottom:4px}#page-careers .path-quest-chip.chip-c{left:calc(50% + 42px);top:42%}#page-careers .path-quest-content>h2{font-size:25px}}
+@media(max-width:480px){#page-careers .path-quest{padding:17px;border-radius:22px;margin-top:16px}#page-careers .path-quest-options{grid-template-columns:1fr}#page-careers .path-quest-option{min-height:56px}#page-careers .path-quest-content>h2{font-size:23px}#page-careers .path-quest-visual{min-height:150px}}
+@media(prefers-reduced-motion:reduce){#page-careers .path-quest-orbit{animation:none}#page-careers .path-quest-option,#page-careers .path-quest-track span{transition:none}}
