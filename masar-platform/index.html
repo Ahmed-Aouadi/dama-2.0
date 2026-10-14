@@ -1886,70 +1886,8 @@ document.addEventListener("click",function(event){
   sidebar.dataset.sectionsReady="1";
 })();
 
-/* Reliable reference and watermark actions, including controls moved into rebuilt tool panels. */
-(function(){
-  function normalizeLabel(value){return String(value||"").replace(/\s+/g," ").trim()}
-  function getReferenceInput(){
-    var input=document.getElementById("customReferenceFile");
-    if(!input)return null;
-    /* A file input inside the old, hidden sidebar cannot open the picker. */
-    if(input.parentElement!==document.body)document.body.appendChild(input);
-    input.hidden=true;
-    return input;
-  }
-  document.addEventListener("click",function(event){
-    var button=event.target&&event.target.closest?event.target.closest("button"):null;
-    if(!button)return;
-    var id=button.id||"";
-    var label=normalizeLabel(button.textContent);
-    var panel=button.closest("[data-custom-tool-panel]");
-    var section=panel&&panel.dataset?panel.dataset.customToolPanel:"";
-    var isUseName=label.includes("استخدام اسم التصميم");
-    var isRemoveMark=label.includes("إزالة العلامة المائية");
-    if(id!=="customReferenceBtn"&&id!=="customRemoveReference"&&id!=="customApplyWatermark"&&!isUseName&&!isRemoveMark)return;
-    event.preventDefault();
-    event.stopPropagation();
-    if(event.stopImmediatePropagation)event.stopImmediatePropagation();
-    if(id==="customReferenceBtn"){
-      var fileInput=getReferenceInput();
-      if(fileInput){fileInput.value="";fileInput.click()}
-      else toast("تعذّر العثور على منتقي الصور. أعد تحميل الصفحة.");
-      return;
-    }
-    if(id==="customRemoveReference"){customSetReference("");return}
-    if(id==="customApplyWatermark"||isUseName){
-      if(!customDoc){toast("افتح تصميمًا أولًا.");return}
-      var watermarkInput=document.getElementById("customWatermarkText");
-      var opacityInput=document.getElementById("customWatermarkOpacity");
-      var sizeInput=document.getElementById("customWatermarkSize");
-      var value=(isUseName?String(customDoc.title||customDoc.name||"تصميم جديد"):String(watermarkInput&&watermarkInput.value||"")).trim();
-      if(!value){toast("اكتب نص العلامة المائية أولًا.");return}
-      if(watermarkInput)watermarkInput.value=value;
-      pushCustomHistory();
-      customDoc.watermark={
-        text:value,
-        opacity:Math.max(.03,Math.min(.3,Number(opacityInput&&opacityInput.value)||.1)),
-        size:Math.max(10,Math.min(100,Number(sizeInput&&sizeInput.value)||34)),
-        color:customDoc.watermark&&customDoc.watermark.color||"#5b46e6"
-      };
-      syncCustomPageToDoc();drawCustomPage();scheduleCustomAutoSave();
-      toast("تم تطبيق العلامة المائية وحفظها.");
-      return;
-    }
-    if(isRemoveMark){
-      if(!customDoc){toast("افتح تصميمًا أولًا.");return}
-      pushCustomHistory();
-      delete customDoc.watermark;
-      (customDoc.pages||[]).forEach(function(page){if(page&&typeof page==="object")page.watermark=null});
-      var clearInput=document.getElementById("customWatermarkText");
-      if(clearInput)clearInput.value="";
-      syncCustomPageToDoc();
-      customDoc.watermark=null;
-      drawCustomPage();scheduleCustomAutoSave();
-      toast("تمت إزالة العلامة المائية وحفظ التعديل.");
-    }
-  },true);
-})();</script>
+/* Use the editor's original direct event handlers; do not intercept clicks in capture phase. */
+</script>
 <style id="original-dark-purple-theme">
 /* Restore Mada's original deep-purple theme across the complete editor UI. */
 #customEditorModal.open,#nextStudioOverlay.open{background:#201b43!important;color:#f6f2ff!important}
