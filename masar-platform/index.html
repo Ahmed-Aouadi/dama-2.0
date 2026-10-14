@@ -432,6 +432,33 @@ html,body{height:100%;overflow:hidden}
 [hidden]{display:none!important}
 @media(max-width:760px){#page-studio .toolbar,#page-careers .toolbar,#page-growth .toolbar{flex-wrap:wrap;max-width:100%}#page-studio .panel,#page-careers .panel,#page-growth .panel,#page-profile .panel,#page-settings .panel{max-width:100%}}
 </style>
+<style id="portfolio-designer-layout-fix">
+/* Portfolio designer: fixed shell, internal scrolling and grouped controls */
+.portfolio-editor-modal{width:min(1360px,97vw)!important;height:min(920px,94dvh)!important;max-height:94dvh!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;padding:18px!important;box-sizing:border-box!important}
+.portfolio-editor-modal>.modal-head{flex:0 0 auto!important;margin-bottom:12px!important;padding-bottom:10px!important}
+.portfolio-editor-layout{display:grid!important;grid-template-columns:minmax(330px,.88fr) minmax(0,1.12fr)!important;gap:14px!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;align-items:stretch!important}
+.portfolio-editor-controls{min-width:0!important;min-height:0!important;height:100%!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scrollbar-gutter:stable;padding:0 5px 12px 0!important}
+.portfolio-editor-controls #portfolioSettingsIntro{margin-bottom:10px!important}
+.portfolio-editor-controls .designer-tabs{position:sticky!important;top:0!important;z-index:5!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important;margin:0 0 10px!important;background:#f0edfb!important;border:1px solid #e2dcf4!important;box-shadow:0 4px 12px #211e3508!important}
+.portfolio-editor-controls .designer-tab{min-width:0!important;padding:9px 5px!important;font-size:11px!important;line-height:1.5!important}
+.designer-group-pane[hidden]{display:none!important}
+.designer-subgroup{margin:0 0 9px!important;border:1px solid #e8e3f2!important;border-radius:13px!important;background:#fff!important;overflow:clip}
+.designer-subgroup>summary{list-style:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;padding:12px 13px!important;background:#faf9fe!important;color:#282344!important;font-size:12px!important;font-weight:800!important}
+.designer-subgroup>summary::-webkit-details-marker{display:none}
+.designer-subgroup>summary:after{content:"＋";font-size:15px;color:#6b55e8}
+.designer-subgroup[open]>summary:after{content:"−"}
+.designer-subgroup>.designer-pane{padding:0 12px 13px!important;border-top:1px solid #eeeaf5!important}
+.designer-subgroup .designer-pane h4{margin-top:13px!important}
+.portfolio-live-preview-wrap{position:relative!important;top:auto!important;min-width:0!important;min-height:0!important;height:100%!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;padding:10px!important;gap:8px!important}
+.portfolio-live-preview-heading{flex:0 0 auto!important;flex-wrap:wrap!important;gap:6px!important;margin:0!important;font-size:12px!important}
+.portfolio-live-preview{position:relative!important;flex:1 1 auto!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important;padding:0!important;border-radius:12px!important;contain:layout paint!important}
+.portfolio-live-preview>iframe{position:absolute!important;top:0!important;left:50%!important;display:block!important;border:0!important;background:#fff!important;transform:translateX(-50%) scale(var(--preview-scale,1))!important;transform-origin:top center!important;width:1280px!important;height:var(--preview-inner-height,700px)!important;min-width:0!important;min-height:0!important;max-width:none!important;border-radius:10px!important}
+.portfolio-live-preview[data-device-mode="mobile"]>iframe{width:390px!important}
+.portfolio-live-preview-wrap>.tiny-note{flex:0 0 auto!important;margin:0!important;font-size:10px!important;line-height:1.55!important}
+.portfolio-editor-bottom{flex:0 0 auto!important;padding-top:10px!important;margin-top:10px!important;border-top:1px solid #ece8f4!important}
+@media(max-width:900px){.portfolio-editor-modal{width:98vw!important;height:94dvh!important;padding:12px!important}.portfolio-editor-layout{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr)!important;gap:8px!important}.portfolio-editor-controls .designer-tab{font-size:10px!important;padding:8px 3px!important}.portfolio-live-preview-wrap{padding:7px!important}}
+@media(max-width:650px){.portfolio-editor-backdrop{padding:6px!important;align-items:center!important}.portfolio-editor-modal{width:100%!important;height:96dvh!important;max-height:96dvh!important;border-radius:16px!important;padding:10px!important}.portfolio-editor-layout{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr) minmax(170px,.72fr)!important;gap:8px!important}.portfolio-editor-controls{padding-right:0!important}.portfolio-editor-controls .designer-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important}.portfolio-editor-controls .designer-tab{font-size:9px!important;padding:7px 2px!important}.portfolio-live-preview-heading .pill{display:none!important}.portfolio-live-preview-wrap>.tiny-note{font-size:9px!important}.portfolio-editor-bottom{gap:8px!important}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -490,14 +517,11 @@ html,body{height:100%;overflow:hidden}
   
 <div class="portfolio-designer" id="portfolioDesigner">
   
-  <div class="designer-tabs" role="tablist" aria-label="أقسام التخصيص">
-<button type="button" role="tab" class="designer-tab is-active" data-designer-tab="style" aria-selected="true">القالب</button>
-<button type="button" role="tab" class="designer-tab" data-designer-tab="colors" aria-selected="false">الألوان</button>
-<button type="button" role="tab" class="designer-tab" data-designer-tab="fonts" aria-selected="false">الخطوط</button>
-<button type="button" role="tab" class="designer-tab" data-designer-tab="layout" aria-selected="false">التخطيط</button>
-<button type="button" role="tab" class="designer-tab" data-designer-tab="profile" aria-selected="false">بطاقة المعلومات</button>
-<button type="button" role="tab" class="designer-tab" data-designer-tab="content" aria-selected="false">المحتوى</button>
-<button type="button" role="tab" class="designer-tab" data-designer-tab="sharing" aria-selected="false">المشاركة والتواصل</button>
+  <div class="designer-tabs" role="tablist" aria-label="مجموعات تخصيص المعرض">
+<button type="button" role="tab" class="designer-tab is-active" data-designer-group-tab="appearance" aria-selected="true">المظهر</button>
+<button type="button" role="tab" class="designer-tab" data-designer-group-tab="profile" aria-selected="false">بطاقة التعريف</button>
+<button type="button" role="tab" class="designer-tab" data-designer-group-tab="content" aria-selected="false">المحتوى والأقسام</button>
+<button type="button" role="tab" class="designer-tab" data-designer-group-tab="sharing" aria-selected="false">النشر والتواصل</button>
 </div>
 <section class="designer-pane is-active" data-designer-pane="style">
 <h4>القالب</h4>
@@ -965,7 +989,29 @@ let editingGallerySectionId=null;
 function renderGallerySectionOptions(selected){const sections=(state.portfolioSettings.gallerySections||initial.portfolioSettings.gallerySections),el=$("#projectGallerySection");if(!el)return;const val=selected!==undefined?selected:el.value;el.innerHTML='<option value="">أعمال عامة</option>'+sections.filter(x=>x.id!=="general").map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join("");el.value=sections.some(x=>x.id===val)?val:""}
 function renderGallerySectionsManager(){const host=$("#gallerySectionsList");if(!host)return;const sections=state.portfolioSettings.gallerySections||[];host.innerHTML=sections.map(x=>'<div class="gallery-section-row '+(x.visible===false?'gallery-section-hidden':'')+'"><div><strong>'+esc(x.name)+'</strong>'+(x.locked?'<span class="gallery-section-default"> · افتراضي لا يُحذف</span>':'')+'<p>'+esc(x.description||"بدون شرح")+'</p><p>'+(x.visible===false?'مخفي عن الزوار':'ظاهر للزوار')+'</p></div><div class="gallery-section-row-actions"><button type="button" class="secondary" data-sec-edit="'+esc(x.id)+'">تعديل</button><button type="button" class="ghost" data-sec-toggle="'+esc(x.id)+'">'+(x.visible===false?'إظهار':'إخفاء')+'</button>'+(x.locked?'':'<button type="button" class="ghost" data-sec-delete="'+esc(x.id)+'">حذف</button>')+'</div></div>').join("");renderGallerySectionOptions()}
 function resetGallerySectionForm(){editingGallerySectionId=null;$("#gallerySectionName").value="";$("#gallerySectionDescription").value="";$("#gallerySectionVisible").checked=true;$("#gallerySectionDefault").checked=false;$("#saveGallerySection").textContent="＋ إضافة قسم";$("#cancelGallerySectionEdit").hidden=true}
-$("#saveGallerySection")?.addEventListener("click",function(){const name=$("#gallerySectionName").value.trim(),description=$("#gallerySectionDescription").value.trim(),sections=state.portfolioSettings.gallerySections;if(!name){toast("اكتب اسم القسم أولًا");return}if(sections.some(x=>x.id!==editingGallerySectionId&&x.name.toLowerCase()===name.toLowerCase())){toast("يوجد قسم بهذا الاسم");return}let section;if(editingGallerySectionId){section=sections.find(x=>x.id===editingGallerySectionId);if(!section)return;Object.assign(section,{name,description,visible:$("#gallerySectionVisible").checked})}else{section={id:"section-"+Date.now(),name,description,visible:$("#gallerySectionVisible").checked,locked:false};sections.push(section)}if($("#gallerySectionDefault").checked)state.portfolioSettings.defaultGallerySection=section.id;save();renderGallerySectionsManager();resetGallerySectionForm();renderPortfolioLivePreview();toast("تم حفظ القسم")});
+$("#saveGallerySection")?.addEventListener("click",function(){
+ state.portfolioSettings=Object.assign({},initial.portfolioSettings,state.portfolioSettings||{});
+ if(!Array.isArray(state.portfolioSettings.gallerySections))state.portfolioSettings.gallerySections=initial.portfolioSettings.gallerySections.map(function(x){return Object.assign({},x)});
+ const nameField=$("#gallerySectionName"),descriptionField=$("#gallerySectionDescription"),sections=state.portfolioSettings.gallerySections;
+ let name=nameField.value.trim();
+ if(!name&&!editingGallerySectionId){
+  let n=sections.length+1;name="قسم جديد "+n;
+  while(sections.some(function(x){return x.name.toLowerCase()===name.toLowerCase()})){n++;name="قسم جديد "+n}
+  const created={id:"section-"+Date.now(),name:name,description:"",visible:$("#gallerySectionVisible").checked,locked:false};
+  sections.push(created);editingGallerySectionId=created.id;nameField.value=name;descriptionField.value="";
+  $("#saveGallerySection").textContent="حفظ التعديلات";$("#cancelGallerySectionEdit").hidden=false;
+  if($("#gallerySectionDefault").checked)state.portfolioSettings.defaultGallerySection=created.id;
+  save();renderGallerySectionsManager();renderPortfolioLivePreview();nameField.focus();nameField.select();
+  toast("أُنشئ القسم. غيّر اسمه ووصفه ثم اضغط «حفظ التعديلات».");return;
+ }
+ if(!name){nameField.focus();toast("اكتب اسم القسم قبل حفظ التعديلات.");return}
+ if(sections.some(function(x){return x.id!==editingGallerySectionId&&x.name.toLowerCase()===name.toLowerCase()})){nameField.focus();toast("يوجد قسم بهذا الاسم؛ اختر اسمًا آخر.");return}
+ let section;
+ if(editingGallerySectionId){section=sections.find(function(x){return x.id===editingGallerySectionId});if(!section)return;Object.assign(section,{name:name,description:descriptionField.value.trim(),visible:$("#gallerySectionVisible").checked})}
+ else{section={id:"section-"+Date.now(),name:name,description:descriptionField.value.trim(),visible:$("#gallerySectionVisible").checked,locked:false};sections.push(section)}
+ if($("#gallerySectionDefault").checked)state.portfolioSettings.defaultGallerySection=section.id;
+ save();renderGallerySectionsManager();resetGallerySectionForm();renderPortfolioLivePreview();toast("تم حفظ القسم بنجاح");
+});
 $("#cancelGallerySectionEdit")?.addEventListener("click",resetGallerySectionForm);
 $("#gallerySectionsList")?.addEventListener("click",function(e){const edit=e.target.closest("[data-sec-edit]"),toggle=e.target.closest("[data-sec-toggle]"),del=e.target.closest("[data-sec-delete]"),sections=state.portfolioSettings.gallerySections;if(edit){const x=sections.find(y=>y.id===edit.dataset.secEdit);if(!x)return;editingGallerySectionId=x.id;$("#gallerySectionName").value=x.name;$("#gallerySectionDescription").value=x.description||"";$("#gallerySectionVisible").checked=x.visible!==false;$("#gallerySectionDefault").checked=state.portfolioSettings.defaultGallerySection===x.id;$("#saveGallerySection").textContent="حفظ التعديلات";$("#cancelGallerySectionEdit").hidden=false;return}if(toggle){const x=sections.find(y=>y.id===toggle.dataset.secToggle);if(!x||x.locked){toast("قسم أعمال عامة لا يمكن إخفاؤه");return}x.visible=x.visible===false;save();renderGallerySectionsManager();renderPortfolioLivePreview();toast(x.visible?"تم إظهار القسم":"تم إخفاء القسم وأعماله");return}if(del){const x=sections.find(y=>y.id===del.dataset.secDelete);if(!x||x.locked)return;if(!confirm("حذف القسم؟ ستُنقل أعماله إلى أعمال عامة."))return;state.projects.forEach(p=>{if(p.gallerySection===x.id)p.gallerySection=""});state.portfolioSettings.gallerySections=sections.filter(y=>y.id!==x.id);if(state.portfolioSettings.defaultGallerySection===x.id)state.portfolioSettings.defaultGallerySection="general";save();renderGallerySectionsManager();renderAll();renderPortfolioLivePreview()}});
 function syncAccountSettings(){
@@ -1035,13 +1081,39 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
  Object.keys(portfolioDesignInputs).forEach(function(id){const el=$("#"+id);if(el)el.addEventListener("input",function(){const item=portfolioDesignInputs[id];savePortfolioSetting(item[0],item[1]==="checked"?el.checked:(el.type==="range"?Number(el.value):el.value));if(el.type==="range"){const out=$("#"+id+"Output");if(out)out.textContent=el.value+"px"}});if(el&&el.type==="checkbox")el.addEventListener("change",function(){const item=portfolioDesignInputs[id];savePortfolioSetting(item[0],el.checked)})});
  $$("#portfolioDesigner [data-portfolio-template]").forEach(function(btn){btn.addEventListener("click",function(){savePortfolioSetting("template",btn.dataset.portfolioTemplate);syncPortfolioDesignControls()})});
  $("#resetPortfolioDesign").addEventListener("click",function(){state.portfolioSettings=Object.assign({},initial.portfolioSettings);save();syncPortfolioControls();renderPortfolioLivePreview();toast("تمت إعادة ضبط تصميم المعرض")});
- $$("#portfolioDesigner [data-designer-tab]").forEach(function(tab){tab.addEventListener("click",function(){const key=tab.dataset.designerTab;$$("#portfolioDesigner [data-designer-tab]").forEach(function(t){const on=t===tab;t.classList.toggle("is-active",on);t.setAttribute("aria-selected",on?"true":"false")});$$("#portfolioDesigner [data-designer-pane]").forEach(function(pane){const on=pane.dataset.designerPane===key;pane.hidden=!on;pane.classList.toggle("is-active",on)})})});
+ $("#portfolioDesigner [data-designer-group-tab]").forEach(function(tab){tab.addEventListener("click",function(){const key=tab.dataset.designerGroupTab;$("#portfolioDesigner [data-designer-group-tab]").forEach(function(t){const on=t===tab;t.classList.toggle("is-active",on);t.setAttribute("aria-selected",on?"true":"false")});$("#portfolioDesigner [data-designer-group-pane]").forEach(function(pane){pane.hidden=pane.dataset.designerGroupPane!==key})})});
  [["data-hero-style","heroStyle","heroStyle"],["data-pattern","pattern","pattern"],["data-density","density","density"],["data-font","fontFamily","font"]].forEach(function(cfg){$$("#portfolioDesigner ["+cfg[0]+"]").forEach(function(btn){btn.addEventListener("click",function(){savePortfolioSetting(cfg[1],btn.dataset[cfg[2]]);syncPortfolioDesignControls()})})});
  $$("#portfolioDesigner [data-palette]").forEach(function(btn){btn.addEventListener("click",function(){state.portfolioSettings=Object.assign({},initial.portfolioSettings,state.portfolioSettings||{},{palette:btn.dataset.palette,accent:btn.dataset.accent,background:btn.dataset.bg,textColor:btn.dataset.text,headingColor:btn.dataset.heading,cardBackground:btn.dataset.card});save();syncPortfolioDesignControls();renderPortfolioLivePreview();const st=$("#portfolioDesignerStatus");if(st)st.textContent="طُبّقت اللوحة محليًا. انشر المعرض لتطبيقها على الرابط العام."})});
  const cardStyleSel=$("#galleryCardStyle");if(cardStyleSel)cardStyleSel.addEventListener("input",function(){savePortfolioSetting("cardRadius",cardStyleSel.value==="square"?7:20);syncPortfolioDesignControls()});
  ["galleryAccentColor","galleryBackgroundColor","galleryTextColor","galleryHeadingColor","galleryCardBackground"].forEach(function(id){const el=$("#"+id);if(el)el.addEventListener("input",function(){const s=state.portfolioSettings||{};if(s.palette){s.palette="";save();syncDesignerChoices(s)}})});
  syncPortfolioControls();renderPortfolioLivePreview();
  const designer=$("#portfolioDesigner"),settingsIntro=$("#portfolioSettingsIntro"),designerHost=$("#portfolioDesignerModalControls");if(designerHost&&settingsIntro)designerHost.appendChild(settingsIntro);if(designer&&designerHost)designerHost.appendChild(designer);
+ function organizePortfolioDesignerGroups(){
+  if(!designer||designer.dataset.groupsReady==="true")return;
+  const nav=designer.querySelector(".designer-tabs");if(!nav)return;
+  const groups=[
+   {id:"appearance",panes:["style","colors","fonts","layout"]},
+   {id:"profile",panes:["profile"]},
+   {id:"content",panes:["content"]},
+   {id:"sharing",panes:["sharing"]}
+  ];
+  const titles={style:"القالب والنمط",colors:"الألوان ولوحات الألوان",fonts:"الخطوط والكتابة",layout:"التخطيط والمسافات",profile:"بطاقة المعلومات",content:"النصوص وأقسام الأعمال",sharing:"الظهور وطرق التواصل"};
+  const panes=Array.from(designer.querySelectorAll(".designer-pane[data-designer-pane]"));
+  groups.forEach(function(group,index){
+   const wrapper=document.createElement("div");wrapper.className="designer-group-pane";wrapper.dataset.designerGroupPane=group.id;wrapper.hidden=index!==0;
+   group.panes.forEach(function(key){
+    const pane=panes.find(function(item){return item.dataset.designerPane===key});if(!pane)return;
+    pane.hidden=false;pane.classList.remove("is-active");
+    const details=document.createElement("details");details.className="designer-subgroup";
+    details.open=(group.id==="appearance"&&key==="style")||(group.id!=="appearance");
+    const summary=document.createElement("summary");summary.textContent=titles[key]||key;
+    details.appendChild(summary);details.appendChild(pane);wrapper.appendChild(details);
+   });
+   nav.after(wrapper);
+  });
+  designer.dataset.groupsReady="true";
+ }
+ organizePortfolioDesignerGroups();
  $("#openPortfolioDesignerBtn").addEventListener("click",function(){portfolioPreviewDevice=window.matchMedia&&window.matchMedia("(max-width: 760px)").matches?"mobile":"desktop";syncPortfolioControls();renderPortfolioLivePreview();applyPortfolioPreviewDevice();openModal("portfolioDesignerModal")});
  $$("#portfolioDesignerModal [data-preview-device]").forEach(function(button){button.addEventListener("click",function(){portfolioPreviewDevice=button.dataset.previewDevice==="mobile"?"mobile":"desktop";applyPortfolioPreviewDevice()})});
  $("#portfolioDesignerDoneBtn").addEventListener("click",function(){closeModal("portfolioDesignerModal")});
