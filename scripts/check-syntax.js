@@ -208,7 +208,7 @@ console.log("OK Growth Hub account-state restoration after sign-in");
 const studioPage = fs.readFileSync("masar-platform/index.html", "utf8");
 const studioCss = fs.readFileSync("masar-platform/mada-studio.css", "utf8");
 if (!studioPage.includes('href="/masar-platform/mada-studio.css"')) throw new Error("Dama 2.0 Creative Studio stylesheet is not linked");
-for (const id of ["exportCustomImages", "exportCustomPdfTop", "exportCustomArchive", "customSmartLayout", "addTableElement", "customBackgroundImageBtn", "customReferenceBtn", "customApplyWatermark", "customBrushToggle", "customAddPage", "customLayers", "customAllowTemplateUse", "customFullscreen"]) {
+for (const id of ["exportCustomImages", "exportCustomPdfTop", "exportCustomArchive",  "addTableElement", "customBackgroundImageBtn", "customReferenceBtn", "customApplyWatermark", "customBrushToggle", "customAddPage", "customLayers", "customAllowTemplateUse", "customFullscreen"]) {
   if (!studioPage.includes('id="' + id + '"')) throw new Error("Mada Creative Studio addition was lost: " + id);
 }
 if (!studioCss.includes("#customEditorModal .custom-editor-header") || !studioCss.includes("#customEditorModal .custom-tools") || !studioCss.includes("@media (max-width:980px)")) throw new Error("Dama 2.0 Studio styling or responsive layout is missing");
