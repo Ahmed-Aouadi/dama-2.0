@@ -1701,7 +1701,7 @@ document.addEventListener("click",function(event){
   const sidebar=document.querySelector("#customEditorModal .custom-tools");
   if(!sidebar||sidebar.dataset.sectionsReady==="1")return;
   const nodes=Array.from(sidebar.children);
-  const indexOfHeading=(text)=>nodes.findIndex(n=>(n.tagName==="H4"||n.classList.contains("editor-section-title"))&&n.textContent.replace(/\s+/g," ").trim().includes(text));
+  const indexOfHeading=(text)=>nodes.findIndex(n=>(n.tagName==="H4"||n.classList.contains("editor-section-title"))&&n.textContent.replace(/\\s+/g," ").trim().includes(text));
   const startAdd=indexOfHeading("أدوات التصميم");
   const startPage=indexOfHeading("مظهر الصفحة");
   const startReference=indexOfHeading("التقليد والمرجع");
@@ -1710,13 +1710,16 @@ document.addEventListener("click",function(event){
   const startLayers=indexOfHeading("الطبقات");
   const startExport=nodes.findIndex(n=>n.tagName==="LABEL"&&n.textContent.includes("حجم الورقة"));
   if([startAdd,startPage,startReference,startWatermark,startAdvanced,startLayers,startExport].some(n=>n<0))return;
+
   const introWrap=document.createElement("div");
   introWrap.className="custom-tools-section-intro";
   nodes.slice(0,startAdd).forEach(node=>introWrap.appendChild(node));
   const sections=[
     {key:"add",label:"＋ إضافة",nodes:nodes.slice(startAdd,startPage)},
     {key:"page",label:"▦ الصفحة",nodes:nodes.slice(startPage,startReference)},
-    {key:"improve",label:"✦ تحسين",nodes:nodes.slice(startReference,startLayers)},
+    {key:"reference",label:"◎ المرجع",nodes:nodes.slice(startReference,startWatermark)},
+    {key:"watermark",label:"◈ العلامة المائية",nodes:nodes.slice(startWatermark,startAdvanced)},
+    {key:"improve",label:"✦ تحسين",nodes:nodes.slice(startAdvanced,startLayers)},
     {key:"layers",label:"▤ الطبقات",nodes:nodes.slice(startLayers,startExport)},
     {key:"export",label:"⇩ حفظ وتصدير",nodes:nodes.slice(startExport)}
   ];
@@ -1726,6 +1729,7 @@ document.addEventListener("click",function(event){
   tabs.setAttribute("aria-label","أقسام أدوات الاستوديو");
   const body=document.createElement("div");
   body.className="custom-tools-section-body";
+  const panels={};
   sections.forEach((section,i)=>{
     const tab=document.createElement("button");
     tab.type="button";tab.textContent=section.label;tab.dataset.customToolSection=section.key;
@@ -1738,8 +1742,96 @@ document.addEventListener("click",function(event){
     panel.setAttribute("aria-label",section.label);
     section.nodes.forEach(node=>panel.appendChild(node));
     body.appendChild(panel);
+    panels[section.key]=panel;
   });
   sidebar.append(tabs,body);
+
+  function addToolGroup(key,tools){
+    const group=document.createElement("div");
+    group.className="custom-advanced-tools custom-added-tools";
+    tools.forEach(item=>{
+      const button=document.createElement("button");
+      button.type="button";button.textContent=item.label;button.title=item.title||item.label;
+      button.addEventListener("click",item.run);
+      group.appendChild(button);
+    });
+    panels[key].appendChild(group);
+  }
+  function readyDoc(){
+    if(!customDoc){toast("افتح تصميمًا أولًا.");return false}
+    return true;
+  }
+  function finishEdit(){
+    syncCustomPageToDoc();drawCustomPage();drawCustomProperties();drawCustomLayers();
+  }
+  function selectedIds(){
+    return Array.from(new Set([...(customMultiSelected||[]),customSelected].filter(Boolean)));
+  }
+  addToolGroup("add",[
+    {label:"▣ تكرار المحدد",title:"إنشاء نسخة من العناصر المحددة",run:()=>{
+      if(!readyDoc())return;
+      const chosen=customSelectedItems();
+      if(!chosen.length)return toast("حدد عنصرًا واحدًا أو أكثر لتكرارها.");
+      pushCustomHistory();
+      const dim=customDimensions(), copies=chosen.map(el=>{
+        const copy=JSON.parse(JSON.stringify(el));
+        copy.id="e"+Date.now()+Math.random().toString(36).slice(2,8);
+        copy.x=Math.max(0,Math.min(dim[0]-(Number(copy.w)||1),(Number(copy.x)||0)+8));
+        copy.y=Math.max(0,Math.min(dim[1]-(Number(copy.h)||1),(Number(copy.y)||0)+8));
+        return copy;
+      });
+      customDoc.layout.push(...copies);customSelected=copies[copies.length-1].id;customMultiSelected=copies.map(x=>x.id);
+      finishEdit();toast("تم تكرار العناصر المحددة.");
+    }}
+  ]);
+  addToolGroup("page",[
+    {label:"↔ توسيط أفقي",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(!items.length)return toast("حدد عنصرًا لتوسيطه.");
+      pushCustomHistory();const dim=customDimensions();items.forEach(el=>el.x=Math.max(0,(dim[0]-el.w)/2));finishEdit();
+    }},
+    {label:"↕ توسيط عمودي",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(!items.length)return toast("حدد عنصرًا لتوسيطه.");
+      pushCustomHistory();const dim=customDimensions();items.forEach(el=>el.y=Math.max(0,(dim[1]-el.h)/2));finishEdit();
+    }},
+    {label:"□ خلفية بيضاء",run:()=>{
+      if(!readyDoc())return;pushCustomHistory();customDoc.pageBackground="#ffffff";$("#customPageBackground").value="#ffffff";finishEdit();toast("تمت إعادة خلفية الصفحة إلى الأبيض.");
+    }}
+  ]);
+  addToolGroup("improve",[
+    {label:"☑ تحديد الكل",run:()=>{
+      if(!readyDoc())return;if(!customDoc.layout.length)return toast("لا توجد عناصر لتحديدها.");
+      customMultiSelected=customDoc.layout.map(el=>el.id);customSelected=customMultiSelected[0];drawCustomPage();drawCustomProperties();drawCustomLayers();
+    }},
+    {label:"⌫ حذف المحدد",run:()=>{
+      if(!readyDoc())return;const ids=selectedIds();if(!ids.length)return toast("حدد عنصرًا أو أكثر للحذف.");
+      pushCustomHistory();customDoc.layout=customDoc.layout.filter(el=>!ids.includes(el.id));customSelected=null;customMultiSelected=[];finishEdit();toast("تم حذف العناصر المحددة.");
+    }},
+    {label:"⤢ ملاءمة للصفحة",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(!items.length)return toast("حدد عنصرًا أو أكثر أولًا.");
+      pushCustomHistory();const dim=customDimensions();items.forEach(el=>{el.w=Math.max(1,Math.min(Number(el.w)||1,dim[0]));el.h=Math.max(1,Math.min(Number(el.h)||1,dim[1]));el.x=Math.max(0,Math.min(Number(el.x)||0,dim[0]-el.w));el.y=Math.max(0,Math.min(Number(el.y)||0,dim[1]-el.h))});finishEdit();toast("تم ضبط العناصر داخل حدود الصفحة.");
+    }}
+  ]);
+  addToolGroup("layers",[
+    {label:"⇧ إحضار للأمام",run:()=>{
+      if(!readyDoc())return;const ids=selectedIds();if(!ids.length)return toast("حدد طبقة أولًا.");
+      pushCustomHistory();const chosen=customDoc.layout.filter(el=>ids.includes(el.id));customDoc.layout=customDoc.layout.filter(el=>!ids.includes(el.id)).concat(chosen);finishEdit();
+    }},
+    {label:"⇩ إرسال للخلف",run:()=>{
+      if(!readyDoc())return;const ids=selectedIds();if(!ids.length)return toast("حدد طبقة أولًا.");
+      pushCustomHistory();const chosen=customDoc.layout.filter(el=>ids.includes(el.id));customDoc.layout=chosen.concat(customDoc.layout.filter(el=>!ids.includes(el.id)));finishEdit();
+    }}
+  ]);
+  addToolGroup("export",[
+    {label:"⇩ تنزيل نسخة JSON",title:"تنزيل نسخة قابلة للاحتفاظ ببيانات التصميم",run:()=>{
+      if(!readyDoc())return;syncCustomPageToDoc();
+      const blob=new Blob([JSON.stringify(customDoc,null,2)],{type:"application/json;charset=utf-8"});
+      const url=URL.createObjectURL(blob),a=document.createElement("a");
+      a.href=url;a.download=((customDoc.title||customDoc.name||"mada-design").replace(/[\\\\/:*?"<>|]+/g,"-"))+".json";
+      document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      toast("تم تجهيز نسخة JSON للتنزيل.");
+    }}
+  ]);
+
   tabs.addEventListener("click",event=>{
     const tab=event.target.closest("button[data-custom-tool-section]");
     if(!tab)return;
