@@ -158,9 +158,7 @@ const extraDetails=extraContent?'<details class="profile-extra"><summary>عرض 
 const hero='<header class="profile-hero"><div class="profile-copy"><span class="kicker">'+esc(display.brandText||"معرض أعمال شخصي · مَدى")+'</span><h1>'+esc(name)+'</h1>'+
 (display.showRole!==false&&profile.role?'<p class="role">'+esc(profile.role)+'</p>':"")+
 bioPreview+compactMeta+contactSection+extraDetails+'</div>'+(avatar?'<div class="profile-avatar"><img src="'+esc(avatar)+'" alt="الصورة الشخصية"></div>':"")+'</header>';
-const title=String(display.title||"الأعمال المختارة").trim();
-const subtitle=String(display.subtitle||"أعمال وتجارب وروابط شاركها صاحب المعرض.").trim();
-const sectionHead=(display.showSectionTitle===false?"":'<div class="section-head"><div><h2>'+esc(title||"الأعمال المختارة")+'</h2>'+(subtitle?'<p>'+esc(subtitle)+'</p>':"")+'</div>'+(display.showWorkCount!==false?'<span class="count">'+projects.length+' أعمال</span>':"")+'</div>');
+const sectionHead="";
 const sectionDefs=Array.isArray(display.gallerySections)?display.gallerySections:[];
 const visibleSections=sectionDefs.filter(function(section){return section.visible!==false});
 const sectionById=new Map(visibleSections.map(function(section){return [String(section.id),section]}));
