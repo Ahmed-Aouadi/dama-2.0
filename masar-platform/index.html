@@ -1683,7 +1683,8 @@ $("#year").textContent=new Date().getFullYear();
     if(!Array.isArray(customDoc.layout))customDoc.layout=[];
     pushCustomHistory();const dim=customDimensions();
     const sizes={
-      badge:[54,28],price:[78,34],cta:[76,30],divider:[90,2],discount:[48,48],\n      newseason:[76,36],premium:[58,58],bestseller:[82,34],bundle:[88,40],limitededition:[82,36],secure:[58,58],organic:[60,60],priceold:[84,38],tagline:[92,34],instagram:[64,64],hotdeal:[64,64],giftbox:[62,62],members:[82,34],
+      badge:[54,28],price:[78,34],cta:[76,30],divider:[90,2],discount:[48,48],
+      newseason:[76,36],premium:[58,58],bestseller:[82,34],bundle:[88,40],limitededition:[82,36],secure:[58,58],organic:[60,60],priceold:[84,38],tagline:[92,34],instagram:[64,64],hotdeal:[64,64],giftbox:[62,62],members:[82,34],
       shipping:[82,30],rating:[78,28],quality:[55,55],new:[62,30],contact:[76,32],
       popular:[76,32],ribbon:[88,30],coupon:[82,42],flash:[62,62],verified:[58,58],
       eco:[64,36],social:[78,30],limited:[86,30],offer:[80,36],feature:[84,38],
@@ -1724,7 +1725,20 @@ $("#year").textContent=new Date().getFullYear();
     {label:"💎 ميزة المنتج",run:()=>addPresetElement("feature","جودة تستحقها",{color:"#ffffff",fill:"#24324d",fontSize:12})},
     {label:"♡ ختم حصري",run:()=>addPresetElement("heart","حصري",{color:"#ffffff",fill:"#dc3e75",fontSize:13})},
     {label:"✦ عرض خاص",run:()=>addPresetElement("sale","عرض خاص",{color:"#ffffff",fill:"#e24b22",fontSize:13})},
-    {label:"✺ ختم الموسم الجديد",run:()=>addPresetElement("newseason","موسم جديد",{color:"#fff",fill:"#6d28d9",fontSize:12})},\n    {label:"♛ إصدار فاخر",run:()=>addPresetElement("premium","PREMIUM",{color:"#fff3c4",fill:"#242033",fontSize:10})},\n    {label:"🏆 اختيار الخبراء",run:()=>addPresetElement("bestseller","الأكثر طلبًا",{color:"#fff",fill:"#a86b16",fontSize:11})},\n    {label:"📦 باقة متكاملة",run:()=>addPresetElement("bundle","باقة مميزة + هدية",{color:"#fff",fill:"#245caa",fontSize:11})},\n    {label:"⏳ لفترة محدودة",run:()=>addPresetElement("limitededition","لفترة محدودة",{color:"#fff",fill:"#7f1d1d",fontSize:11})},\n    {label:"🔒 دفع آمن",run:()=>addPresetElement("secure","دفع\\nآمن",{color:"#fff",fill:"#0f766e",fontSize:12})},\n    {label:"🍃 منتج عضوي",run:()=>addPresetElement("organic","100٪\\nعضوي",{color:"#fff",fill:"#166534",fontSize:12})},\n    {label:"💸 السعر قبل وبعد",run:()=>addPresetElement("priceold","قبل 3500 دج\\nالآن 2900 دج",{color:"#fff",fill:"#172554",fontSize:11})},\n    {label:"✧ عبارة ترويجية",run:()=>addPresetElement("tagline","تفاصيل صغيرة، فرق كبير",{color:"#fff",fill:"#4338ca",fontSize:11})},\n    {label:"📸 تابعنا",run:()=>addPresetElement("instagram","◎\\nتابعنا",{color:"#fff",fill:"#c13584",fontSize:12})},\n    {label:"🔥 صفقة ساخنة",run:()=>addPresetElement("hotdeal","صفقة\\nساخنة",{color:"#fff",fill:"#c2410c",fontSize:12})},\n    {label:"🎁 صندوق هدية",run:()=>addPresetElement("giftbox","هدية\\nلك",{color:"#fff",fill:"#be185d",fontSize:12})},\n    {label:"👑 للأعضاء فقط",run:()=>addPresetElement("members","للأعضاء فقط",{color:"#fff",fill:"#4338ca",fontSize:11})},\n    {label:"━ فاصل تصميمي",run:()=>addPresetElement("divider","",{color:"#5b46e6",fill:"#5b46e6",fontSize:2})}
+    {label:"✺ ختم الموسم الجديد",run:()=>addPresetElement("newseason","موسم جديد",{color:"#fff",fill:"#6d28d9",fontSize:12})},
+    {label:"♛ إصدار فاخر",run:()=>addPresetElement("premium","PREMIUM",{color:"#fff3c4",fill:"#242033",fontSize:10})},
+    {label:"🏆 اختيار الخبراء",run:()=>addPresetElement("bestseller","الأكثر طلبًا",{color:"#fff",fill:"#a86b16",fontSize:11})},
+    {label:"📦 باقة متكاملة",run:()=>addPresetElement("bundle","باقة مميزة + هدية",{color:"#fff",fill:"#245caa",fontSize:11})},
+    {label:"⏳ لفترة محدودة",run:()=>addPresetElement("limitededition","لفترة محدودة",{color:"#fff",fill:"#7f1d1d",fontSize:11})},
+    {label:"🔒 دفع آمن",run:()=>addPresetElement("secure","دفع\\nآمن",{color:"#fff",fill:"#0f766e",fontSize:12})},
+    {label:"🍃 منتج عضوي",run:()=>addPresetElement("organic","100٪\\nعضوي",{color:"#fff",fill:"#166534",fontSize:12})},
+    {label:"💸 السعر قبل وبعد",run:()=>addPresetElement("priceold","قبل 3500 دج\\nالآن 2900 دج",{color:"#fff",fill:"#172554",fontSize:11})},
+    {label:"✧ عبارة ترويجية",run:()=>addPresetElement("tagline","تفاصيل صغيرة، فرق كبير",{color:"#fff",fill:"#4338ca",fontSize:11})},
+    {label:"📸 تابعنا",run:()=>addPresetElement("instagram","◎\\nتابعنا",{color:"#fff",fill:"#c13584",fontSize:12})},
+    {label:"🔥 صفقة ساخنة",run:()=>addPresetElement("hotdeal","صفقة\\nساخنة",{color:"#fff",fill:"#c2410c",fontSize:12})},
+    {label:"🎁 صندوق هدية",run:()=>addPresetElement("giftbox","هدية\\nلك",{color:"#fff",fill:"#be185d",fontSize:12})},
+    {label:"👑 للأعضاء فقط",run:()=>addPresetElement("members","للأعضاء فقط",{color:"#fff",fill:"#4338ca",fontSize:11})},
+    {label:"━ فاصل تصميمي",run:()=>addPresetElement("divider","",{color:"#5b46e6",fill:"#5b46e6",fontSize:2})}
   ]);
   addToolGroup("add",[
     {label:"▣ تكرار المحدد",title:"إنشاء نسخة من العناصر المحددة",run:()=>{
