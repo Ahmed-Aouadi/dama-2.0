@@ -378,7 +378,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select{b
 #customEditorModal .custom-tools-section-tabs{gap:6px}
 #customEditorModal .custom-tools-section-tabs button{border-radius:11px;transition:background .18s,border-color .18s}
 @media(max-width:680px){#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="presets"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#customEditorModal .custom-added-tools .custom-tool-card{min-height:86px;padding:7px 4px}#customEditorModal .custom-preset-preview{width:38px;height:35px;font-size:17px}#customEditorModal .custom-preset-caption{font-size:9px}}
-.custom-vector-svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}.custom-page-element.preset-element:has(.custom-vector-svg){background:transparent!important;border:0!important;border-radius:0!important;overflow:visible}.custom-page-element.preset-element:has(.custom-vector-svg) .custom-resize-handle{z-index:5}</style>
+</style>
   <link rel="stylesheet" href="/masar-platform/discover-path.css?v=20261012-quest">
   <link rel="stylesheet" href="/masar-platform/portfolio-work.css">
 <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
@@ -1721,54 +1721,6 @@ $("#year").textContent=new Date().getFullYear();
   function selectedIds(){
     return Array.from(new Set([...(customMultiSelected||[]),customSelected].filter(Boolean)));
   }
-  addToolGroup("presets",[
-    {label:"✦ شارة إصدار جديد",run:()=>addPresetElement("badge","جديد",{color:"#ffffff",fill:"#e84378",fontSize:15})},
-    {label:"🏷 بطاقة السعر",run:()=>addPresetElement("price","السعر 2,900 دج",{color:"#ffffff",fill:"#33245f",fontSize:15})},
-    {label:"🛒 زر اطلب الآن",run:()=>addPresetElement("cta","اطلب الآن  ←",{color:"#ffffff",fill:"#0b9f87",fontSize:14})},
-    {label:"٪ ختم تخفيض دائري",run:()=>addPresetElement("discount","خصم\n30٪",{color:"#ffffff",fill:"#e72d50",fontSize:17})},
-    {label:"⚡ عرض خاطف",run:()=>addPresetElement("flash","⚡\nعرض خاطف",{color:"#ffffff",fill:"#f08a16",fontSize:13})},
-    {label:"🎟 قسيمة خصم",run:()=>addPresetElement("coupon","قسيمة خصم\nSAVE20",{color:"#ffffff",fill:"#5942c4",fontSize:12})},
-    {label:"🚚 شارة توصيل مجاني",run:()=>addPresetElement("shipping","توصيل مجاني",{color:"#ffffff",fill:"#087f5b",fontSize:13})},
-    {label:"★ تقييم مميز",run:()=>addPresetElement("rating","★★★★★  4.9",{color:"#704900",fill:"#ffe49a",fontSize:12})},
-    {label:"✓ ختم ضمان",run:()=>addPresetElement("guarantee","ضمان\nالجودة",{color:"#ffffff",fill:"#2457a7",fontSize:12})},
-    {label:"✧ شارة موثّق",run:()=>addPresetElement("verified","✓\nموثّق",{color:"#ffffff",fill:"#2878e8",fontSize:13})},
-    {label:"🌿 منتج طبيعي",run:()=>addPresetElement("eco","طبيعي 100٪",{color:"#ffffff",fill:"#27824b",fontSize:12})},
-    {label:"♡ الأكثر مبيعًا",run:()=>addPresetElement("popular","الأكثر مبيعًا",{color:"#ffffff",fill:"#bb3973",fontSize:13})},
-    {label:"✂ شريط جانبي",run:()=>addPresetElement("ribbon","اختيارنا المميز",{color:"#ffffff",fill:"#bd2c46",fontSize:12})},
-    {label:"🔥 كمية محدودة",run:()=>addPresetElement("limited","🔥 كمية محدودة",{color:"#ffffff",fill:"#b91c1c",fontSize:12})},
-    {label:"🎁 هدية مع الطلب",run:()=>addPresetElement("offer","هدية مع كل طلب",{color:"#ffffff",fill:"#7946c7",fontSize:12})},
-    {label:"☎ تواصل معنا",run:()=>addPresetElement("contact","تواصل معنا  ☎",{color:"#ffffff",fill:"#1769c2",fontSize:12})},
-    {label:"💎 ميزة المنتج",run:()=>addPresetElement("feature","جودة تستحقها",{color:"#ffffff",fill:"#24324d",fontSize:12})},
-    {label:"♡ ختم حصري",run:()=>addPresetElement("heart","حصري",{color:"#ffffff",fill:"#dc3e75",fontSize:13})},
-    {label:"✦ عرض خاص",run:()=>addPresetElement("sale","عرض خاص",{color:"#ffffff",fill:"#e24b22",fontSize:13})},
-    {label:"✺ ختم الموسم الجديد",run:()=>addPresetElement("newseason","موسم جديد",{color:"#fff",fill:"#6d28d9",fontSize:12})},
-    {label:"♛ إصدار فاخر",run:()=>addPresetElement("premium","PREMIUM",{color:"#fff3c4",fill:"#242033",fontSize:10})},
-    {label:"🏆 اختيار الخبراء",run:()=>addPresetElement("bestseller","الأكثر طلبًا",{color:"#fff",fill:"#a86b16",fontSize:11})},
-    {label:"📦 باقة متكاملة",run:()=>addPresetElement("bundle","باقة مميزة + هدية",{color:"#fff",fill:"#245caa",fontSize:11})},
-    {label:"⏳ لفترة محدودة",run:()=>addPresetElement("limitededition","لفترة محدودة",{color:"#fff",fill:"#7f1d1d",fontSize:11})},
-    {label:"🔒 دفع آمن",run:()=>addPresetElement("secure","دفع\\nآمن",{color:"#fff",fill:"#0f766e",fontSize:12})},
-    {label:"🍃 منتج عضوي",run:()=>addPresetElement("organic","100٪\\nعضوي",{color:"#fff",fill:"#166534",fontSize:12})},
-    {label:"💸 السعر قبل وبعد",run:()=>addPresetElement("priceold","قبل 3500 دج\\nالآن 2900 دج",{color:"#fff",fill:"#172554",fontSize:11})},
-    {label:"✧ عبارة ترويجية",run:()=>addPresetElement("tagline","تفاصيل صغيرة، فرق كبير",{color:"#fff",fill:"#4338ca",fontSize:11})},
-    {label:"📸 تابعنا",run:()=>addPresetElement("instagram","◎\\nتابعنا",{color:"#fff",fill:"#c13584",fontSize:12})},
-    {label:"🔥 صفقة ساخنة",run:()=>addPresetElement("hotdeal","صفقة\\nساخنة",{color:"#fff",fill:"#c2410c",fontSize:12})},
-    {label:"🎁 صندوق هدية",run:()=>addPresetElement("giftbox","هدية\\nلك",{color:"#fff",fill:"#be185d",fontSize:12})},
-    {label:"👑 للأعضاء فقط",run:()=>addPresetElement("members","للأعضاء فقط",{color:"#fff",fill:"#4338ca",fontSize:11})},
-    {label:"━ فاصل تصميمي",run:()=>addPresetElement("divider","",{color:"#5b46e6",fill:"#5b46e6",fontSize:2})},
-    {label:"⬟ إطار أنيق",run:()=>addPresetElement("frame","إطار أنيق",{color:"#ffffff",fill:"#111827",fontSize:12,radius:4})},
-    {label:"◉ شارة دائرية",run:()=>addPresetElement("circlebadge","مميز",{color:"#ffffff",fill:"#7c3aed",fontSize:13,radius:28})},
-    {label:"➤ سهم دعوة",run:()=>addPresetElement("arrowcta","اكتشف المزيد  ➜",{color:"#ffffff",fill:"#0f766e",fontSize:12,radius:8})},
-    {label:"▰ شريط عنوان",run:()=>addPresetElement("titlebar","عنوان القسم",{color:"#ffffff",fill:"#312e81",fontSize:14,radius:5})},
-    {label:"✦ بطاقة مميزة",run:()=>addPresetElement("featurecard","✦  اختيار مميز",{color:"#312e81",fill:"#e0e7ff",fontSize:12,radius:9})},
-    {label:"❝ اقتباس",run:()=>addPresetElement("quote","❝  فكرتك تستحق أن تُرى",{color:"#374151",fill:"#f3f4f6",fontSize:11,radius:7})},
-    {label:"✓ شارة نجاح",run:()=>addPresetElement("success","✓  تم بنجاح",{color:"#166534",fill:"#dcfce7",fontSize:12,radius:18})},
-    {label:"⚑ علامة تنبيه",run:()=>addPresetElement("notice","تنبيه مهم  ⚑",{color:"#92400e",fill:"#fef3c7",fontSize:12,radius:5})},
-    {label:"✿ زخرفة ناعمة",run:()=>addPresetElement("floral","✿  لمسة جميلة",{color:"#9d174d",fill:"#fce7f3",fontSize:13,radius:18})},
-    {label:"◆ شارة تقنية",run:()=>addPresetElement("tech","TECH  ◆",{color:"#cffafe",fill:"#164e63",fontSize:12,radius:5})},
-    {label:"☼ شارة صيفية",run:()=>addPresetElement("summer","☼  إصدار الصيف",{color:"#7c2d12",fill:"#fed7aa",fontSize:12,radius:18})},
-    {label:"▱ بطاقة معلومات",run:()=>addPresetElement("infocard","معلومة مهمة  ·  01",{color:"#1e3a8a",fill:"#dbeafe",fontSize:11,radius:7})},
-    {label:"♡ شارة مخصصة",run:()=>addPresetElement("love","صُنع بعناية  ♡",{color:"#9f1239",fill:"#ffe4e6",fontSize:12,radius:18})}
-  ]);
   addToolGroup("add",[
     {label:"▣ تكرار المحدد",title:"إنشاء نسخة من العناصر المحددة",run:()=>{
       if(!readyDoc())return;
