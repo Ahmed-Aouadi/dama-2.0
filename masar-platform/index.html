@@ -370,14 +370,14 @@ input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select{b
 }
 
 /* Creative preset library: visual swatches, richer cards and responsive browsing. */
-#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="presets"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}
+#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="smart"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}
 #customEditorModal .custom-added-tools .custom-tool-card{min-width:0;min-height:94px;padding:9px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid #e6e0f4!important;border-radius:14px!important;background:linear-gradient(150deg,#fff 0%,#f8f6ff 100%)!important;color:#30264b!important;box-shadow:0 3px 10px #2b1c5208;transition:transform .18s,border-color .18s,box-shadow .18s}
 #customEditorModal .custom-added-tools .custom-tool-card:hover{transform:translateY(-3px);border-color:#a99aff!important;box-shadow:0 9px 18px #4931a31a;background:#fff!important}
 #customEditorModal .custom-preset-preview{display:grid;place-items:center;width:43px;height:39px;padding:3px;border-radius:11px;background:linear-gradient(135deg,#ede9fe,#dbeafe);color:#5b46e6;font-size:19px;font-weight:800;box-shadow:inset 0 0 0 1px #ffffffb5}
 #customEditorModal .custom-preset-caption{display:block;width:100%;font-size:10px;line-height:1.5;font-weight:700;text-align:center;overflow-wrap:anywhere}
 #customEditorModal .custom-tools-section-tabs{gap:6px}
 #customEditorModal .custom-tools-section-tabs button{border-radius:11px;transition:background .18s,border-color .18s}
-@media(max-width:680px){#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="presets"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#customEditorModal .custom-added-tools .custom-tool-card{min-height:86px;padding:7px 4px}#customEditorModal .custom-preset-preview{width:38px;height:35px;font-size:17px}#customEditorModal .custom-preset-caption{font-size:9px}}
+@media(max-width:680px){#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="smart"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#customEditorModal .custom-added-tools .custom-tool-card{min-height:86px;padding:7px 4px}#customEditorModal .custom-preset-preview{width:38px;height:35px;font-size:17px}#customEditorModal .custom-preset-caption{font-size:9px}}
 </style>
   <link rel="stylesheet" href="/masar-platform/discover-path.css?v=20261012-quest">
   <link rel="stylesheet" href="/masar-platform/portfolio-work.css">
@@ -1643,7 +1643,7 @@ $("#year").textContent=new Date().getFullYear();
   nodes.slice(0,startAdd).forEach(node=>introWrap.appendChild(node));
   const sections=[
     {key:"add",label:"＋ إضافة",nodes:nodes.slice(startAdd,startPage)},
-    {key:"presets",label:"✧ عناصر جاهزة",nodes:[]},
+    {key:"smart",label:"✦ أدوات ذكية",nodes:[]},
     {key:"page",label:"▦ الصفحة",nodes:nodes.slice(startPage,startReference)},
     {key:"reference",label:"◎ المرجع",nodes:nodes.slice(startReference,startWatermark)},
     {key:"watermark",label:"◈ العلامة المائية",nodes:nodes.slice(startWatermark,startAdvanced)},
@@ -1683,12 +1683,7 @@ $("#year").textContent=new Date().getFullYear();
     tools.forEach(item=>{
       const button=document.createElement("button");
       button.type="button";button.classList.add("custom-tool-card");button.title=item.title||item.label;
-      if(key==="presets"){
-        const preview=document.createElement("span");preview.className="custom-preset-preview";
-        const symbol=String(item.label||"✦").trim().split(/\s+/)[0];preview.textContent=symbol;
-        preview.setAttribute("aria-hidden","true");button.appendChild(preview);
-        const caption=document.createElement("span");caption.className="custom-preset-caption";caption.textContent=String(item.label||"").replace(/^\S+\s*/,"");button.appendChild(caption);
-      }else button.textContent=item.label;
+      button.textContent=item.label;
       button.addEventListener("click",event=>{event.preventDefault();try{item.run.call(button,event)}catch(error){console.error("Mada editor tool failed:",item.label,error);toast("تعذر تنفيذ الأداة: "+item.label)}});
       group.appendChild(button);
     });
@@ -1736,6 +1731,48 @@ $("#year").textContent=new Date().getFullYear();
       });
       customDoc.layout.push(...copies);customSelected=copies[copies.length-1].id;customMultiSelected=copies.map(x=>x.id);
       finishEdit();toast("تم تكرار العناصر المحددة.");
+    }}
+  ]);
+  addToolGroup("smart",[
+    {label:"↔ توسيط أفقي",title:"توسيط العنصر أو مجموعة العناصر أفقيًا",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(!items.length)return toast("حدد عنصرًا أو أكثر أولًا.");
+      pushCustomHistory();const dim=customDimensions();
+      const left=Math.min(...items.map(el=>Number(el.x)||0)),right=Math.max(...items.map(el=>(Number(el.x)||0)+(Number(el.w)||1)));
+      const shift=(dim[0]-(right-left))/2-left;items.forEach(el=>{el.x=Math.max(0,Math.min(dim[0]-(Number(el.w)||1),(Number(el.x)||0)+shift))});
+      finishEdit();toast("تم توسيط التحديد أفقيًا.");
+    }},
+    {label:"↕ توسيط عمودي",title:"توسيط العنصر أو مجموعة العناصر عموديًا",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(!items.length)return toast("حدد عنصرًا أو أكثر أولًا.");
+      pushCustomHistory();const dim=customDimensions();
+      const top=Math.min(...items.map(el=>Number(el.y)||0)),bottom=Math.max(...items.map(el=>(Number(el.y)||0)+(Number(el.h)||1)));
+      const shift=(dim[1]-(bottom-top))/2-top;items.forEach(el=>{el.y=Math.max(0,Math.min(dim[1]-(Number(el.h)||1),(Number(el.y)||0)+shift))});
+      finishEdit();toast("تم توسيط التحديد عموديًا.");
+    }},
+    {label:"⇤ محاذاة لليسار",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(items.length<2)return toast("حدد عنصرين على الأقل للمحاذاة.");
+      pushCustomHistory();const x=Math.min(...items.map(el=>Number(el.x)||0));items.forEach(el=>el.x=x);finishEdit();toast("تمت محاذاة العناصر لليسار.");
+    }},
+    {label:"⇥ محاذاة لليمين",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(items.length<2)return toast("حدد عنصرين على الأقل للمحاذاة.");
+      pushCustomHistory();const edge=Math.max(...items.map(el=>(Number(el.x)||0)+(Number(el.w)||1)));const dim=customDimensions();items.forEach(el=>el.x=Math.max(0,Math.min(dim[0]-(Number(el.w)||1),edge-(Number(el.w)||1))));finishEdit();toast("تمت محاذاة العناصر لليمين.");
+    }},
+    {label:"⇡ محاذاة للأعلى",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(items.length<2)return toast("حدد عنصرين على الأقل للمحاذاة.");
+      pushCustomHistory();const y=Math.min(...items.map(el=>Number(el.y)||0));items.forEach(el=>el.y=y);finishEdit();toast("تمت محاذاة العناصر للأعلى.");
+    }},
+    {label:"⇣ محاذاة للأسفل",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems();if(items.length<2)return toast("حدد عنصرين على الأقل للمحاذاة.");
+      pushCustomHistory();const edge=Math.max(...items.map(el=>(Number(el.y)||0)+(Number(el.h)||1)));const dim=customDimensions();items.forEach(el=>el.y=Math.max(0,Math.min(dim[1]-(Number(el.h)||1),edge-(Number(el.h)||1))));finishEdit();toast("تمت محاذاة العناصر للأسفل.");
+    }},
+    {label:"↔ توزيع أفقي",title:"توزيع العناصر المحددة بمسافات متساوية",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems().slice().sort((a,b)=>(Number(a.x)||0)-(Number(b.x)||0));if(items.length<3)return toast("حدد ثلاثة عناصر على الأقل للتوزيع.");
+      pushCustomHistory();const first=items[0],last=items[items.length-1],start=Number(first.x)||0,end=(Number(last.x)||0)+(Number(last.w)||1),total=items.reduce((sum,el)=>sum+(Number(el.w)||1),0),gap=(end-start-total)/(items.length-1);let cursor=start;
+      items.forEach(el=>{el.x=cursor;cursor+=(Number(el.w)||1)+gap});finishEdit();toast("تم توزيع العناصر أفقيًا.");
+    }},
+    {label:"↕ توزيع عمودي",title:"توزيع العناصر المحددة بمسافات متساوية",run:()=>{
+      if(!readyDoc())return;const items=customSelectedItems().slice().sort((a,b)=>(Number(a.y)||0)-(Number(b.y)||0));if(items.length<3)return toast("حدد ثلاثة عناصر على الأقل للتوزيع.");
+      pushCustomHistory();const first=items[0],last=items[items.length-1],start=Number(first.y)||0,end=(Number(last.y)||0)+(Number(last.h)||1),total=items.reduce((sum,el)=>sum+(Number(el.h)||1),0),gap=(end-start-total)/(items.length-1);let cursor=start;
+      items.forEach(el=>{el.y=cursor;cursor+=(Number(el.h)||1)+gap});finishEdit();toast("تم توزيع العناصر عموديًا.");
     }}
   ]);
   addToolGroup("watermark",[
