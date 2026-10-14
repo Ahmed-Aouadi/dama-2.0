@@ -2118,7 +2118,74 @@ document.addEventListener("click",function(event){
 .custom-page-element.preset-giftbox{background:linear-gradient(135deg,#ec4899,#9d174d)!important;border:2px solid #fbcfe8!important;border-radius:8px!important;box-shadow:inset 0 0 0 5px #ffffff16}
 .custom-page-element.preset-members{background:linear-gradient(135deg,#312e81,#111827)!important;border:1px solid #c4b5fd!important;border-radius:999px!important;box-shadow:inset 0 0 0 2px #ffffff16}
 .custom-page-element.preset-element:after{pointer-events:none}
+
+/* Keep modal save actions pinned at the top while the modal content scrolls. */
+.modal-save-toolbar{position:sticky;top:-25px;z-index:40;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-25px -25px 18px;padding:12px 25px;background:#fff;border-bottom:1px solid #e9e5f2;box-shadow:0 5px 14px #17152b0a}
+.modal-save-toolbar:empty{display:none}
+.modal-save-toolbar button{flex:0 0 auto;white-space:nowrap}
+.modal-head{position:sticky;top:var(--modal-save-toolbar-height,0px);z-index:30;background:#fff;padding-block:8px;margin-top:-8px}
+.modal-save-placeholder{display:none!important}
+@media(max-width:620px){.modal-save-toolbar{gap:6px;padding:10px 14px;margin:-25px -25px 15px}.modal-save-toolbar button{font-size:13px;padding:9px 11px}.modal-head{top:var(--modal-save-toolbar-height,0px)}}
 </style>
+
+<script>
+(function(){
+  if(window.__modalSaveToolbarInstalled)return;window.__modalSaveToolbarInstalled=true;
+  let formCounter=0;
+  const isSaveAction=function(button){
+    const label=((button.id||"")+" "+(button.textContent||"")).replace(/\\s+/g," ").trim();
+    return /save|حفظ|نشر|تحديث المعرض|اعتماد (?:ترتيب|التوزيع)/i.test(label);
+  };
+  const setupModal=function(modal){
+    if(!modal)return;
+    let toolbar=modal.querySelector(":scope > .modal-save-toolbar");
+    if(!toolbar){toolbar=document.createElement("div");toolbar.className="modal-save-toolbar";toolbar.setAttribute("aria-label","أزرار الحفظ والإجراءات");modal.insertBefore(toolbar,modal.firstChild);}
+    const buttons=Array.from(modal.querySelectorAll("button")).filter(function(button){
+      return !button.closest(".modal-save-toolbar")&&!button.closest(".modal-head")&&isSaveAction(button)&&!button.dataset.modalSaveMoved;
+    });
+    buttons.forEach(function(button){
+      const placeholder=document.createElement("span");placeholder.className="modal-save-placeholder";button.parentNode.insertBefore(placeholder,button);
+      button.__modalSavePlaceholder=placeholder;
+      button.dataset.modalSaveMoved="1";
+      if(button.hasAttribute("form")){button.dataset.modalSaveOriginalForm=button.getAttribute("form");}
+      else{button.dataset.modalSaveOriginalForm="__none__";}
+      if(button.type==="submit"){
+        let form=button.closest("form");
+        if(form){if(!form.id)form.id="modal-save-form-"+(++formCounter);button.setAttribute("form",form.id);}
+      }
+      toolbar.appendChild(button);
+    });
+    const hasActions=toolbar.querySelector("button");
+    modal.style.setProperty("--modal-save-toolbar-height",hasActions?Math.ceil(toolbar.getBoundingClientRect().height)+"px":"0px");
+  };
+  const restoreModal=function(modal){
+    if(!modal)return;
+    modal.querySelectorAll(".modal-save-toolbar button[data-modal-save-moved='1']").forEach(function(button){
+      const placeholder=button.__modalSavePlaceholder;
+      if(placeholder&&placeholder.parentNode)placeholder.parentNode.insertBefore(button,placeholder);
+      if(placeholder&&placeholder.parentNode)placeholder.remove();
+      const original=button.dataset.modalSaveOriginalForm;
+      if(original==="__none__")button.removeAttribute("form");else if(original!==undefined)button.setAttribute("form",original);
+      delete button.dataset.modalSaveMoved;delete button.dataset.modalSaveOriginalForm;delete button.__modalSavePlaceholder;
+    });
+    modal.style.setProperty("--modal-save-toolbar-height","0px");
+  };
+  const scan=function(){
+    document.querySelectorAll(".modal-backdrop").forEach(function(backdrop){
+      const modal=backdrop.querySelector(".modal");if(!modal)return;
+      if(backdrop.classList.contains("open")){setupModal(modal);}
+      else{restoreModal(modal);}
+    });
+  };
+  const start=function(){
+    scan();
+    const observer=new MutationObserver(function(){scan();});
+    observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["class"]});
+    window.addEventListener("resize",function(){document.querySelectorAll(".modal-backdrop.open .modal").forEach(function(modal){const bar=modal.querySelector(":scope > .modal-save-toolbar");modal.style.setProperty("--modal-save-toolbar-height",bar&&bar.querySelector("button")?Math.ceil(bar.getBoundingClientRect().height)+"px":"0px");});});
+  };
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
+})();
+</script>
 </body>
 </html>
 
