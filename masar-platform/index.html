@@ -493,6 +493,47 @@ html,body{height:100%;overflow:hidden}
 }
 </style>
 
+
+<style id="portfolio-designer-sharing-tab-position-fix">
+/* Keep the four portfolio settings tabs together in one RTL row. */
+#portfolioDesigner .designer-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  direction:rtl!important;
+  align-items:stretch!important;
+  justify-content:stretch!important;
+  width:100%!important;
+  gap:5px!important;
+  margin:0 0 10px!important;
+  padding:5px!important;
+  box-sizing:border-box!important;
+}
+#portfolioDesigner .designer-tabs>.designer-tab{
+  display:flex!important;
+  position:static!important;
+  float:none!important;
+  flex:none!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:42px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:7px 3px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  box-sizing:border-box!important;
+  line-height:1.4!important;
+}
+#portfolioDesigner .designer-group-panels{display:block!important;width:100%!important;min-width:0!important;clear:both!important}
+#portfolioDesigner .designer-group-pane[hidden]{display:none!important}
+@media(max-width:650px){
+  #portfolioDesigner .designer-tabs>.designer-tab{min-height:40px!important;font-size:10px!important;padding:6px 2px!important}
+}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
