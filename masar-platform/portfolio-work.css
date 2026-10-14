@@ -212,3 +212,43 @@
 #page-profile .profile-preview-link:hover{background:#ffffff20}
 #page-profile .profile-layout{align-items:start}
 @media(max-width:760px){#page-profile .profile-completion{padding:15px;border-radius:15px}#page-profile .profile-completion-icon{flex-basis:36px;height:36px;border-radius:11px}#page-profile .profile-completion-copy h2{font-size:13px}#page-profile .profile-completion-percent{font-size:19px}#page-profile .profile-completion-footer{font-size:9px}#page-profile .profile-group-heading{padding-top:12px}}
+
+
+/* Settings page refresh: overview, preference cards, backups and safety actions. */
+#page-settings .settings-overview{margin:0 0 20px;padding:clamp(19px,3vw,27px);border-radius:23px;background:linear-gradient(125deg,#19162f 0%,#30265a 100%);color:#fff;box-shadow:0 16px 38px #17122b16}
+#page-settings .settings-overview-heading{display:flex;justify-content:space-between;align-items:center;gap:14px}
+#page-settings .settings-kicker{font-size:10px;letter-spacing:.4px;color:#c7baff;font-weight:800}
+#page-settings .settings-overview-heading h2{margin:7px 0 5px;font-size:clamp(20px,2.4vw,27px);letter-spacing:-.5px}
+#page-settings .settings-overview-heading p{margin:0;color:#d0cbe0;font-size:11px;line-height:1.8}
+#page-settings .settings-overview-mark{display:grid;place-items:center;width:49px;height:49px;flex:0 0 49px;border-radius:16px;background:#ffffff12;border:1px solid #ffffff20;color:#d5caff;font-size:24px}
+#page-settings .settings-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px}
+#page-settings .settings-stat{display:flex;align-items:center;gap:10px;min-width:0;padding:13px;border:1px solid #ffffff19;border-radius:14px;background:#ffffff0b}
+#page-settings .settings-stat-icon{display:grid;place-items:center;flex:0 0 34px;height:34px;border-radius:11px;background:#ffffff12;color:#cfc3ff;font-size:17px}
+#page-settings .settings-stat strong{display:block;font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+#page-settings .settings-stat small{display:block;margin-top:3px;color:#d0cbe0;font-size:10px;line-height:1.5}
+#page-settings .settings-content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(235px,.8fr);align-items:start;gap:17px}
+#page-settings .settings-main-column,#page-settings .settings-side-column{display:grid;gap:16px;min-width:0}
+#page-settings .settings-card{margin:0;padding:clamp(16px,2.3vw,22px);border-radius:19px}
+#page-settings .settings-card-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+#page-settings .settings-card-icon{display:grid;place-items:center;flex:0 0 39px;height:39px;border-radius:13px;background:#f0edff;color:#6548d8;font-size:18px;font-weight:800}
+#page-settings .settings-card-icon.danger{background:#fff0f2;color:#b83250}
+#page-settings .settings-card-heading h3{margin:2px 0 5px;font-size:14px}
+#page-settings .settings-card-heading p{margin:0;color:var(--muted);font-size:11px;line-height:1.8}
+#page-settings .settings-row{gap:15px;padding:16px 0;border-top:1px solid var(--line)}
+#page-settings .settings-row>div{min-width:0}
+#page-settings .settings-row strong{display:block;font-size:12px}
+#page-settings .settings-row small{display:block;margin-top:5px;font-size:10px;line-height:1.8;color:var(--muted)}
+#page-settings .settings-inline-note{display:flex;align-items:flex-start;gap:8px;margin:12px 0 0;padding:11px 12px;border-radius:11px;background:#f7f5ff;color:#6f6886;font-size:10px;line-height:1.8}
+#page-settings .settings-inline-note span{color:var(--purple);font-weight:800}
+#page-settings .settings-danger-card{border-color:#f1d9df;background:linear-gradient(135deg,#fff 0%,#fffafb 100%)}
+#page-settings .settings-danger-button{color:#b83250!important;border-color:#f0cbd4;background:#fff7f8;white-space:nowrap}
+#page-settings .settings-danger-note{margin:9px 0 0;color:#a24a60;font-size:10px;line-height:1.8}
+#page-settings .settings-help-card{padding:21px;border:1px solid #e3dcfb;border-radius:19px;background:linear-gradient(145deg,#f5f1ff,#fff)}
+#page-settings .settings-help-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#e6deff;color:#6548d8;font-size:20px}
+#page-settings .settings-help-card h3{margin:13px 0 7px;font-size:15px}
+#page-settings .settings-help-card p{margin:0 0 15px;color:var(--muted);font-size:11px;line-height:1.9}
+#page-settings .settings-help-card button{display:block;width:100%;margin-top:8px}
+#page-settings .settings-about-card{padding:19px;border-radius:19px}
+#page-settings .settings-about-card p{margin:12px 0 15px;color:var(--muted);font-size:11px;line-height:2}
+@media(max-width:900px){#page-settings .settings-content-grid{grid-template-columns:minmax(0,1fr)}#page-settings .settings-side-column{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){#page-settings .settings-overview{padding:17px;border-radius:17px}#page-settings .settings-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:17px}#page-settings .settings-stat{padding:10px;gap:8px}#page-settings .settings-stat strong{font-size:15px}#page-settings .settings-content-grid{gap:12px}#page-settings .settings-side-column{grid-template-columns:minmax(0,1fr)}#page-settings .settings-card{padding:15px}#page-settings .settings-row{align-items:flex-start;flex-wrap:wrap}#page-settings .settings-row>button{margin-inline-start:auto}#page-settings .settings-card-heading p{font-size:10px}}
