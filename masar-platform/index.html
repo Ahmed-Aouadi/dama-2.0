@@ -1146,6 +1146,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
   ];
   const titles={style:"القالب والنمط",colors:"الألوان ولوحات الألوان",fonts:"الخطوط والكتابة",layout:"التخطيط والمسافات",profile:"بطاقة المعلومات",content:"النصوص وأقسام الأعمال",sharing:"الظهور وطرق التواصل"};
   const panes=Array.from(designer.querySelectorAll(".designer-pane[data-designer-pane]"));
+  let groupAnchor=nav;
   groups.forEach(function(group,index){
    const wrapper=document.createElement("div");wrapper.className="designer-group-pane";wrapper.dataset.designerGroupPane=group.id;wrapper.hidden=index!==0;
    group.panes.forEach(function(key){
@@ -1156,7 +1157,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
     const summary=document.createElement("summary");summary.textContent=titles[key]||key;
     details.appendChild(summary);details.appendChild(pane);wrapper.appendChild(details);
    });
-   nav.after(wrapper);
+   groupAnchor.after(wrapper);groupAnchor=wrapper;
   });
   designer.dataset.groupsReady="true";
  }
