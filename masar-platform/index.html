@@ -1047,7 +1047,20 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
  else sendPortfolioPreviewFrame(frame);
  }
  let portfolioPreviewDevice=window.matchMedia&&window.matchMedia("(max-width: 760px)").matches?"mobile":"desktop";
- function applyPortfolioPreviewDevice(){const host=$("#portfolioLivePreview");if(!host)return;host.dataset.deviceMode=portfolioPreviewDevice;$$("#portfolioDesignerModal [data-preview-device]").forEach(function(button){const active=button.dataset.previewDevice===portfolioPreviewDevice;button.setAttribute("aria-pressed",active?"true":"false")});const frame=host.querySelector("iframe");if(frame){frame.style.width=portfolioPreviewDevice==="mobile"?"390px":"100%";frame.style.minWidth=portfolioPreviewDevice==="mobile"?"390px":"0";frame.style.maxWidth=portfolioPreviewDevice==="mobile"?"none":"100%"}}
+ function applyPortfolioPreviewDevice(){
+ const host=$("#portfolioLivePreview");if(!host)return;
+ host.dataset.deviceMode=portfolioPreviewDevice;
+ $("#portfolioDesignerModal [data-preview-device]").forEach(function(button){const active=button.dataset.previewDevice===portfolioPreviewDevice;button.setAttribute("aria-pressed",active?"true":"false")});
+ const frame=host.querySelector("iframe");if(!frame)return;
+ const viewportWidth=portfolioPreviewDevice==="mobile"?390:1280;
+ const availableWidth=Math.max(1,host.clientWidth),availableHeight=Math.max(1,host.clientHeight);
+ const scale=Math.min(1,availableWidth/viewportWidth);
+ host.style.setProperty("--preview-scale",String(scale));
+ host.style.setProperty("--preview-inner-height",Math.ceil(availableHeight/scale)+"px");
+ frame.style.width=viewportWidth+"px";
+ frame.style.height=Math.ceil(availableHeight/scale)+"px";
+ frame.style.minWidth="0";frame.style.maxWidth="none";
+}
  function renderPortfolioLivePreview(){
  const s=Object.assign({},initial.portfolioSettings,state.portfolioSettings||{}),host=$("#portfolioLivePreview");
  if(!host)return;
@@ -1115,7 +1128,8 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
  }
  organizePortfolioDesignerGroups();
  $("#openPortfolioDesignerBtn").addEventListener("click",function(){portfolioPreviewDevice=window.matchMedia&&window.matchMedia("(max-width: 760px)").matches?"mobile":"desktop";syncPortfolioControls();renderPortfolioLivePreview();applyPortfolioPreviewDevice();openModal("portfolioDesignerModal")});
- $$("#portfolioDesignerModal [data-preview-device]").forEach(function(button){button.addEventListener("click",function(){portfolioPreviewDevice=button.dataset.previewDevice==="mobile"?"mobile":"desktop";applyPortfolioPreviewDevice()})});
+ $("#portfolioDesignerModal [data-preview-device]").forEach(function(button){button.addEventListener("click",function(){portfolioPreviewDevice=button.dataset.previewDevice==="mobile"?"mobile":"desktop";applyPortfolioPreviewDevice()})});
+ if(window.ResizeObserver){const previewHost=$("#portfolioLivePreview");if(previewHost){const previewResizeObserver=new ResizeObserver(function(){applyPortfolioPreviewDevice()});previewResizeObserver.observe(previewHost)}}else window.addEventListener("resize",applyPortfolioPreviewDevice);
  $("#portfolioDesignerDoneBtn").addEventListener("click",function(){closeModal("portfolioDesignerModal")});
 $("#accountSettingsForm").addEventListener("submit",async function(e){
  e.preventDefault();
