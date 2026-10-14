@@ -588,10 +588,38 @@ html,body{height:100%;overflow:hidden}
 </section>
 
 <section class="page" id="page-studio">
-  <div class="section-intro"><h1>استوديو الإبداع</h1><p>ابدأ من قالب، غيّر النصوص والألوان، ثم احفظ التصميم أو نزّله.</p></div>
-  <div class="toolbar studio-toolbar"><button class="primary" id="newBlankDesign">＋ ابدأ تصميمًا جديدًا</button><button class="secondary" type="button" id="launchNextStudio">✦ افتح الاستوديو الجديد</button><span class="tiny-note">مساحة فارغة بالكامل — أضف العناصر التي تريدها بنفسك.</span></div>
-  <div class="panel studio-empty-note"><strong>لا توجد قوالب جاهزة</strong><p class="tiny-note">أزلنا القوالب الافتراضية. ابدأ من صفحة فارغة، ثم احفظ تصميمك لتتمكن من تعديله أو حذفه لاحقًا.</p></div>
-  <div class="section-head"><div><h2>تصميماتك المحفوظة</h2><p>تظهر هنا على هذا الجهاز.</p></div></div><div class="cards" id="savedDesigns"></div>
+  <div class="studio-hero">
+    <div class="studio-hero-copy">
+      <span class="studio-kicker"><span aria-hidden="true">✦</span> مساحة الإبداع في مَدى</span>
+      <h1>حوّل فكرتك إلى تصميم</h1>
+      <p>ابدأ بلوحة فارغة، أضف النصوص والأشكال والصور، ثم رتّب كل تفصيلة حتى يصبح التصميم كما تتخيّله.</p>
+      <div class="studio-hero-actions">
+        <button class="primary" id="newBlankDesign" type="button"><span aria-hidden="true">＋</span> ابدأ تصميمًا جديدًا</button>
+        <span class="studio-local-note"><span aria-hidden="true">◉</span> تصميماتك المحفوظة تبقى على هذا الجهاز</span>
+      </div>
+    </div>
+    <div class="studio-hero-art" aria-hidden="true">
+      <div class="studio-art-glow"></div>
+      <div class="studio-art-sheet studio-art-sheet-back"><i></i><i></i><i></i></div>
+      <div class="studio-art-sheet studio-art-sheet-front">
+        <span class="studio-art-spark">✳</span><span class="studio-art-pill"></span><span class="studio-art-title"></span>
+        <span class="studio-art-line"></span><span class="studio-art-line short"></span><span class="studio-art-block"></span><span class="studio-art-dot"></span>
+      </div>
+      <span class="studio-art-chip studio-art-chip-one">Aa</span><span class="studio-art-chip studio-art-chip-two">✦</span>
+    </div>
+  </div>
+  <div class="studio-feature-row" aria-label="مميزات الاستوديو">
+    <div class="studio-feature"><span class="studio-feature-icon">✎</span><div><strong>حرية التصميم</strong><small>أضف العناصر وعدّلها كما تريد</small></div></div>
+    <div class="studio-feature"><span class="studio-feature-icon mint">▧</span><div><strong>تحكّم بالتفاصيل</strong><small>الألوان، النصوص، الأحجام والطبقات</small></div></div>
+    <div class="studio-feature"><span class="studio-feature-icon pink">⇩</span><div><strong>احفظ وصدّر</strong><small>احتفظ بعملك ونزّله عند الانتهاء</small></div></div>
+  </div>
+  <div class="studio-saved-section">
+    <div class="studio-saved-heading">
+      <div><span class="studio-kicker">مكتبتك الإبداعية</span><h2>تصميماتك المحفوظة</h2><p>واصل العمل على تصميم سابق أو أنشئ فكرة جديدة.</p></div>
+      <span class="studio-saved-mark" aria-hidden="true">▤</span>
+    </div>
+    <div class="cards studio-saved-grid" id="savedDesigns"></div>
+  </div>
 </section>
 
 <section class="page" id="page-careers">
@@ -1612,376 +1640,7 @@ document.addEventListener("click",function(event){
 
 </div>
 
-<style id="nextStudioStyles">
-#nextStudioOverlay{position:fixed;inset:0;z-index:100000;background:#111025f5;display:none;color:#20213a;font-family:"Tajawal","IBM Plex Sans Arabic",Arial,sans-serif}
-#nextStudioOverlay.open{display:flex;flex-direction:column}
-#nextStudioOverlay *{box-sizing:border-box}
-#nextStudioOverlay .ns-top{min-height:58px;background:#211b43;color:#fff;display:flex;align-items:center;gap:9px;padding:9px 14px;flex-wrap:wrap;box-shadow:0 4px 18px #0002}
-#nextStudioOverlay .ns-brand{font-weight:900;font-size:17px;margin-left:8px;white-space:nowrap}
-#nextStudioOverlay .ns-name{background:#ffffff16;border:1px solid #ffffff35;border-radius:8px;color:#fff;padding:8px 10px;width:190px;max-width:35vw}
-#nextStudioOverlay button{border:0;border-radius:8px;padding:8px 11px;font:inherit;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s}
-#nextStudioOverlay button:hover{transform:translateY(-1px)}
-#nextStudioOverlay button:disabled{opacity:.55;cursor:wait}
-#nextStudioOverlay .ns-primary{background:#a9f5dd;color:#183d39}
-#nextStudioOverlay .ns-light{background:#fff;color:#29234d}
-#nextStudioOverlay .ns-dark{background:#ffffff16;color:#fff;border:1px solid #ffffff2b}
-#nextStudioOverlay .ns-status{font-size:12px;color:#d9d2ff;margin-inline-start:auto;min-width:90px}
-#nextStudioOverlay .ns-body{display:grid;grid-template-columns:76px minmax(0,1fr) 245px;min-height:0;flex:1}
-#nextStudioOverlay .ns-tools{background:#fff;display:flex;flex-direction:column;gap:6px;padding:10px 7px;overflow:auto;border-left:1px solid #e9e5f5}
-#nextStudioOverlay .ns-tool{background:#f7f5ff;color:#40366f;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 3px;font-size:11px;min-height:59px}
-#nextStudioOverlay .ns-tool span{font-size:20px}
-#nextStudioOverlay .ns-workspace{min-width:0;min-height:0;overflow:auto;padding:25px;background:#eeedf6;display:flex;align-items:flex-start;justify-content:center}
-#nextStudioOverlay .ns-board{position:relative;width:min(100%,1000px);aspect-ratio:3/2;background:#fff;box-shadow:0 8px 35px #241d4a20;overflow:hidden;flex-shrink:0;isolation:isolate}
-#nextStudioOverlay .ns-board.ns-grid{background-image:linear-gradient(#a5a0c21a 1px,transparent 1px),linear-gradient(90deg,#a5a0c21a 1px,transparent 1px);background-size:5% 5%}
-#nextStudioOverlay .ns-item{position:absolute;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;touch-action:none;cursor:move;user-select:none;outline:1px solid transparent;min-width:1%;min-height:1%;line-height:1.25}
-#nextStudioOverlay .ns-item.selected{outline:2px solid #7756f5;outline-offset:2px;z-index:1000}
-#nextStudioOverlay .ns-item img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-#nextStudioOverlay .ns-item[data-kind="text"]{padding:3px;text-align:center}
-#nextStudioOverlay .ns-item[data-kind="shape"]{border:0}
-#nextStudioOverlay .ns-inspector{background:#fff;overflow:auto;border-right:1px solid #e9e5f5;padding:14px}
-#nextStudioOverlay .ns-inspector h3{font-size:15px;margin:0 0 12px;color:#2b2450}
-#nextStudioOverlay .ns-field{display:flex;flex-direction:column;gap:5px;margin:0 0 12px;font-size:12px;font-weight:700;color:#5e5877}
-#nextStudioOverlay .ns-field input,#nextStudioOverlay .ns-field select,#nextStudioOverlay .ns-field textarea{width:100%;border:1px solid #e3dfef;border-radius:8px;padding:8px;color:#292543;background:#fff;min-width:0}
-#nextStudioOverlay .ns-field input[type=color]{height:37px;padding:3px}
-#nextStudioOverlay .ns-field input[type=range]{padding:0}
-#nextStudioOverlay .ns-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#nextStudioOverlay .ns-divider{height:1px;background:#eeeaf6;margin:14px 0}
-#nextStudioOverlay .ns-layers{display:flex;flex-direction:column;gap:5px}
-#nextStudioOverlay .ns-layer{display:flex;align-items:center;gap:6px;text-align:right;background:#f8f7fc;color:#484260;padding:8px;font-size:12px;font-weight:600;min-width:0}
-#nextStudioOverlay .ns-layer.active{background:#ece7ff;color:#5038be;outline:1px solid #d5cbff}
-#nextStudioOverlay .ns-layer span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-#nextStudioOverlay .ns-empty{font-size:12px;color:#8b849f;line-height:1.8}
-#nextStudioOverlay .ns-mobile-inspector{display:none}
-@media(max-width:900px){#nextStudioOverlay .ns-body{grid-template-columns:58px minmax(0,1fr)}#nextStudioOverlay .ns-inspector{display:none}#nextStudioOverlay .ns-tools{padding:7px 4px}#nextStudioOverlay .ns-workspace{padding:12px}#nextStudioOverlay .ns-name{width:130px}#nextStudioOverlay .ns-status{display:none}}
-@media(max-width:540px){#nextStudioOverlay .ns-top{gap:5px;padding:7px}#nextStudioOverlay .ns-brand{font-size:14px}#nextStudioOverlay .ns-top button{font-size:11px;padding:7px}#nextStudioOverlay .ns-workspace{padding:8px}#nextStudioOverlay .ns-body{grid-template-columns:51px minmax(0,1fr)}#nextStudioOverlay .ns-tool{font-size:9px;min-height:51px}#nextStudioOverlay .ns-tool span{font-size:17px}#nextStudioOverlay .ns-name{width:105px}}
-#nextStudioOverlay .ns-top #nsPageSize{background:#e9e3ff;color:#38256e}
-</style>
-<div id="nextStudioOverlay" aria-label="استوديو التصميم الجديد" aria-hidden="true">
-  <header class="ns-top">
-    <div class="ns-brand">✦ مَدى ستوديو</div>
-    <input class="ns-name" id="nsDesignName" aria-label="اسم التصميم" value="تصميم جديد" maxlength="100">
-    <button class="ns-dark" id="nsUndo" type="button" title="تراجع">↶</button>
-    <button class="ns-dark" id="nsRedo" type="button" title="إعادة">↷</button>
-    <button class="ns-dark" id="nsNew" type="button">＋ جديد</button>
-    <button class="ns-dark" id="nsTemplates" type="button">✧ القوالب والعناصر</button><button class="ns-dark" id="nsPageSize" type="button">↔ مقاس الصفحة</button><button class="ns-dark" id="nsZoomOut" type="button" title="تصغير اللوحة">−</button><span id="nsZoomLabel" style="color:#fff;font-size:11px;min-width:38px;text-align:center">100%</span><button class="ns-dark" id="nsZoomIn" type="button" title="تكبير اللوحة">＋</button><button class="ns-dark" id="nsZoomFit" type="button" title="ملاءمة اللوحة">ملاءمة</button><button class="ns-dark" id="nsOpenSaved" type="button">▤ تصميماتي</button>
-    <button class="ns-primary" id="nsSave" type="button">حفظ التصميم</button>
-    <button class="ns-light" id="nsExport" type="button">تنزيل SVG</button>
-    <button class="ns-dark" id="nsClose" type="button" aria-label="إغلاق الاستوديو">✕ إغلاق</button>
-    <span class="ns-status" id="nsStatus" aria-live="polite">جاهز للتصميم</span>
-  </header>
-  <div class="ns-body">
-    <nav class="ns-tools ns-tool-categories" aria-label="أقسام الأدوات">
-      <button class="ns-tool ns-category active" type="button" data-ns-tool-category="insert"><span>＋</span>إضافة</button>
-      <button class="ns-tool ns-category" type="button" data-ns-tool-category="edit"><span>✎</span>تعديل</button>
-      <button class="ns-tool ns-category" type="button" data-ns-tool-category="arrange"><span>▤</span>ترتيب</button>
-      <button class="ns-tool ns-category" type="button" data-ns-tool-category="canvas"><span>▦</span>اللوحة</button>
-    </nav>
-    <aside class="ns-tool-drawer open" id="nsToolDrawer" aria-label="أدوات القسم المحدد">
-      <header class="ns-tool-drawer-head"><strong id="nsToolDrawerTitle">إضافة عناصر</strong><button type="button" id="nsToolDrawerClose" aria-label="إغلاق">×</button></header>
-      <section class="ns-tool-group" data-ns-tool-group="insert"><p>إضافة عناصر</p>
-        <button class="ns-tool" type="button" data-ns-add="text"><span>Ｔ</span>نص</button><button class="ns-tool" type="button" data-ns-add="shape"><span>▰</span>شكل</button><button class="ns-tool" type="button" data-ns-add="circle"><span>◯</span>دائرة</button><button class="ns-tool" type="button" id="nsPickImage"><span>▧</span>صورة</button><input type="file" id="nsImageInput" accept="image/*" hidden><button class="ns-tool" type="button" data-ns-add="line"><span>／</span>خط</button>
-      </section>
-      <section class="ns-tool-group" data-ns-tool-group="edit" hidden><p>تعديل العنصر</p><button class="ns-tool" type="button" id="nsDuplicate"><span>▣</span>نسخ العنصر</button><button class="ns-tool ns-tool-danger" type="button" id="nsDelete"><span>⌫</span>حذف العنصر</button><button class="ns-tool" type="button" id="nsBackgroundBtn"><span>◩</span>لون الخلفية</button><button class="ns-tool" type="button" id="nsGridToggle"><span>▦</span>الشبكة</button></section>
-      <section class="ns-tool-group" data-ns-tool-group="arrange" hidden><p>ترتيب العناصر</p><button class="ns-tool" type="button" data-ns-tool-action="bring-front"><span>↑</span>رفع للأمام</button><button class="ns-tool" type="button" data-ns-tool-action="send-back"><span>↓</span>إرسال للخلف</button><button class="ns-tool" type="button" data-ns-tool-action="center"><span>⊙</span>توسيط العنصر</button><button class="ns-tool" type="button" data-ns-tool-action="reset-transform"><span>↻</span>إعادة الدوران</button></section>
-      <section class="ns-tool-group" data-ns-tool-group="canvas" hidden><p>الصفحة والتصدير</p><div class="ns-page-size-controls"><strong>أبعاد الصفحة بالبكسل</strong><div class="ns-page-size-fields"><label>العرض<input id="nsDrawerWidth" type="number" min="100" max="5000" step="10" value="1200"></label><label>الارتفاع<input id="nsDrawerHeight" type="number" min="100" max="5000" step="10" value="800"></label></div><button class="ns-page-apply" type="button" id="nsApplyDrawerSize">تطبيق المقاس</button></div><button class="ns-tool" type="button" id="nsToolPageSize"><span>↔</span>مقاسات جاهزة</button><button class="ns-tool" type="button" id="nsToolFit"><span>▣</span>ملاءمة اللوحة</button><button class="ns-tool" type="button" id="nsToolSave"><span>✓</span>حفظ التصميم</button><button class="ns-tool" type="button" id="nsToolExport"><span>⇩</span>تنزيل SVG</button><button class="ns-tool" type="button" id="nsToolTemplates"><span>✧</span>القوالب</button></section>
-    </aside>
-    <main class="ns-workspace" id="nsWorkspace">
-      <div class="ns-board" id="nsBoard" aria-label="لوحة التصميم" role="application"></div>
-    </main>
-    <aside class="ns-inspector">
-      <h3>خصائص العنصر</h3>
-      <div id="nsProperties"><p class="ns-empty">اختر عنصرًا من اللوحة لتعديل خصائصه، أو أضف عنصرًا جديدًا من الأدوات.</p></div>
-      <div class="ns-divider"></div>
-      <h3>الطبقات</h3>
-      <p class="ns-empty">اختر طبقة لتحديد العنصر. اسحب العناصر داخل اللوحة لتغيير موضعها.</p>
-      <div class="ns-layers" id="nsLayers"></div>
-      <div class="ns-divider"></div>
-      <button class="ns-light" type="button" id="nsBringFront" style="width:100%;margin-bottom:7px">رفع للأمام ↑</button>
-      <button class="ns-light" type="button" id="nsSendBack" style="width:100%">إرسال للخلف ↓</button>
-    </aside>
-  </div>
-</div>
-<script id="nextStudioScript">
-(function(){
-"use strict";
-const $=id=>document.getElementById(id);
-const overlay=$("nextStudioOverlay"),board=$("nsBoard"),status=$("nsStatus");
-const STORE="mada_next_studio_designs_v1";
-let doc=null,selected=null,undoStack=[],redoStack=[],drag=null,grid=false,zoom=1;
-const uid=()=> "ns_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function blank(){return {id:uid(),name:"تصميم جديد",background:"#ffffff",width:1200,height:800,items:[]}}
-function snapshot(){if(!doc)return;undoStack.push(JSON.stringify(doc));if(undoStack.length>60)undoStack.shift();redoStack=[]}
-function msg(s){status.textContent=s}
-function open(){overlay.classList.add("open");overlay.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";if(!doc)doc=blank();render();msg("استوديو مستقل — جاهز")}
-function close(){overlay.classList.remove("open");overlay.setAttribute("aria-hidden","true");document.body.style.overflow="";if(doc&&doc.items.length)msg("تم إغلاق الاستوديو")}
-function add(kind,extra={}){snapshot();const defaults={text:{text:"اكتب النص هنا",x:25,y:20,w:48,h:15,color:"#272047",fontSize:42,bold:true,align:"center",fill:"transparent"},shape:{text:"",x:32,y:30,w:30,h:22,color:"#ffffff",fill:"#7357f5",fontSize:28},circle:{text:"",x:35,y:30,w:24,h:24,color:"#ffffff",fill:"#ff82ac",fontSize:28},line:{text:"",x:20,y:48,w:45,h:2,color:"#6b55e8",fill:"#6b55e8",fontSize:3}};const item={id:uid(),kind,...defaults[kind],...extra};doc.items.push(item);selected=item.id;render();msg("أُضيف العنصر")}
-function current(){return doc&&doc.items.find(x=>x.id===selected)}
-function render(){
- if(!doc)return;board.innerHTML="";board.style.background=doc.background||"#fff";const ws=$("nsWorkspace"),pageW=Number(doc.width)||1200,pageH=Number(doc.height)||800,ratio=pageW/pageH,availW=Math.max(180,(ws.clientWidth||900)-64),availH=Math.max(180,(ws.clientHeight||700)-64),fitW=Math.min(availW,availH*ratio,1800);board.style.width=Math.max(120,fitW*zoom)+"px";$("nsZoomLabel").textContent=Math.round(zoom*100)+"%";board.style.aspectRatio=pageW+"/"+pageH;board.classList.toggle("ns-grid",grid);
- $("nsDesignName").value=doc.name||"تصميم جديد";
- doc.items.forEach(item=>{const el=document.createElement("div");el.className="ns-item"+(item.id===selected?" selected":"");el.dataset.id=item.id;el.dataset.kind=item.kind;
- el.style.left=item.x+"%";el.style.top=item.y+"%";el.style.width=item.w+"%";el.style.height=item.h+"%";el.style.color=item.color||"#272047";el.style.background=item.kind==="shape"||item.kind==="circle"?(item.fill||"#7357f5"):"transparent";el.style.fontSize=(Number(item.fontSize)||20)*board.clientWidth/900+"px";el.style.fontWeight=item.bold?"800":"500";el.style.opacity=String(Math.max(.05,Math.min(1,Number(item.opacity??1))));el.style.filter=item.shadow?"drop-shadow(0 4px 7px #17152b40)":"none";el.style.transform="rotate("+(item.rotate||0)+"deg)";el.style.textAlign=item.align||"center";
- if(item.kind==="circle")el.style.borderRadius="50%";if(item.shapeType){const clips={triangle:"polygon(50% 0, 0 100%, 100% 100%)",star:"polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 95%,50% 72%,21% 95%,32% 57%,2% 35%,39% 35%)",diamond:"polygon(50% 0,100% 50%,50% 100%,0 50%)",hexagon:"polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)",heart:"polygon(50% 95%,5% 45%,5% 25%,20% 5%,40% 5%,50% 20%,60% 5%,80% 5%,95% 25%,95% 45%)",parallelogram:"polygon(20% 0,100% 0,80% 100%,0 100%)",chevron:"polygon(0 0,70% 0,100% 50%,70% 100%,0 100%,30% 50%)",cross:"polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%)"};if(clips[item.shapeType])el.style.clipPath=clips[item.shapeType]}if(item.kind==="line"){el.style.height=Math.max(.3,item.h)+"%";el.style.background=item.fill||item.color||"#7357f5";el.style.transform="rotate("+(item.rotate||0)+"deg)";el.style.transformOrigin="center"}
- if(item.kind==="image"){const img=document.createElement("img");img.src=item.src||"";img.alt=item.alt||"صورة التصميم";el.appendChild(img)}else if(item.kind==="text"){el.textContent=item.text||""}
- el.addEventListener("pointerdown",startDrag);el.addEventListener("click",e=>{e.stopPropagation();selected=item.id;renderInspector();renderLayers()});board.appendChild(el);
- });
- renderInspector();renderLayers();
-}
-function renderInspector(){
- const item=current(),host=$("nsProperties");
- if(!item){host.innerHTML='<p class="ns-empty">اختر عنصرًا من اللوحة لتعديل خصائصه.</p>';return}
- let html="";
- if(item.kind==="text")html+='<label class="ns-field">النص<textarea rows="3" data-ns-prop="text">'+esc(item.text||"")+'</textarea></label><div class="ns-row"><label class="ns-field">حجم الخط<input type="number" min="8" max="180" data-ns-prop="fontSize" value="'+(item.fontSize||32)+'"></label><label class="ns-field">المحاذاة<select data-ns-prop="align"><option value="right" '+(item.align==="right"?"selected":"")+'>يمين</option><option value="center" '+((item.align||"center")==="center"?"selected":"")+'>وسط</option><option value="left" '+(item.align==="left"?"selected":"")+'>يسار</option></select></label></div><label class="ns-field"><span><input type="checkbox" data-ns-prop="bold" '+(item.bold?"checked":"")+' style="width:auto"> خط عريض</span></label>';
- if(item.kind==="image")html+='<label class="ns-field">وصف الصورة<input data-ns-prop="alt" value="'+esc(item.alt||"")+'"></label><button class="ns-light" type="button" id="nsReplaceImage" style="width:100%">استبدال الصورة</button>';
- if(item.kind==="shape"||item.kind==="circle")html+='<label class="ns-field">لون التعبئة<input type="color" data-ns-prop="fill" value="'+(item.fill||"#7357f5")+'"></label>';
- html+='<div class="ns-row"><label class="ns-field">لون العنصر<input type="color" data-ns-prop="color" value="'+(item.color||"#272047")+'"></label><label class="ns-field">عرض %<input type="number" min="1" max="100" data-ns-prop="w" value="'+Math.round(item.w)+'"></label></div><div class="ns-row"><label class="ns-field">الموضع الأفقي %<input type="number" min="0" max="100" data-ns-prop="x" value="'+Math.round(item.x)+'"></label><label class="ns-field">الموضع العمودي %<input type="number" min="0" max="100" data-ns-prop="y" value="'+Math.round(item.y)+'"></label></div><div class="ns-row"><label class="ns-field">الارتفاع %<input type="number" min="1" max="100" data-ns-prop="h" value="'+Math.round(item.h)+'"></label><label class="ns-field">الاسم<input data-ns-prop="label" value="'+esc(item.label||item.text||item.kind)+'"></label></div><button class="ns-light" type="button" id="nsApplyProps" style="width:100%">تطبيق الخصائص</button>';
- host.innerHTML=html;
- host.querySelectorAll("[data-ns-prop]").forEach(input=>{const apply=()=>{const key=input.dataset.nsProp;let value=input.type==="checkbox"?input.checked:input.value;if(["fontSize","x","y","w","h"].includes(key))value=Number(value);if(["x","y"].includes(key))value=Math.max(0,Math.min(100,value));if(["w","h"].includes(key))value=Math.max(1,Math.min(100,value));if(key==="fontSize")value=Math.max(8,Math.min(180,value));snapshot();item[key]=value;if(key==="label")item.label=value;render();msg("تم تحديث العنصر")};input.addEventListener(input.tagName==="SELECT"||input.type==="checkbox"||input.type==="color"?"change":"change",apply)});
- const rep=$("nsReplaceImage");if(rep)rep.onclick=()=>$("nsImageInput").click();
- const ap=$("nsApplyProps");if(ap)ap.onclick=()=>{render();msg("تم تطبيق الخصائص")};
-}
-function renderLayers(){const host=$("nsLayers");host.innerHTML="";if(!doc.items.length){host.innerHTML='<p class="ns-empty">لا توجد طبقات بعد.</p>';return}
- [...doc.items].reverse().forEach(item=>{const b=document.createElement("button");b.type="button";b.className="ns-layer"+(item.id===selected?" active":"");const icon=item.kind==="text"?"Ｔ":item.kind==="image"?"▧":item.kind==="circle"?"◯":item.kind==="line"?"／":"▰";const label=item.label||item.text||({text:"نص",shape:"شكل",circle:"دائرة",line:"خط",image:"صورة"}[item.kind]);b.innerHTML="<b>"+icon+"</b><span>"+esc(label)+"</span>";b.onclick=()=>{selected=item.id;render()};host.appendChild(b)})
-}
-function startDrag(e){if(e.button!==0)return;e.stopPropagation();const el=e.currentTarget;selected=el.dataset.id;const item=current();if(!item)return;snapshot();const rect=board.getBoundingClientRect();drag={id:item.id,x:e.clientX,y:e.clientY,left:item.x,top:item.y,scaleX:rect.width/100,scaleY:rect.height/100};el.setPointerCapture?.(e.pointerId);renderInspector();renderLayers();document.addEventListener("pointermove",moveDrag);document.addEventListener("pointerup",endDrag,{once:true})}
-function moveDrag(e){if(!drag)return;const item=doc.items.find(x=>x.id===drag.id);if(!item)return;item.x=Math.max(0,Math.min(100-item.w,drag.left+(e.clientX-drag.x)/drag.scaleX));item.y=Math.max(0,Math.min(100-item.h,drag.top+(e.clientY-drag.y)/drag.scaleY));const el=board.querySelector('[data-id="'+item.id+'"]');if(el){el.style.left=item.x+"%";el.style.top=item.y+"%"}}
-function endDrag(){document.removeEventListener("pointermove",moveDrag);drag=null;renderInspector();renderLayers()}
-function loadImage(file){if(!file)return;const reader=new FileReader();reader.onload=()=>add("image",{src:reader.result,alt:file.name,label:file.name,x:25,y:25,w:35,h:35,color:"#272047"});reader.readAsDataURL(file)}
-function safeDownload(name,blob){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
-function save(){try{const all=JSON.parse(localStorage.getItem(STORE)||"[]");const i=all.findIndex(d=>d.id===doc.id);doc.name=$("nsDesignName").value.trim()||"تصميم جديد";doc.updated=new Date().toISOString();if(i>=0)all[i]=JSON.parse(JSON.stringify(doc));else all.unshift(JSON.parse(JSON.stringify(doc)));localStorage.setItem(STORE,JSON.stringify(all));msg("تم الحفظ ✓");$("nsSave").textContent="تم الحفظ ✓";setTimeout(()=>{$("nsSave").textContent="حفظ التصميم"},2200)}catch(e){msg("تعذّر الحفظ — قد تكون مساحة الصور كبيرة");alert("تعذّر حفظ التصميم على هذا الجهاز. جرّب صورة أصغر أو احذف بعض الصور.")}}
-function exportSvg(){const W=Number(doc.width)||1200,H=Number(doc.height)||800,parts=['<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">','<rect width="100%" height="100%" fill="'+esc(doc.background||"#fff")+'"/>'];doc.items.forEach(item=>{const x=item.x/100*W,y=item.y/100*H,w=item.w/100*W,h=item.h/100*H;if(item.kind==="shape")parts.push('<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+esc(item.fill||"#7357f5")+'"/>');else if(item.kind==="circle")parts.push('<ellipse cx="'+(x+w/2)+'" cy="'+(y+h/2)+'" rx="'+(w/2)+'" ry="'+(h/2)+'" fill="'+esc(item.fill||"#7357f5")+'"/>');else if(item.kind==="line")parts.push('<path d="M '+x+' '+(y+h/2)+' L '+(x+w)+' '+(y+h/2)+'" stroke="'+esc(item.fill||item.color||"#7357f5")+'" stroke-width="'+Math.max(2,h)+'"/>');else if(item.kind==="text"){const lines=String(item.text||"").split("\\n");parts.push('<text x="'+(x+w/2)+'" y="'+(y+h/2)+'" fill="'+esc(item.color||"#272047")+'" font-size="'+Math.max(8,(item.fontSize||32)*W/900)+'" font-weight="'+(item.bold?"800":"500")+'" text-anchor="middle" dominant-baseline="middle" direction="rtl">');lines.forEach((line,i)=>parts.push('<tspan x="'+(x+w/2)+'" dy="'+(i?1.2*(item.fontSize||32)*W/900:0)+'">'+esc(line)+'</tspan>'));parts.push('</text>')}else if(item.kind==="image"&&item.src)parts.push('<image href="'+esc(item.src)+'" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" preserveAspectRatio="xMidYMid slice"/>')});parts.push("</svg>");safeDownload((doc.name||"mada-design").replace(/[^\w\u0600-\u06FF-]+/g,"-")+".svg",new Blob([parts.join("")],{type:"image/svg+xml;charset=utf-8"}));msg("تم تجهيز ملف SVG")}
-function templates(){showStudioPanel("templates")}
 
-/* Visual libraries, page-size controls and click-to-insert elements for the new studio only. */
-const nsPanel=document.createElement("div");nsPanel.id="nsLibraryPanel";nsPanel.hidden=true;
-nsPanel.innerHTML=`<div class="ns-library-backdrop" data-ns-panel-close></div><section class="ns-library-dialog" role="dialog" aria-modal="true" aria-labelledby="nsLibraryTitle"><header class="ns-library-head"><div><h2 id="nsLibraryTitle">مكتبة التصميم</h2><p>اختر بنقرة واحدة — لا حاجة لكتابة أسماء أو أرقام</p></div><button type="button" class="ns-library-close" data-ns-panel-close aria-label="إغلاق">✕</button></header><nav class="ns-library-tabs"><button type="button" data-ns-tab="templates">قوالب جاهزة</button><button type="button" data-ns-tab="elements">العناصر والأشكال</button><button type="button" data-ns-tab="sizes">مقاس الصفحة</button><button type="button" data-ns-tab="saved">تصميماتي</button></nav><div class="ns-library-content">
-<section data-ns-section="templates"><h3>ابدأ بتصميم جاهز</h3><div class="ns-template-grid">
-<button data-ns-template="social"><span class="ns-template-preview ns-prev-social">✦<b>فكرتك تستحق أن تُرى</b><small>منشور اجتماعي</small></span><strong>منشور اجتماعي</strong></button>
-<button data-ns-template="sale"><span class="ns-template-preview ns-prev-sale">خصم <b>30%</b><small>عرض خاص</small></span><strong>إعلان عرض</strong></button>
-<button data-ns-template="quote"><span class="ns-template-preview ns-prev-quote">❝<b>البدايات تصنع الفرق</b></span><strong>بطاقة اقتباس</strong></button>
-<button data-ns-template="cover"><span class="ns-template-preview ns-prev-cover">◈<b>عنوان مشروعك</b><small>غلاف أنيق</small></span><strong>غلاف مشروع</strong></button>
-<button data-ns-template="event"><span class="ns-template-preview ns-prev-event">✳<b>موعدنا قريبًا</b><small>فعالية جديدة</small></span><strong>إعلان فعالية</strong></button>
-<button data-ns-template="minimal"><span class="ns-template-preview ns-prev-minimal">مَدى<b>أفكار كبيرة</b></span><strong>تصميم بسيط</strong></button>
-</div></section>
-<section data-ns-section="elements" hidden><h3>أضف عنصرًا بنقرة واحدة</h3><p class="ns-library-hint">أشكال هندسية، رموز، ملصقات، وخطوط جاهزة. يمكنك تحريكها وتغيير لونها وحجمها.</p><div class="ns-element-grid">
-<button data-ns-element="shape:rect"><span>▰</span>مستطيل</button><button data-ns-element="circle"><span>●</span>دائرة</button><button data-ns-element="shape:triangle"><span>▲</span>مثلث</button><button data-ns-element="shape:star"><span>★</span>نجمة</button><button data-ns-element="shape:heart"><span>♥</span>قلب</button><button data-ns-element="shape:diamond"><span>◆</span>ماسة</button><button data-ns-element="shape:hexagon"><span>⬢</span>سداسي</button><button data-ns-element="shape:parallelogram"><span>▱</span>متوازي</button><button data-ns-element="shape:chevron"><span>❯</span>سهم</button><button data-ns-element="shape:cross"><span>✚</span>صليب</button><button data-ns-element="line"><span>／</span>خط</button><button data-ns-element="text:headline"><span>أع</span>عنوان كبير</button>
-<button data-ns-element="text:subtitle"><span>Aa</span>عنوان فرعي</button><button data-ns-element="text:body"><span>≡</span>نص توضيحي</button><button data-ns-element="text:badge"><span>✦</span>شارة</button>
-<button data-ns-element="sticker:⭐"><span>⭐</span>نجمة لامعة</button><button data-ns-element="sticker:❤️"><span>❤️</span>قلب</button><button data-ns-element="sticker:🔥"><span>🔥</span>نار</button><button data-ns-element="sticker:🌸"><span>🌸</span>زهرة</button><button data-ns-element="sticker:☀️"><span>☀️</span>شمس</button><button data-ns-element="sticker:☁️"><span>☁️</span>سحابة</button><button data-ns-element="sticker:⚡"><span>⚡</span>برق</button><button data-ns-element="sticker:🎯"><span>🎯</span>هدف</button><button data-ns-element="sticker:🎉"><span>🎉</span>احتفال</button><button data-ns-element="sticker:💡"><span>💡</span>فكرة</button><button data-ns-element="sticker:🌈"><span>🌈</span>قوس قزح</button><button data-ns-element="sticker:🚀"><span>🚀</span>صاروخ</button><button data-ns-element="sticker:📌"><span>📌</span>دبوس</button><button data-ns-element="sticker:💎"><span>💎</span>جوهرة</button><button data-ns-element="sticker:🎨"><span>🎨</span>ألوان</button>
-</div></section>
-<section data-ns-section="sizes" hidden><h3>اختر مقاس الصفحة</h3><div class="ns-size-grid">
-<button data-ns-size="1200,800"><span>▰</span><b>منشور أفقي</b><small>1200 × 800</small></button><button data-ns-size="1080,1080"><span>□</span><b>منشور مربع</b><small>1080 × 1080</small></button><button data-ns-size="1080,1920"><span>▯</span><b>قصة / ريلز</b><small>1080 × 1920</small></button><button data-ns-size="1200,1500"><span>▯</span><b>منشور عمودي</b><small>1200 × 1500</small></button><button data-ns-size="1920,1080"><span>▰</span><b>عرض تقديمي</b><small>1920 × 1080</small></button><button data-ns-size="1600,900"><span>▰</span><b>غلاف فيديو</b><small>1600 × 900</small></button><button data-ns-size="2480,3508"><span>▯</span><b>صفحة A4</b><small>2480 × 3508</small></button><button data-ns-size="800,1200"><span>▯</span><b>ملصق عمودي</b><small>800 × 1200</small></button>
-</div><div class="ns-custom-size"><strong>مقاس مخصص</strong><label>العرض (بكسل)<input id="nsCustomWidth" type="number" min="100" max="5000" value="1200"></label><label>الارتفاع (بكسل)<input id="nsCustomHeight" type="number" min="100" max="5000" value="800"></label><button type="button" data-ns-custom-size>تطبيق المقاس</button></div><p class="ns-library-hint">تتغير أبعاد اللوحة مع الحفاظ على محتويات تصميمك. استخدم «ملاءمة» أو التكبير من أدوات المتصفح لرؤية الصفحة كاملة.</p></section>
-<section data-ns-section="saved" hidden><h3>تصميماتي المحفوظة</h3><div id="nsSavedGrid" class="ns-template-grid"></div></section>
-</div></section>`;
-overlay.appendChild(nsPanel);
-const nsStyle=document.createElement("style");nsStyle.textContent=`
-#nextStudioOverlay .ns-workspace{align-items:flex-start!important;justify-content:center!important;overflow:auto!important}
-#nextStudioOverlay .ns-board{width:min(100%,1000px);height:auto;min-height:120px;flex:none}
-#nextStudioOverlay .ns-library-backdrop{position:absolute;inset:0;background:#17132c99;backdrop-filter:blur(3px)}
-#nextStudioOverlay #nsLibraryPanel{position:absolute;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:18px}
-#nextStudioOverlay #nsLibraryPanel[hidden]{display:none}
-#nextStudioOverlay .ns-library-dialog{position:relative;width:min(900px,100%);max-height:92%;overflow:auto;background:#fff;border-radius:20px;padding:20px;box-shadow:0 30px 100px #100b2c66}
-#nextStudioOverlay .ns-library-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
-#nextStudioOverlay .ns-library-head h2{margin:0;font-size:22px;color:#292344}
-#nextStudioOverlay .ns-library-head p,.ns-library-hint{color:#79738e;font-size:12px;line-height:1.8;margin:6px 0 15px}
-#nextStudioOverlay .ns-library-close{background:#f0edfa;color:#393052;font-size:18px;width:38px;height:38px}
-#nextStudioOverlay .ns-library-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0;padding-bottom:13px;border-bottom:1px solid #eeeaf6}
-#nextStudioOverlay .ns-library-tabs button{background:#f5f2ff;color:#5c47c8;border:1px solid #e5defd}
-#nextStudioOverlay .ns-library-tabs button.active{background:#5b46e6;color:white}
-#nextStudioOverlay .ns-library-content h3{margin:4px 0 14px;font-size:16px;color:#2b2547}
-#nextStudioOverlay .ns-template-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-#nextStudioOverlay .ns-template-grid>button{display:flex;flex-direction:column;gap:8px;padding:9px;background:#fff;border:1px solid #e9e5f3;color:#38314e;text-align:right}
-#nextStudioOverlay .ns-template-grid>button:hover,#nextStudioOverlay .ns-element-grid>button:hover,#nextStudioOverlay .ns-size-grid>button:hover{border-color:#8b7bff;background:#f8f6ff}
-#nextStudioOverlay .ns-template-grid>button strong{font-size:12px}
-#nextStudioOverlay .ns-template-preview{height:115px;width:100%;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:22px;font-weight:900;overflow:hidden}
-#nextStudioOverlay .ns-template-preview b{font-size:13px;text-align:center;padding:0 7px}
-#nextStudioOverlay .ns-template-preview small{font-size:10px;font-weight:500}
-#nextStudioOverlay .ns-prev-social{background:#201b43;color:#b6f5df}.ns-prev-social b{color:white}
-#nextStudioOverlay .ns-prev-sale{background:#fff0df;color:#f06445}.ns-prev-sale b{font-size:26px!important;color:#25203b}
-#nextStudioOverlay .ns-prev-quote{background:#e7f8f1;color:#38a98b}.ns-prev-quote b{color:#173f39}
-#nextStudioOverlay .ns-prev-cover{background:#f1edff;color:#5c42d8}.ns-prev-event{background:#fff0f5;color:#d64c85}.ns-prev-minimal{background:#d9f8ef;color:#24203a}
-#nextStudioOverlay .ns-element-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-#nextStudioOverlay .ns-element-grid>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:82px;border:1px solid #ebe7f4;background:#fff;color:#43395e;font-size:11px}
-#nextStudioOverlay .ns-element-grid>button span{font-size:27px;color:#654ee0;line-height:1.2}
-#nextStudioOverlay .ns-size-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-#nextStudioOverlay .ns-size-grid>button{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid #e9e5f3;background:#fff;color:#41385d;padding:13px 5px}
-#nextStudioOverlay .ns-size-grid>button span{font-size:24px;color:#6b55e8}
-#nextStudioOverlay .ns-size-grid>button b{font-size:12px}
-#nextStudioOverlay .ns-size-grid>button small{font-size:10px;color:#858097}
-#nextStudioOverlay .ns-custom-size{display:flex;align-items:end;gap:10px;flex-wrap:wrap;background:#f7f5fc;border-radius:12px;padding:13px;margin-top:15px}
-#nextStudioOverlay .ns-custom-size strong{font-size:12px;margin-inline-end:auto}
-#nextStudioOverlay .ns-custom-size label{display:grid;gap:5px;font-size:11px;color:#68617f}
-#nextStudioOverlay .ns-custom-size input{width:125px;border:1px solid #ddd7ed;border-radius:8px;padding:9px;background:white;color:#292344}
-#nextStudioOverlay .ns-custom-size button{background:#5b46e6;color:white}
-@media(max-width:600px){#nextStudioOverlay #nsLibraryPanel{padding:7px}#nextStudioOverlay .ns-library-dialog{padding:13px;max-height:96%}#nextStudioOverlay .ns-template-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#nextStudioOverlay .ns-template-preview{height:95px}#nextStudioOverlay .ns-element-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#nextStudioOverlay .ns-size-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#nextStudioOverlay .ns-library-tabs button{font-size:11px;padding:7px 8px}#nextStudioOverlay .ns-custom-size input{width:95px}}
-`;overlay.appendChild(nsStyle);
-nsStyle.textContent += `
-/* Unified button system inspired by the original Mada studio */
-#nextStudioOverlay .ns-top{gap:8px;padding:10px 16px;background:#17152b;border-bottom:1px solid #ffffff12}
-#nextStudioOverlay .ns-top button{min-height:38px;padding:9px 13px;border-radius:12px;font-size:12px;line-height:1.2;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:none;transition:background .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
-#nextStudioOverlay .ns-top button:hover{transform:translateY(-1px);box-shadow:0 6px 15px #08061b28}
-#nextStudioOverlay .ns-top button:active{transform:translateY(0) scale(.98)}
-#nextStudioOverlay .ns-top button:focus-visible,#nextStudioOverlay .ns-tools button:focus-visible,#nextStudioOverlay #nsLibraryPanel button:focus-visible{outline:3px solid #a79bff;outline-offset:2px}
-#nextStudioOverlay .ns-top .ns-primary{background:#5b46e6;color:#fff;box-shadow:0 6px 16px #5b46e633}
-#nextStudioOverlay .ns-top .ns-primary:hover{background:#4935d3;box-shadow:0 8px 20px #5b46e644}
-#nextStudioOverlay .ns-top .ns-dark{background:#ffffff0d;border:1px solid #ffffff26;color:#f5f2ff}
-#nextStudioOverlay .ns-top .ns-dark:hover{background:#ffffff19;border-color:#a99aff;color:#fff}
-#nextStudioOverlay .ns-top #nsTemplates,#nextStudioOverlay .ns-top #nsPageSize,#nextStudioOverlay .ns-top #nsOpenSaved{background:#f0edff;color:#5b46e6;border:1px solid #e1dbff}
-#nextStudioOverlay .ns-top #nsTemplates:hover,#nextStudioOverlay .ns-top #nsPageSize:hover,#nextStudioOverlay .ns-top #nsOpenSaved:hover{background:#e4deff;border-color:#c9beff}
-#nextStudioOverlay .ns-top #nsZoomOut,#nextStudioOverlay .ns-top #nsZoomIn{width:36px;min-width:36px;padding:8px;font-size:17px;background:#ffffff12}
-#nextStudioOverlay .ns-top #nsZoomFit{background:#ffffff12;border-color:#ffffff2b}
-#nextStudioOverlay #nsZoomLabel{font-variant-numeric:tabular-nums;color:#eeeaff!important;font-weight:700;min-width:42px}
-#nextStudioOverlay .ns-top #nsClose{background:#ffffff0b;border-color:#ffffff20;color:#f0d9e4}
-#nextStudioOverlay .ns-top #nsClose:hover{background:#5c273d;border-color:#a34c6b}
-#nextStudioOverlay .ns-name{border-radius:12px;min-height:38px;border-color:#ffffff29;background:#ffffff0b}
-#nextStudioOverlay .ns-tools{padding:12px 8px;gap:8px;background:#fff}
-#nextStudioOverlay .ns-tool{border:1px solid #ebe7f7;border-radius:13px;background:#f7f5ff;color:#5b46e6;min-height:62px;padding:9px 4px;font-size:11px;font-weight:700;box-shadow:0 2px 5px #29204405}
-#nextStudioOverlay .ns-tool span{display:grid;place-items:center;width:32px;height:30px;border-radius:10px;background:#eeeaff;color:#5b46e6;font-size:20px;transition:background .18s,color .18s}
-#nextStudioOverlay .ns-tool:hover{background:#f0edff;border-color:#d5ccff;color:#4935d3;transform:translateY(-1px);box-shadow:0 5px 12px #5b46e612}
-#nextStudioOverlay .ns-tool:hover span{background:#5b46e6;color:white}
-#nextStudioOverlay .ns-tool:active{transform:scale(.98)}
-#nextStudioOverlay .ns-light{background:#f0edff;color:#5b46e6;border:1px solid #e7e1ff;border-radius:11px}
-#nextStudioOverlay .ns-light:hover{background:#e4deff;border-color:#cfc4ff}
-#nextStudioOverlay .ns-layer{border:1px solid #eeeaf7;border-radius:10px;min-height:38px}
-#nextStudioOverlay .ns-layer:hover{background:#f0edff;border-color:#dcd3ff}
-#nextStudioOverlay .ns-layer.active{background:#f0edff;color:#5b46e6;border-color:#bdb0ff;box-shadow:inset -3px 0 #5b46e6}
-#nextStudioOverlay .ns-inspector .ns-light{min-height:38px}
-#nextStudioOverlay #nsLibraryPanel button{border-radius:12px;transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}
-#nextStudioOverlay #nsLibraryPanel button:hover{transform:translateY(-1px)}
-#nextStudioOverlay .ns-library-tabs button{padding:10px 14px;border-radius:12px;font-weight:700}
-#nextStudioOverlay .ns-library-tabs button.active{background:#5b46e6;border-color:#5b46e6;color:#fff;box-shadow:0 5px 13px #5b46e626}
-#nextStudioOverlay .ns-template-grid>button,#nextStudioOverlay .ns-element-grid>button,#nextStudioOverlay .ns-size-grid>button{border-radius:14px;box-shadow:0 2px 8px #29204406}
-#nextStudioOverlay .ns-template-grid>button:hover,#nextStudioOverlay .ns-element-grid>button:hover,#nextStudioOverlay .ns-size-grid>button:hover{box-shadow:0 7px 18px #5b46e614}
-#nextStudioOverlay .ns-element-grid>button span{display:grid;place-items:center;min-width:42px;min-height:38px;padding:3px 7px;border-radius:12px;background:#f0edff}
-#nextStudioOverlay .ns-size-grid>button{min-height:112px}
-#nextStudioOverlay .ns-custom-size button{background:#5b46e6;color:#fff;box-shadow:0 5px 13px #5b46e622}
-#nextStudioOverlay .ns-custom-size button:hover{background:#4935d3}
-#nextStudioOverlay #nsSave{min-width:112px}
-#nextStudioOverlay .ns-status{padding:5px 9px;border-radius:8px;background:#ffffff0a}
-#page-studio .studio-toolbar #newBlankDesign{background:#5b46e6;color:#fff;border-radius:12px;padding:12px 18px;box-shadow:0 8px 18px #6d4aff25}
-#page-studio .studio-toolbar #newBlankDesign:hover{background:#4935d3;transform:translateY(-1px);box-shadow:0 12px 22px #6d4aff35}
-#page-studio .studio-toolbar #launchNextStudio{background:#f0edff;color:#5b46e6;border:1px solid #e2dcff;border-radius:12px;padding:12px 18px;box-shadow:none}
-#page-studio .studio-toolbar #launchNextStudio:hover{background:#e6e0ff;border-color:#cfc4ff;transform:translateY(-1px)}
-@media(max-width:900px){#nextStudioOverlay .ns-top{gap:6px;padding:8px 10px}#nextStudioOverlay .ns-top button{min-height:35px;padding:8px 10px;font-size:11px}#nextStudioOverlay .ns-brand{font-size:15px}#nextStudioOverlay .ns-tools{gap:7px}}
-@media(max-width:540px){#nextStudioOverlay .ns-top{gap:5px;padding:7px}#nextStudioOverlay .ns-top button{min-height:32px;padding:7px 8px;border-radius:10px;font-size:10px}#nextStudioOverlay .ns-top #nsZoomOut,#nextStudioOverlay .ns-top #nsZoomIn{width:31px;min-width:31px;padding:5px}#nextStudioOverlay .ns-tools{padding:7px 4px;gap:6px}#nextStudioOverlay .ns-tool{border-radius:11px;min-height:52px;padding:7px 2px;font-size:9px}#nextStudioOverlay .ns-tool span{width:27px;height:26px;font-size:17px;border-radius:8px}#nextStudioOverlay .ns-status{display:none}}
-`;
-nsStyle.textContent += "#nextStudioOverlay .ns-workspace{align-items:center!important;justify-content:center!important;overflow:auto!important;padding:22px;box-sizing:border-box;min-width:0;min-height:0}#nextStudioOverlay .ns-board{flex:0 0 auto;min-height:0;max-width:none;box-sizing:border-box;box-shadow:0 14px 42px #17152b1c;border:1px solid #e5e1ef}#nextStudioOverlay .ns-page-size-controls{background:#f7f5ff;border:1px solid #e8e2fb;border-radius:12px;padding:11px;margin-bottom:9px}#nextStudioOverlay .ns-page-size-controls>strong{display:block;color:#514475;font-size:11px;margin-bottom:9px}#nextStudioOverlay .ns-page-size-fields{display:grid;grid-template-columns:1fr 1fr;gap:7px}#nextStudioOverlay .ns-page-size-fields label{display:grid;gap:5px;font-size:10px;color:#77708a}#nextStudioOverlay .ns-page-size-fields input{width:100%;min-width:0;box-sizing:border-box;border:1px solid #ded7f2;border-radius:8px;background:#fff;padding:8px;color:#292344;font-size:12px}#nextStudioOverlay .ns-page-apply{width:100%;margin-top:8px;background:#5b46e6;color:#fff;border:1px solid #5b46e6;border-radius:9px;padding:9px;font-size:11px;font-weight:800}#nextStudioOverlay .ns-page-apply:hover{background:#4935d3}#nextStudioOverlay .ns-body{position:relative;grid-template-columns:72px minmax(0,1fr) 245px}#nextStudioOverlay .ns-tool-categories{padding:12px 7px;gap:9px;overflow:auto;z-index:3}#nextStudioOverlay .ns-tool-categories .ns-category{min-height:68px}#nextStudioOverlay .ns-tool-categories .ns-category.active{background:#5b46e6;color:#fff;border-color:#5b46e6}#nextStudioOverlay .ns-tool-categories .ns-category.active span{background:#ffffff24;color:#fff}#nextStudioOverlay .ns-tool-drawer{position:absolute;z-index:50;right:72px;top:0;bottom:0;width:220px;background:#fff;border-left:1px solid #e8e3f5;box-shadow:12px 0 35px #17152b16;overflow:auto;padding:12px;display:none}#nextStudioOverlay .ns-tool-drawer.open{display:block}#nextStudioOverlay .ns-tool-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:12px;border-bottom:1px solid #eeeaf6;margin-bottom:12px}#nextStudioOverlay .ns-tool-drawer-head strong{font-size:13px;color:#292344}#nextStudioOverlay .ns-tool-drawer-head button{width:30px;height:30px;border:0;border-radius:9px;background:#f0edff;color:#5b46e6;font-size:20px}#nextStudioOverlay .ns-tool-group>p{font-size:11px;color:#8a829e;font-weight:800;margin:4px 0 10px}#nextStudioOverlay .ns-tool-group[hidden]{display:none}#nextStudioOverlay .ns-tool-group .ns-tool{width:100%;min-height:45px;display:flex;flex-direction:row;justify-content:flex-start;gap:10px;padding:8px 10px;margin-bottom:7px;text-align:right}#nextStudioOverlay .ns-tool-group .ns-tool span{flex:0 0 30px}#nextStudioOverlay .ns-tool-group .ns-tool-danger{background:#fff0f2;color:#b42345;border-color:#ffd5dd}#nextStudioOverlay .ns-tool-group .ns-tool-danger span{background:#ffe0e6;color:#b42345}#customDeletePage{background:#fff0f2!important;color:#b42345!important;border:1px solid #f3b4c0!important;border-radius:11px!important;padding:9px 13px!important;font-weight:800!important;box-shadow:0 3px 10px #b4234512!important}#customDeletePage:hover{background:#ffe1e7!important;border-color:#df8295!important;box-shadow:0 6px 15px #b4234520!important}#customDeletePage:focus-visible{outline:3px solid #f3a6b6;outline-offset:2px}@media(max-width:760px){#nextStudioOverlay .ns-body{grid-template-columns:62px minmax(0,1fr) 205px}#nextStudioOverlay .ns-tool-drawer{right:62px;width:210px}}@media(max-width:540px){#nextStudioOverlay .ns-body{grid-template-columns:55px minmax(0,1fr)}#nextStudioOverlay .ns-inspector{display:none}#nextStudioOverlay .ns-tool-drawer{right:55px;width:min(205px,calc(100vw - 65px))}#nextStudioOverlay .ns-tool-categories{padding:8px 4px}#nextStudioOverlay .ns-tool-categories .ns-category{min-height:55px;font-size:9px}}";
-
-/* Match the new studio to Mada's original creative editor palette and surfaces. */
-nsStyle.textContent += `
-#nextStudioOverlay{background:#f8f7fc;color:#17152b}
-#nextStudioOverlay .ns-top{background:#fff;color:#17152b;border-bottom:1px solid #e9e6f1;box-shadow:0 5px 22px #2720440b}
-#nextStudioOverlay .ns-brand{color:#17152b}
-
-#nextStudioOverlay .ns-name{background:#fbfaff;color:#17152b;border:1px solid #e5e1ee;border-radius:10px}
-#nextStudioOverlay .ns-name:focus{outline:0;border-color:#a99aff;box-shadow:0 0 0 3px #6d4aff12}
-#nextStudioOverlay .ns-top .ns-dark{background:#fff;color:#51476e;border:1px solid #e9e5f3}
-#nextStudioOverlay .ns-top .ns-dark:hover{background:#f0edff;border-color:#cfc5ff;color:#5b46e6}
-#nextStudioOverlay .ns-top #nsTemplates,#nextStudioOverlay .ns-top #nsPageSize,#nextStudioOverlay .ns-top #nsOpenSaved{background:#f0edff;color:#5b46e6;border:1px solid #e2dcff}
-#nextStudioOverlay .ns-top #nsZoomOut,#nextStudioOverlay .ns-top #nsZoomIn,#nextStudioOverlay .ns-top #nsZoomFit{background:#fbfaff;color:#5b46e6;border:1px solid #e9e5f3}
-#nextStudioOverlay #nsZoomLabel{color:#5b46e6!important;background:#f0edff;border-radius:8px;padding:7px 5px;font-weight:800}
-#nextStudioOverlay .ns-top .ns-primary{background:#5b46e6;color:#fff;border:1px solid #5b46e6;box-shadow:0 8px 18px #6d4aff25}
-#nextStudioOverlay .ns-top .ns-primary:hover{background:#4935d3}
-#nextStudioOverlay .ns-top .ns-light{background:#f0edff;color:#5b46e6;border:1px solid #e2dcff}
-#nextStudioOverlay .ns-top #nsClose{background:#fff4f5;color:#b4233b;border:1px solid #f2cbd2}
-#nextStudioOverlay .ns-top #nsClose:hover{background:#ffe8ec;border-color:#e9aab7;color:#a01832}
-#nextStudioOverlay .ns-status{background:#f7f5ff;color:#6a6882;border:1px solid #e9e6f1}
-#nextStudioOverlay .ns-body{background:#f8f7fc}
-#nextStudioOverlay .ns-tools{background:#fff;border-color:#e8e4f2;box-shadow:0 5px 20px #211e3505}
-#nextStudioOverlay .ns-tool{background:#fbfaff;color:#51476e;border:1px solid #e9e5f3;border-radius:11px;box-shadow:none}
-#nextStudioOverlay .ns-tool span{background:#f0edff;color:#5b46e6}
-#nextStudioOverlay .ns-tool:hover{background:#f0edff;border-color:#cfc5ff;color:#5b46e6;box-shadow:0 5px 12px #5b46e612}
-#nextStudioOverlay .ns-tool:hover span{background:#5b46e6;color:#fff}
-#nextStudioOverlay .ns-tool.active,#nextStudioOverlay .ns-category.active{background:#f0edff;color:#5b46e6;border-color:#cfc5ff;box-shadow:inset -3px 0 #5b46e6}
-#nextStudioOverlay .ns-tool-danger{background:#fff4f5;color:#b4233b;border-color:#f2cbd2}
-#nextStudioOverlay .ns-tool-danger:hover{background:#ffe8ec;border-color:#e9aab7;color:#a01832}
-#nextStudioOverlay .ns-tool-drawer{background:#fff;border-color:#e8e4f2;box-shadow:0 8px 30px #211e3508}
-#nextStudioOverlay .ns-tool-drawer-head{border-bottom-color:#e9e6f1;color:#17152b}
-#nextStudioOverlay #nsToolDrawerClose{background:#f1eff7;color:#51476e}
-#nextStudioOverlay .ns-tool-group>p{color:#6a6882}
-#nextStudioOverlay .ns-workspace{background-color:#eceaf3;background-image:radial-gradient(#c9c4d9 .7px,transparent .7px);background-size:14px 14px}
-#nextStudioOverlay .ns-board{background-color:#fff;border:1px solid #fff;border-radius:3px;box-shadow:0 16px 45px #211e3520,0 0 0 1px #e1ddeb}
-#nextStudioOverlay .ns-board.ns-grid{background-image:linear-gradient(#6d4aff12 1px,transparent 1px),linear-gradient(90deg,#6d4aff12 1px,transparent 1px);background-size:5% 5%}
-#nextStudioOverlay .ns-item.selected{outline:2px solid #5b46e6;outline-offset:2px}
-#nextStudioOverlay .ns-inspector{background:#fff;border-color:#e8e4f2}
-#nextStudioOverlay .ns-inspector h3{color:#17152b}
-#nextStudioOverlay .ns-field{color:#6a6882}
-#nextStudioOverlay .ns-field input,#nextStudioOverlay .ns-field select,#nextStudioOverlay .ns-field textarea{border-color:#e5e1ee;border-radius:10px;color:#17152b;background:#fff}
-#nextStudioOverlay .ns-field input:focus,#nextStudioOverlay .ns-field select:focus,#nextStudioOverlay .ns-field textarea:focus{outline:0;border-color:#a99aff;box-shadow:0 0 0 3px #6d4aff12}
-#nextStudioOverlay .ns-divider{background:#e9e6f1}
-#nextStudioOverlay .ns-layer{background:#fff;border-color:#e7e4f0;color:#302b49;border-radius:10px}
-#nextStudioOverlay .ns-layer.active{background:#f5f2ff;border-color:#8b7bff;color:#5b46e6;box-shadow:inset -3px 0 #5b46e6}
-#nextStudioOverlay .ns-empty{color:#6a6882}
-#nextStudioOverlay .ns-page-size-controls{background:#f7f5ff;border-color:#e8e2fb}
-#nextStudioOverlay .ns-page-size-controls>strong{color:#51476e}
-#nextStudioOverlay .ns-page-size-fields label{color:#6a6882}
-#nextStudioOverlay .ns-page-size-fields input{border-color:#e5e1ee;color:#17152b}
-#nextStudioOverlay .ns-page-apply,#nextStudioOverlay .ns-custom-size button{background:#5b46e6;border-color:#5b46e6;color:#fff}
-#nextStudioOverlay .ns-page-apply:hover,#nextStudioOverlay .ns-custom-size button:hover{background:#4935d3}
-#nextStudioOverlay .ns-library-dialog{background:#f8f7fc;border:1px solid #fff}
-#nextStudioOverlay .ns-library-head h2,#nextStudioOverlay .ns-library-content h3{color:#17152b}
-#nextStudioOverlay .ns-library-close{background:#f0edff;color:#5b46e6}
-#nextStudioOverlay .ns-library-tabs{border-bottom-color:#e9e6f1}
-#nextStudioOverlay .ns-library-tabs button{background:#fff;color:#5b46e6;border-color:#e2dcff}
-#nextStudioOverlay .ns-library-tabs button.active{background:#5b46e6;border-color:#5b46e6;color:#fff}
-#nextStudioOverlay .ns-template-grid>button,#nextStudioOverlay .ns-element-grid>button,#nextStudioOverlay .ns-size-grid>button{background:#fff;border-color:#e9e5f3;color:#37304c}
-#nextStudioOverlay .ns-template-grid>button:hover,#nextStudioOverlay .ns-element-grid>button:hover,#nextStudioOverlay .ns-size-grid>button:hover{background:#f4f0ff;border-color:#cfc5ff}
-#nextStudioOverlay .ns-element-grid>button span{background:#f0edff;color:#5b46e6}
-#nextStudioOverlay button:focus-visible{outline:3px solid #a99aff;outline-offset:2px}
-@media(max-width:900px){#nextStudioOverlay .ns-top{background:#fff}#nextStudioOverlay .ns-status{background:#f7f5ff;color:#6a6882}}
-`;
-
-
-/* Final, high-specificity theme override: keep the new studio visibly on Mada's purple/light palette. */
-nsStyle.textContent += `
-#nextStudioOverlay.open{background:#f8f7fc!important;color:#17152b!important}
-#nextStudioOverlay.open>.ns-top{background:#5b46e6!important;color:#fff!important;border-bottom:1px solid #4935d3!important}
-#nextStudioOverlay.open .ns-top .ns-brand{color:#fff!important}
-#nextStudioOverlay.open .ns-top .ns-name{background:#fff!important;color:#17152b!important;border:1px solid #e2dcff!important}
-#nextStudioOverlay.open .ns-top .ns-dark{background:#fff!important;color:#5b46e6!important;border:1px solid #e2dcff!important}
-#nextStudioOverlay.open .ns-top .ns-dark:hover{background:#f0edff!important;color:#4935d3!important}
-#nextStudioOverlay.open .ns-top #nsClose{background:#fff4f5!important;color:#b4233b!important;border-color:#f2cbd2!important}
-#nextStudioOverlay.open .ns-top .ns-primary{background:#20164f!important;color:#fff!important;border-color:#20164f!important}
-#nextStudioOverlay.open .ns-body{background:#f8f7fc!important}
-#nextStudioOverlay.open .ns-tools,#nextStudioOverlay.open .ns-inspector{background:#fff!important;border-color:#e8e4f2!important}
-#nextStudioOverlay.open .ns-tool{background:#fbfaff!important;color:#51476e!important;border-color:#e9e5f3!important}
-#nextStudioOverlay.open .ns-tool span{background:#f0edff!important;color:#5b46e6!important}
-#nextStudioOverlay.open .ns-tool.active,#nextStudioOverlay.open .ns-category.active{background:#5b46e6!important;color:#fff!important;border-color:#5b46e6!important}
-#nextStudioOverlay.open .ns-tool.active span,#nextStudioOverlay.open .ns-category.active span{background:#ffffff24!important;color:#fff!important}
-#nextStudioOverlay.open .ns-workspace{background-color:#eceaf3!important;background-image:radial-gradient(#c9c4d9 .7px,transparent .7px)!important}
-#nextStudioOverlay.open .ns-board{background-color:#fff!important;border:1px solid #fff!important;box-shadow:0 16px 45px #211e3520,0 0 0 1px #e1ddeb!important}
-#nextStudioOverlay.open .ns-item.selected{outline:2px solid #5b46e6!important}
-#nextStudioOverlay.open .ns-layer.active{background:#f0edff!important;color:#5b46e6!important;border-color:#bdb0ff!important}
-`;
-
-function showStudioPanel(section){nsPanel.hidden=false;nsPanel.querySelectorAll("[data-ns-section]").forEach(s=>s.hidden=s.dataset.nsSection!==section);nsPanel.querySelectorAll("[data-ns-tab]").forEach(b=>b.classList.toggle("active",b.dataset.nsTab===section));if(section==="saved")renderSavedGrid();if(section==="sizes"){$("nsCustomWidth").value=doc.width||1200;$("nsCustomHeight").value=doc.height||800}}
-function hideStudioPanel(){nsPanel.hidden=true}
-function setPageSize(w,h){w=Math.max(100,Math.min(5000,Math.round(Number(w)||1200)));h=Math.max(100,Math.min(5000,Math.round(Number(h)||800)));snapshot();doc.width=w;doc.height=h;["nsCustomWidth","nsDrawerWidth"].forEach(id=>{if($(id))$(id).value=w});["nsCustomHeight","nsDrawerHeight"].forEach(id=>{if($(id))$(id).value=h});render();hideStudioPanel();msg("تم تغيير مقاس الصفحة إلى "+w+" × "+h)}
-function applyTemplate(kind){snapshot();doc.items=[];const put=(item)=>doc.items.push({id:uid(),...item});if(kind==="social"){doc.background="#201b43";put({kind:"shape",shapeType:"rect",x:5,y:7,w:90,h:86,fill:"#34265f"});put({kind:"text",x:10,y:22,w:80,h:20,text:"فكرتك تستحق أن تُرى",fontSize:52,color:"#fff",bold:true});put({kind:"text",x:15,y:48,w:70,h:12,text:"اصنع شيئًا مختلفًا اليوم",fontSize:28,color:"#b6f5df"});put({kind:"text",x:72,y:65,w:18,h:20,text:"✦",fontSize:90,color:"#ff82ac"})}else if(kind==="sale"){doc.background="#fff6eb";put({kind:"shape",x:0,y:0,w:100,h:25,fill:"#ff704f"});put({kind:"text",x:8,y:5,w:84,h:14,text:"عرض خاص لفترة محدودة",fontSize:38,color:"#fff",bold:true});put({kind:"text",x:8,y:32,w:84,h:26,text:"خصم 30%",fontSize:80,color:"#292047",bold:true});put({kind:"text",x:12,y:70,w:76,h:12,text:"لا تفوّت الفرصة",fontSize:31,color:"#ff704f",bold:true})}else if(kind==="quote"){doc.background="#e7f8f1";put({kind:"text",x:7,y:8,w:86,h:18,text:"❝",fontSize:100,color:"#38a98b",bold:true});put({kind:"text",x:10,y:32,w:80,h:30,text:"البدايات الصغيرة تصنع إنجازات كبيرة",fontSize:39,color:"#173f39",bold:true});put({kind:"text",x:15,y:75,w:70,h:10,text:"— تذكير لنفسك",fontSize:24,color:"#38a98b"})}else if(kind==="cover"){doc.background="#f5f0ff";put({kind:"shape",x:5,y:6,w:90,h:88,fill:"#fff"});put({kind:"text",x:12,y:25,w:76,h:20,text:"عنوان مشروعك",fontSize:55,color:"#5c42d8",bold:true});put({kind:"text",x:17,y:51,w:66,h:13,text:"وصف قصير يعبّر عن فكرتك",fontSize:26,color:"#6c6680"});put({kind:"text",x:38,y:70,w:24,h:12,text:"✦  ◈  ✦",fontSize:32,color:"#ff82ac"})}else if(kind==="event"){doc.background="#fff0f5";put({kind:"circle",x:4,y:10,w:22,h:22,fill:"#ffc4da"});put({kind:"text",x:12,y:23,w:76,h:20,text:"موعدنا قريبًا",fontSize:53,color:"#b9326c",bold:true});put({kind:"text",x:14,y:48,w:72,h:13,text:"فعالية • لقاء • تجربة جديدة",fontSize:25,color:"#67405a"});put({kind:"shape",shapeType:"star",x:73,y:65,w:15,h:18,fill:"#ff8ab7"})}else{doc.background="#d9f8ef";put({kind:"text",x:10,y:15,w:80,h:13,text:"مَدى  ✦",fontSize:28,color:"#397e70"});put({kind:"text",x:10,y:33,w:80,h:22,text:"أفكار كبيرة",fontSize:64,color:"#24203a",bold:true});put({kind:"shape",shapeType:"rect",x:10,y:65,w:25,h:2,fill:"#5b46e6"});put({kind:"text",x:10,y:72,w:80,h:10,text:"ابدأ من هنا",fontSize:25,color:"#397e70"})}selected=doc.items[0]?.id||null;render();hideStudioPanel();msg("تم فتح القالب — يمكنك تعديل كل عنصر")}
-function addGalleryElement(value){const [type,arg]=value.split(":");if(type==="shape"){add("shape",{shapeType:arg,x:34,y:30,w:30,h:30,fill:"#7357f5",label:({rect:"مستطيل",triangle:"مثلث",star:"نجمة",heart:"قلب",diamond:"ماسة",hexagon:"شكل سداسي",parallelogram:"متوازي أضلاع",chevron:"سهم",cross:"صليب"})[arg]||"شكل"})}else if(type==="sticker"){add("text",{text:arg,x:34,y:28,w:30,h:34,fontSize:100,color:"#272047",bold:true,label:arg})}else if(type==="text"){const presets={headline:{text:"عنوانك هنا",fontSize:56,bold:true,color:"#272047",w:70,h:18},subtitle:{text:"عنوان فرعي",fontSize:34,bold:true,color:"#5b46e6",w:70,h:13},body:{text:"اكتب وصفًا قصيرًا هنا",fontSize:25,bold:false,color:"#49445f",w:70,h:18},badge:{text:"✦ جديد ✦",fontSize:29,bold:true,color:"#fff",fill:"#7357f5",w:38,h:12}};const p=presets[arg]||presets.headline;add("text",{...p,x:15,y:25,align:"center",label:arg==="headline"?"عنوان كبير":arg==="subtitle"?"عنوان فرعي":arg==="body"?"نص توضيحي":"شارة"})}else add(type)}
-function renderSavedGrid(){const host=$("nsSavedGrid");let all=[];try{all=JSON.parse(localStorage.getItem(STORE)||"[]")}catch(e){}host.innerHTML="";if(!all.length){host.innerHTML='<p class="ns-library-hint">لا توجد تصميمات محفوظة حتى الآن. احفظ تصميمك ثم ستجده هنا.</p>';return}all.forEach((d,i)=>{const b=document.createElement("button");b.innerHTML='<span class="ns-template-preview" style="background:'+esc(d.background||"#fff")+';color:#5b46e6"><b>'+esc(d.name||"تصميم بدون اسم")+'</b><small>'+((d.items||[]).length)+' عناصر</small></span><strong>'+esc(d.name||"تصميم بدون اسم")+'</strong>';b.onclick=()=>{doc=JSON.parse(JSON.stringify(d));selected=null;undoStack=[];redoStack=[];render();hideStudioPanel();msg("تم فتح التصميم المحفوظ")};host.appendChild(b)})}
-nsPanel.addEventListener("click",e=>{const close=e.target.closest("[data-ns-panel-close]");if(close){hideStudioPanel();return}const tab=e.target.closest("[data-ns-tab]");if(tab){showStudioPanel(tab.dataset.nsTab);return}const template=e.target.closest("[data-ns-template]");if(template){applyTemplate(template.dataset.nsTemplate);return}const element=e.target.closest("[data-ns-element]");if(element){addGalleryElement(element.dataset.nsElement);hideStudioPanel();return}const size=e.target.closest("[data-ns-size]");if(size){const [w,h]=size.dataset.nsSize.split(",");setPageSize(w,h);return}if(e.target.closest("[data-ns-custom-size]")){setPageSize($("nsCustomWidth").value,$("nsCustomHeight").value);return}});
-
-$("launchNextStudio").addEventListener("click",open);$("nsClose").addEventListener("click",close);
-$("nsNew").addEventListener("click",()=>{if(doc&&doc.items.length&&!confirm("بدء تصميم فارغ؟ تأكد من حفظ عملك الحالي أولًا."))return;doc=blank();selected=null;undoStack=[];redoStack=[];render();msg("تصميم فارغ جديد")});
-$("nsTemplates").addEventListener("click",templates);$("nsPageSize").addEventListener("click",()=>showStudioPanel("sizes"));$("nsZoomOut").addEventListener("click",()=>{zoom=Math.max(.3,Math.round((zoom-.1)*10)/10);render()});$("nsZoomIn").addEventListener("click",()=>{zoom=Math.min(2,Math.round((zoom+.1)*10)/10);render()});$("nsZoomFit").addEventListener("click",()=>{zoom=1;render();msg("تمت ملاءمة الصفحة مع مساحة العمل")});$("nsOpenSaved").addEventListener("click",()=>showStudioPanel("saved"));document.querySelectorAll("[data-ns-add]").forEach(b=>b.addEventListener("click",()=>add(b.dataset.nsAdd)));document.querySelectorAll("[data-ns-tool-category]").forEach(b=>b.addEventListener("click",()=>{const name=b.dataset.nsToolCategory;$("nsToolDrawer").classList.add("open");$("nsToolDrawerTitle").textContent=({insert:"إضافة عناصر",edit:"تعديل العنصر",arrange:"ترتيب العناصر",canvas:"الصفحة والتصدير"})[name];document.querySelectorAll("[data-ns-tool-category]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll("[data-ns-tool-group]").forEach(g=>g.hidden=g.dataset.nsToolGroup!==name);if(name==="canvas"){if($("nsDrawerWidth"))$("nsDrawerWidth").value=doc.width||1200;if($("nsDrawerHeight"))$("nsDrawerHeight").value=doc.height||800}}));$("nsToolDrawerClose").addEventListener("click",()=>$("nsToolDrawer").classList.remove("open"));$("nsToolPageSize").addEventListener("click",()=>showStudioPanel("sizes"));$("nsApplyDrawerSize").addEventListener("click",()=>setPageSize($("nsDrawerWidth").value,$("nsDrawerHeight").value));$("nsToolFit").addEventListener("click",()=>$("nsZoomFit").click());$("nsToolSave").addEventListener("click",()=>$("nsSave").click());$("nsToolExport").addEventListener("click",()=>$("nsExport").click());$("nsToolTemplates").addEventListener("click",()=>showStudioPanel("templates"));document.querySelectorAll("[data-ns-tool-action]").forEach(b=>b.addEventListener("click",()=>{const item=current();if(!item)return msg("حدد عنصرًا أولًا");const action=b.dataset.nsToolAction;const i=doc.items.findIndex(x=>x.id===selected);snapshot();if(action==="center"){item.x=Math.max(0,(100-item.w)/2);item.y=Math.max(0,(100-item.h)/2)}else if(action==="bring-front"&&i>=0)doc.items.push(doc.items.splice(i,1)[0]);else if(action==="send-back"&&i>=0)doc.items.unshift(doc.items.splice(i,1)[0]);else if(action==="reset-transform")item.rotate=0;render();msg("تم تحديث العنصر")}));
-$("nsPickImage").addEventListener("click",()=>$("nsImageInput").click());$("nsImageInput").addEventListener("change",e=>{loadImage(e.target.files[0]);e.target.value=""});
-$("nsGridToggle").addEventListener("click",()=>{grid=!grid;board.classList.toggle("ns-grid",grid);msg(grid?"تم إظهار الشبكة":"تم إخفاء الشبكة")});
-$("nsBackgroundBtn").addEventListener("click",()=>{const input=document.createElement("input");input.type="color";input.value=doc.background||"#ffffff";input.onchange=()=>{doc.background=input.value;render();msg("تم تغيير الخلفية")};input.click()});
-$("nsDuplicate").addEventListener("click",()=>{const item=current();if(!item)return msg("حدد عنصرًا أولًا");const copy=JSON.parse(JSON.stringify(item));snapshot();copy.id=uid();copy.x=Math.min(90,copy.x+3);copy.y=Math.min(90,copy.y+3);copy.label=(copy.label||copy.text||"عنصر")+" — نسخة";doc.items.push(copy);selected=copy.id;render()});
-$("nsDelete").addEventListener("click",()=>{if(!current())return;snapshot();doc.items=doc.items.filter(x=>x.id!==selected);selected=null;render();msg("تم حذف العنصر")});
-$("nsBringFront").addEventListener("click",()=>{const i=doc.items.findIndex(x=>x.id===selected);if(i<0)return; snapshot();doc.items.push(doc.items.splice(i,1)[0]);render()});
-$("nsSendBack").addEventListener("click",()=>{const i=doc.items.findIndex(x=>x.id===selected);if(i<0)return;snapshot();doc.items.unshift(doc.items.splice(i,1)[0]);render()});
-$("nsSave").addEventListener("click",save);$("nsExport").addEventListener("click",exportSvg);
-$("nsUndo").addEventListener("click",()=>{if(!undoStack.length)return msg("لا توجد خطوة للتراجع");redoStack.push(JSON.stringify(doc));doc=JSON.parse(undoStack.pop());selected=null;render();msg("تم التراجع")});
-$("nsRedo").addEventListener("click",()=>{if(!redoStack.length)return msg("لا توجد خطوة للإعادة");undoStack.push(JSON.stringify(doc));doc=JSON.parse(redoStack.pop());selected=null;render();msg("تمت الإعادة")});
-$("nsDesignName").addEventListener("input",e=>{if(doc)doc.name=e.target.value});
-board.addEventListener("click",e=>{if(e.target===board){selected=null;renderInspector();renderLayers()}});
-document.addEventListener("keydown",e=>{if(!overlay.classList.contains("open"))return;if(e.key==="Escape"){close();return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();save()}if(e.key==="Delete"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)&&current())$("nsDelete").click()});
-window.addEventListener("resize",()=>{if(overlay.classList.contains("open"))render()});
-})();
-</script>
 <style id="custom-tools-section-styles">
 /* Purple compact section rail with an adjacent tools panel; keep the artwork canvas itself unchanged. */
 #customEditorModal.open{background:#f2edff!important}
