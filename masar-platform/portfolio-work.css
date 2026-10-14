@@ -160,3 +160,33 @@
   #page-portfolio #projectCards .project-card-actions button,
   #page-portfolio #projectCards .project-card-actions a{font-size:8px!important;padding:5px 4px!important}
 }
+
+
+/* Final alignment pass: achievement cards in each grid row share one height. */
+#page-portfolio #projectCards.cards{
+  align-items:stretch!important;
+  grid-auto-rows:1fr!important;
+}
+#page-portfolio #projectCards.cards>.project-card{
+  display:flex!important;
+  flex-direction:column!important;
+  align-self:stretch!important;
+  height:100%!important;
+  min-height:0!important;
+}
+#page-portfolio #projectCards.cards>.project-card>.project-card-cover{
+  height:84px!important;
+  min-height:84px!important;
+  flex:0 0 84px!important;
+  aspect-ratio:auto!important;
+}
+#page-portfolio #projectCards.cards>.project-card>.work-body{
+  display:flex!important;
+  flex:1 1 auto!important;
+  flex-direction:column!important;
+  min-height:0!important;
+}
+#page-portfolio #projectCards.cards>.project-card .project-card-actions{margin-top:auto!important}
+@media(max-width:560px){
+  #page-portfolio #projectCards.cards>.project-card>.project-card-cover{height:72px!important;min-height:72px!important;flex-basis:72px!important}
+}
