@@ -1051,9 +1051,9 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
  const host=$("#portfolioLivePreview");if(!host)return;
  host.dataset.deviceMode=portfolioPreviewDevice;
  $$("#portfolioDesignerModal [data-preview-device]").forEach(function(button){const active=button.dataset.previewDevice===portfolioPreviewDevice;button.setAttribute("aria-pressed",active?"true":"false")});
- const frame=host.querySelector("iframe");if(!frame)return;
+ const frame=host.querySelector("iframe");if(!frame||!host.clientWidth||!host.clientHeight)return;
  const viewportWidth=portfolioPreviewDevice==="mobile"?390:1280;
- const availableWidth=Math.max(1,host.clientWidth),availableHeight=Math.max(1,host.clientHeight);
+ const availableWidth=host.clientWidth,availableHeight=host.clientHeight;
  const scale=Math.min(1,availableWidth/viewportWidth);
  host.style.setProperty("--preview-scale",String(scale));
  host.style.setProperty("--preview-inner-height",Math.ceil(availableHeight/scale)+"px");
