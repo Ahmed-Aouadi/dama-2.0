@@ -138,9 +138,9 @@ module.exports = async function handler(req, res) {
       try { bodySize = Buffer.byteLength(JSON.stringify(req.body || {}), "utf8"); } catch { return send(res, 400, { error: "بيانات الطلب غير صالحة." }); }
       if (bodySize > 4 * 1024 * 1024) return send(res, 413, { error: "حجم الطلب أكبر من الحد المسموح (4 ميغابايت)." });
     }
-    const allowedActions = new Set(["register", "login", "profile", "account-settings", "delete-account", "logout", "me", "publish-design", "public-design", "sync-portfolio-projects", "publish-portfolio", "public-portfolio", "collaboration-create", "collaboration-list", "collaboration-update", "data"]);
+    const allowedActions = new Set(["register", "login", "profile", "account-settings", "delete-account", "logout", "me", "publish-design", "public-design", "sync-portfolio-projects", "publish-portfolio", "my-portfolio", "public-portfolio", "collaboration-create", "collaboration-list", "collaboration-update", "data"]);
     if (!allowedActions.has(action)) return send(res, 400, { error: "طلب غير معروف." });
-    const methodsByAction = { register: ["POST"], login: ["POST"], profile: ["POST"], "account-settings": ["POST"], "delete-account": ["POST"], logout: ["POST"], me: ["GET"], "publish-design": ["POST"], "public-design": ["GET"], "sync-portfolio-projects": ["POST"], "publish-portfolio": ["POST"], "public-portfolio": ["GET"], "collaboration-create": ["POST"], "collaboration-list": ["GET"], "collaboration-update": ["POST"], data: ["GET", "POST"] };
+    const methodsByAction = { register: ["POST"], login: ["POST"], profile: ["POST"], "account-settings": ["POST"], "delete-account": ["POST"], logout: ["POST"], me: ["GET"], "publish-design": ["POST"], "public-design": ["GET"], "sync-portfolio-projects": ["POST"], "publish-portfolio": ["POST"], "my-portfolio": ["GET"], "public-portfolio": ["GET"], "collaboration-create": ["POST"], "collaboration-list": ["GET"], "collaboration-update": ["POST"], data: ["GET", "POST"] };
     if (!methodsByAction[action].includes(req.method)) return send(res, 405, { error: "طريقة الطلب غير مسموحة لهذا الإجراء." }, { Allow: methodsByAction[action].join(", ") });
     await ensureSchema();
     if (req.method === "POST" && !["register", "login"].includes(action)) {
@@ -322,6 +322,24 @@ module.exports = async function handler(req, res) {
       await db().query("UPDATE mada_public_portfolios SET portfolio=$2::jsonb,updated_at=NOW() WHERE user_id=$1", [user.id, encoded]);
       return send(res, 200, { ok: true, published: true });
     }
+    if (action === "my-portfolio" && req.method === "GET") {
+      const user = await currentUser(req);
+      if (!user) return send(res, 401, { error: "سجّل الدخول لعرض رابط معرضك." });
+      const result = await db().query(
+        "SELECT slug,is_public,updated_at FROM mada_public_portfolios WHERE user_id=$1 LIMIT 1",
+        [user.id]
+      );
+      if (!result.rows[0]) return send(res, 200, { ok: true, exists: false, isPublic: false, shareUrl: "" });
+      const row = result.rows[0];
+      return send(res, 200, {
+        ok: true,
+        exists: true,
+        isPublic: row.is_public === true,
+        updatedAt: row.updated_at,
+        shareUrl: row.is_public === true ? "/portfolio.html?id=" + encodeURIComponent(row.slug) : ""
+      });
+    }
+
     if (action === "publish-portfolio" && req.method === "POST") {
       const user = await currentUser(req);
       if (!user) return send(res, 401, { error: "سجّل الدخول أولًا لنشر معرض أعمالك." });
