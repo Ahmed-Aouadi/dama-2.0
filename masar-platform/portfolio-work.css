@@ -190,3 +190,25 @@
 @media(max-width:560px){
   #page-portfolio #projectCards.cards>.project-card>.project-card-cover{height:72px!important;min-height:72px!important;flex-basis:72px!important}
 }
+
+
+/* My Profile: guided completion, clearer form sections, and responsive preview. */
+#page-profile .profile-completion{margin:0 0 22px;padding:19px 22px;border:1px solid #e4defb;border-radius:19px;background:linear-gradient(115deg,#fff 0%,#f4f0ff 100%);box-shadow:0 8px 24px #35206f06}
+#page-profile .profile-completion-top{display:flex;align-items:center;gap:13px}
+#page-profile .profile-completion-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:14px;background:#e9e3ff;color:#6245d9;font-size:21px}
+#page-profile .profile-completion-copy{flex:1;min-width:0}
+#page-profile .profile-completion-copy h2{margin:0 0 4px;font-size:15px;color:var(--ink)}
+#page-profile .profile-completion-copy p{margin:0;color:var(--muted);font-size:11px;line-height:1.7}
+#page-profile .profile-completion-percent{font-size:22px;color:var(--purple);font-variant-numeric:tabular-nums}
+#page-profile .profile-completion-track{height:7px;margin:16px 0 9px;background:#e7e1f6;border-radius:99px;overflow:hidden}
+#page-profile .profile-completion-track span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#8a70f4,#b7a7ff);transition:width .25s ease}
+#page-profile .profile-completion.is-complete .profile-completion-track span{background:linear-gradient(90deg,#37b997,#81d8b8)}
+#page-profile .profile-completion-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:10px}
+#page-profile .profile-group-heading{display:flex;align-items:center;gap:11px;margin:7px 0 0;padding:14px 0 2px;border-top:1px solid #eeeaf6}
+#page-profile .profile-group-heading>span{display:grid;place-items:center;flex:0 0 31px;height:31px;border-radius:10px;background:#f0edff;color:var(--purple);font-size:10px;font-weight:800}
+#page-profile .profile-group-heading strong{display:block;font-size:12px;color:var(--ink)}
+#page-profile .profile-group-heading small{display:block;margin-top:3px;color:var(--muted);font-size:10px;line-height:1.6}
+#page-profile .profile-preview-link{display:block;margin-top:13px;padding:10px 12px;text-align:center;border:1px solid #ffffff25;border-radius:11px;background:#ffffff12;color:#fff;font-size:11px;font-weight:700;text-decoration:none}
+#page-profile .profile-preview-link:hover{background:#ffffff20}
+#page-profile .profile-layout{align-items:start}
+@media(max-width:760px){#page-profile .profile-completion{padding:15px;border-radius:15px}#page-profile .profile-completion-icon{flex-basis:36px;height:36px;border-radius:11px}#page-profile .profile-completion-copy h2{font-size:13px}#page-profile .profile-completion-percent{font-size:19px}#page-profile .profile-completion-footer{font-size:9px}#page-profile .profile-group-heading{padding-top:12px}}
