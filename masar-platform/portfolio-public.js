@@ -90,6 +90,11 @@ view.style.setProperty("--gallery-profile-avatar-size",Math.max(56,Math.min(200,
 view.style.setProperty("--gallery-profile-radius",Math.max(0,Math.min(48,Number.isFinite(Number(display.profileCardRadius))?Number(display.profileCardRadius):28))+"px");
 view.style.setProperty("--gallery-profile-padding",Math.max(12,Math.min(64,Number(display.profileCardPadding)||36))+"px");
 view.style.setProperty("--gallery-profile-gap",Math.max(0,Math.min(56,Number.isFinite(Number(display.profileCardGap))?Number(display.profileCardGap):25))+"px");
+view.style.setProperty("--gallery-profile-mobile-avatar-size",Math.max(36,Math.min(96,Number(display.profileMobileAvatarSize)||56))+"px");
+view.style.setProperty("--gallery-profile-mobile-name-size",Math.max(16,Math.min(32,Number(display.profileMobileNameSize)||22))+"px");
+view.style.setProperty("--gallery-profile-mobile-padding",Math.max(6,Math.min(24,Number(display.profileMobilePadding)||12))+"px");
+view.dataset.profileCardWidth=["full","compact"].includes(display.profileCardWidth)?display.profileCardWidth:"full";
+view.dataset.profileMobileLayout=["side","stacked"].includes(display.profileMobileLayout)?display.profileMobileLayout:"side";
 view.style.setProperty("--gallery-profile-border-color",safeHex(display.profileCardBorderColor,"#ffffff"));
 view.style.setProperty("--gallery-profile-border-width",Math.max(0,Math.min(6,Number(display.profileCardBorderWidth)||0))+"px");
 view.style.setProperty("--gallery-profile-name-weight",["600","700","800","900"].includes(String(display.profileNameWeight))?String(display.profileNameWeight):"700");
