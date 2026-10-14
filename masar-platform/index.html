@@ -1244,7 +1244,14 @@ $("#customDocName").addEventListener("input",e=>{$("#customDocNameTop").value=e.
 
 let customBrushMode=false,customBrushPoints=null,customCopiedStyle=null,customReferenceOpacity=.35;
 function customCurrentPage(){return customDoc&&customDoc.pages&&customDoc.pages[customPageIndex]||{}}
-function customSetReference(data){const panel=$("#customReferencePanel");panel.hidden=!data;if(data){$("#customReferencePreview").src=data;$("#customReferencePreview").style.opacity=String(customReferenceOpacity)}}
+function customSetReference(data){
+ const panel=$("#customReferencePanel"),workspace=$("#customPageWorkspace"),page=$("#customPage");
+ if(!panel||!workspace||!page)return;
+ if(panel.parentElement!==workspace)workspace.insertBefore(panel,page);
+ panel.hidden=!data;workspace.classList.toggle("has-reference",!!data);
+ if(data){$("#customReferencePreview").src=data;$("#customReferencePreview").style.opacity=String(customReferenceOpacity)}
+ updateCustomZoom();
+}
 $("#customBackgroundImageBtn").addEventListener("click",()=>$("#customBackgroundFile").click());
 $("#customBackgroundFile").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];if(!f||!customDoc)return;if(!f.type.startsWith("image/")||f.size>8*1024*1024){toast("اختر صورة حتى 8 ميغابايت.");return}const rd=new FileReader();rd.onload=()=>{pushCustomHistory();customDoc.pageBackgroundImage=String(rd.result);customCurrentPage().pageBackgroundImage=String(rd.result);syncCustomPageToDoc();drawCustomPage();toast("تم تعيين صورة خلفية الصفحة.")};rd.readAsDataURL(f);e.target.value=""});
 $("#customRemoveBackgroundImage").addEventListener("click",()=>{if(!customDoc)return;pushCustomHistory();customDoc.pageBackgroundImage="";customCurrentPage().pageBackgroundImage="";drawCustomPage();toast("أزيلت صورة الخلفية.")});
@@ -1764,10 +1771,13 @@ document.addEventListener("click",function(event){
   }
   function addPresetElement(kind,text,style){
     if(!readyDoc())return;
+    if(!Array.isArray(customDoc.layout))customDoc.layout=[];
     pushCustomHistory();const dim=customDimensions();
-    const el={id:"e"+Date.now()+Math.random().toString(36).slice(2,7),type:kind==="divider"?"line":"text",x:Math.max(0,(dim[0]-style.w)/2),y:Math.max(0,(dim[1]-style.h)/2),w:style.w,h:style.h,text,color:style.color,fill:style.fill,fontSize:style.fontSize,fontFamily:"Tahoma",align:"center",bold:true,radius:style.radius||0,stroke:style.fontSize||2};
+    const w=kind==="badge"?Math.max(style.w,48):kind==="price"?Math.max(style.w,150):kind==="cta"?Math.max(style.w,160):style.w;
+    const h=kind==="divider"?Math.max(style.h,3):kind==="badge"?Math.max(style.h,34):kind==="price"?Math.max(style.h,42):Math.max(style.h,46);
+    const el={id:"e"+Date.now()+Math.random().toString(36).slice(2,7),type:kind==="divider"?"line":"text",x:Math.max(0,(dim[0]-w)/2),y:Math.max(0,(dim[1]-h)/2),w,h,text,color:style.color,fill:style.fill,fontSize:style.fontSize,fontFamily:"Tahoma",align:"center",bold:true,radius:style.radius||0,stroke:style.fontSize||2};
     if(kind!=="divider"){el.type="text";el.text=text;el.presetKind=kind;el.presetFill=style.fill;}
-    customDoc.layout.push(el);customSelected=el.id;customMultiSelected=[];drawCustomPage();drawCustomProperties();drawCustomLayers();scheduleCustomAutoSave();toast("تمت إضافة العنصر الجاهز؛ يمكنك تعديل النص والحجم.");
+    customDoc.layout.push(el);customSelected=el.id;customMultiSelected=[];syncCustomPageToDoc();drawCustomPage();drawCustomProperties();drawCustomLayers();scheduleCustomAutoSave();toast("تمت إضافة العنصر الجاهز إلى الصفحة.");
   }
   function readyDoc(){
     if(!customDoc){toast("افتح تصميمًا أولًا.");return false}
@@ -1808,11 +1818,12 @@ document.addEventListener("click",function(event){
     {label:"◕ شفافية 75%",run:()=>{const input=$("#customReferenceOpacity");if(!input)return;input.value="0.75";input.dispatchEvent(new Event("input",{bubbles:true}));}}
   ]);
   addToolGroup("watermark",[
-    {label:"✎ استخدام اسم التصميم",run:()=>{if(!readyDoc())return;$("#customWatermarkText").value=customDoc.title||customDoc.name||"تصميم جديد";toast("تم إدراج اسم التصميم في حقل العلامة المائية.");}},
+    {label:"✎ استخدام اسم التصميم",run:()=>{if(!readyDoc())return;const text=String(customDoc.title||customDoc.name||"تصميم جديد").trim();$("#customWatermarkText").value=text;pushCustomHistory();customDoc.watermark={text,opacity:Math.max(.03,Math.min(.3,Number($("#customWatermarkOpacity").value)||.1)),size:Math.max(10,Math.min(100,Number($("#customWatermarkSize").value)||34)),color:customDoc.watermark?.color||"#5b46e6"};syncCustomPageToDoc();drawCustomPage();scheduleCustomAutoSave();toast("تم تطبيق اسم التصميم كعلامة مائية.");}},
     {label:"⌫ إزالة العلامة المائية",run:()=>{
       if(!readyDoc())return;pushCustomHistory();delete customDoc.watermark;
-      (customDoc.pages||[]).forEach(page=>{if(page&&typeof page==="object")delete page.watermark;});
-      syncCustomPageToDoc();drawCustomPage();scheduleCustomAutoSave();toast("تمت إزالة العلامة المائية.");
+      (customDoc.pages||[]).forEach(page=>{if(page&&typeof page==="object")page.watermark=null;});
+      $("#customWatermarkText").value="";
+      syncCustomPageToDoc();customDoc.watermark=null;drawCustomPage();scheduleCustomAutoSave();toast("تمت إزالة العلامة المائية من التصميم.");
     }}
   ]);
   addToolGroup("page",[
@@ -1980,3 +1991,54 @@ document.addEventListener("click",function(event){
 </style>
 </body>
 </html>
+
+/* Functional fixes: presets, watermark actions, and centered reference comparison */
+#customEditorModal .custom-tools-section-panel [data-preset-kind],
+#customEditorModal .custom-added-tools button{cursor:pointer!important;pointer-events:auto!important}
+#customEditorModal .custom-page-workspace{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;justify-items:center!important;
+  align-items:center!important;position:relative!important;gap:18px!important;
+}
+#customEditorModal .custom-page-workspace>#customPage{
+  grid-column:1!important;grid-row:1!important;justify-self:center!important;
+  align-self:center!important;margin:0!important;
+}
+#customEditorModal .custom-page-workspace>.custom-reference-panel{
+  display:flex;flex-direction:column;align-self:center;justify-self:center;
+  width:clamp(160px,22vw,260px);max-height:min(65vh,700px);
+  margin:0!important;padding:10px!important;overflow:hidden;
+  border:1px solid #514875;border-radius:12px;background:#211d3d;color:#f4f0ff;
+}
+#customEditorModal .custom-page-workspace>.custom-reference-panel[hidden]{display:none!important}
+#customEditorModal .custom-page-workspace>.custom-reference-panel img{
+  width:100%;height:auto;max-height:calc(65vh - 45px);object-fit:contain;margin-top:8px;
+}
+#customEditorModal .custom-page-workspace.has-reference{
+  grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr)!important;
+}
+#customEditorModal .custom-page-workspace.has-reference>#customPage{
+  grid-column:2!important;grid-row:1!important;justify-self:center!important;
+}
+#customEditorModal .custom-page-workspace.has-reference>.custom-reference-panel{
+  grid-column:3!important;grid-row:1!important;
+}
+#customEditorModal .custom-page-workspace>#customSelectionPanel{
+  grid-column:4!important;grid-row:1!important;z-index:2;
+}
+@media(max-width:980px){
+ #customEditorModal .custom-page-workspace,
+ #customEditorModal .custom-page-workspace.has-reference{
+   display:flex!important;flex-direction:row!important;justify-content:center!important;align-items:center!important;
+   flex-wrap:nowrap!important;gap:10px!important;overflow:auto!important;
+ }
+ #customEditorModal .custom-page-workspace>#customPage{flex:0 0 auto!important;max-width:none!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel{flex:0 0 30%!important;width:30%!important;max-width:220px!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel img{max-height:45vh!important}
+ #customEditorModal .custom-page-workspace>#customSelectionPanel{position:absolute!important;inset-inline-start:0!important;top:0!important;max-width:min(90vw,320px)!important}
+}
+@media(max-width:620px){
+ #customEditorModal .custom-page-workspace.has-reference{gap:7px!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel{flex-basis:34%!important;width:34%!important;padding:5px!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel small{font-size:9px!important}
+}
