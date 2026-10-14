@@ -1685,9 +1685,9 @@ $("#year").textContent=new Date().getFullYear();
       button.type="button";button.classList.add("custom-tool-card");button.title=item.title||item.label;
       if(key==="presets"){
         const preview=document.createElement("span");preview.className="custom-preset-preview";
-        const symbol=String(item.label||"✦").trim().split(/\\s+/)[0];preview.textContent=symbol;
+        const symbol=String(item.label||"✦").trim().split(/\s+/)[0];preview.textContent=symbol;
         preview.setAttribute("aria-hidden","true");button.appendChild(preview);
-        const caption=document.createElement("span");caption.className="custom-preset-caption";caption.textContent=String(item.label||"").replace(/^\\S+\\s*/,"");button.appendChild(caption);
+        const caption=document.createElement("span");caption.className="custom-preset-caption";caption.textContent=String(item.label||"").replace(/^\S+\s*/,"");button.appendChild(caption);
       }else button.textContent=item.label;
       button.addEventListener("click",event=>{event.preventDefault();try{item.run.call(button,event)}catch(error){console.error("Mada editor tool failed:",item.label,error);toast("تعذر تنفيذ الأداة: "+item.label)}});
       group.appendChild(button);
