@@ -904,14 +904,40 @@ html,body{height:100%;overflow:hidden}
 </section>
 
 <section class="page" id="page-settings">
-  <div class="section-intro"><h1>الإعدادات</h1><p>تحكّم في تجربة استخدام مَدى وبياناتك المحفوظة.</p></div>
-  <div class="panel"><div class="panel-title"><div><h3>تفضيلات الاستخدام</h3><small>تُحفظ على هذا الجهاز وتُزامَن مع حسابك عند تسجيل الدخول.</small></div></div>
-    <div class="settings-row"><div><strong>تقليل الحركة</strong><small>تعطيل التمرير السلس عند التنقل بين الأقسام.</small></div><button class="switch" id="motionSwitch" aria-label="تقليل الحركة"></button></div>
-    <div class="settings-row"><div><strong>إشعارات داخل الموقع</strong><small>رسائل توضيحية عند الحفظ والإجراءات.</small></div><button class="switch on" id="noticeSwitch" aria-label="الإشعارات"></button></div>
-    <div class="settings-row"><div><strong>تصدير بياناتك</strong><small>نزّل نسخة JSON من مشاريعك وتصميماتك ونتائجك.</small></div><button class="secondary" id="exportData">تصدير البيانات ↗</button></div>
-    <div class="settings-row"><div><strong>مسح بيانات مَدى</strong><small>يحذف الملف الشخصي والمشاريع والتصميمات والنتائج من هذا المتصفح ومن الحساب المتصل عند المزامنة.</small></div><button class="ghost" id="resetData" style="color:#b63b5c">مسح البيانات</button></div>
+  <div class="section-intro"><h1>الإعدادات</h1><p>خصص طريقة استخدام مَدى، وتابع بياناتك، واحتفظ بنسخة احتياطية من أعمالك.</p></div>
+  <section class="settings-overview" aria-label="ملخص بياناتك">
+    <div class="settings-overview-heading"><div><span class="settings-kicker">مساحتك في مَدى</span><h2>كل شيء تحت السيطرة</h2><p>نظرة سريعة على المحتوى المحفوظ في هذه المساحة.</p></div><span class="settings-overview-mark">⚙</span></div>
+    <div class="settings-stat-grid">
+      <div class="settings-stat"><span class="settings-stat-icon">▤</span><div><strong id="settingsProjectCount">0</strong><small>المشاريع</small></div></div>
+      <div class="settings-stat"><span class="settings-stat-icon">✳</span><div><strong id="settingsDesignCount">0</strong><small>التصميمات</small></div></div>
+      <div class="settings-stat"><span class="settings-stat-icon">✦</span><div><strong id="settingsQuizCount">0</strong><small>نتائج الاختبارات</small></div></div>
+      <div class="settings-stat"><span class="settings-stat-icon">◉</span><div><strong id="settingsProfileState">غير مكتمل</strong><small>حالة الملف الشخصي</small></div></div>
+    </div>
+  </section>
+  <div class="settings-content-grid">
+    <div class="settings-main-column">
+      <section class="panel settings-card">
+        <div class="settings-card-heading"><span class="settings-card-icon">☷</span><div><h3>تفضيلات الاستخدام</h3><p>اجعل تجربة التصفح مناسبة لك. تُحفظ هذه الخيارات على جهازك وتُزامن عند توفر تسجيل الدخول.</p></div></div>
+        <div class="settings-row"><div><strong>تقليل الحركة</strong><small>تعطيل التمرير السلس لتجربة أكثر هدوءًا.</small></div><button class="switch" id="motionSwitch" aria-label="تقليل الحركة" aria-pressed="false"></button></div>
+        <div class="settings-row"><div><strong>إشعارات داخل الموقع</strong><small>إظهار رسائل تأكيد الحفظ ونتائج الإجراءات.</small></div><button class="switch on" id="noticeSwitch" aria-label="الإشعارات داخل الموقع" aria-pressed="true"></button></div>
+        <p class="settings-inline-note"><span>ⓘ</span> يمكنك تغيير هذه الخيارات في أي وقت دون التأثير في مشاريعك أو تصميماتك.</p>
+      </section>
+      <section class="panel settings-card">
+        <div class="settings-card-heading"><span class="settings-card-icon">⇩</span><div><h3>النسخ الاحتياطي والبيانات</h3><p>احتفظ بنسخة من أعمالك قبل تغيير الجهاز أو تنظيف المتصفح.</p></div></div>
+        <div class="settings-row"><div><strong>تصدير بياناتك</strong><small>تنزيل ملف JSON يتضمن البيانات المحفوظة في هذه المساحة.</small></div><button class="secondary" id="exportData">تنزيل نسخة احتياطية ↗</button></div>
+        <p class="settings-inline-note"><span>✓</span> يُنصح بتنزيل نسخة احتياطية دوريًا. ملف التصدير مخصص لحفظ البيانات واستعادتها يدويًا، وليس ملفًا قابلًا للقراءة كصفحة ويب.</p>
+      </section>
+      <section class="panel settings-card settings-danger-card">
+        <div class="settings-card-heading"><span class="settings-card-icon danger">!</span><div><h3>منطقة الإجراءات الحساسة</h3><p>هذه الخطوة تؤثر في بياناتك المحلية ولا يمكن التراجع عنها بعد التأكيد.</p></div></div>
+        <div class="settings-row"><div><strong>مسح بيانات مَدى</strong><small>حذف الملف الشخصي والمشاريع والتصميمات والنتائج المحفوظة في هذا المتصفح.</small></div><button class="ghost settings-danger-button" id="resetData">مسح البيانات</button></div>
+        <p class="settings-danger-note">تأكد من تنزيل نسخة احتياطية أولًا إذا كنت تريد الاحتفاظ بأعمالك. سيطلب منك الموقع تأكيد العملية قبل التنفيذ.</p>
+      </section>
+    </div>
+    <aside class="settings-side-column">
+      <section class="settings-help-card"><div class="settings-help-icon">✦</div><h3>تلميح مفيد</h3><p>حدّث ملفك الشخصي وأضف مشاريعك باستمرار حتى تعكس مساحتك مهاراتك وتقدمك.</p><button type="button" class="secondary" data-page="profile">تعديل ملفي الشخصي ↗</button><button type="button" class="ghost" data-page="portfolio">عرض ملف إنجازي ↗</button></section>
+      <section class="panel settings-about-card"><div class="settings-card-heading"><span class="settings-card-icon">م</span><div><h3>حول مَدى</h3><p>مساحة لاكتشاف المهارات وصناعة الأعمال.</p></div></div><p>مَدى يساعدك على استكشاف اهتماماتك، وإنشاء أعمال رقمية، وبناء ملف إنجاز قابل للمشاركة. يمكنك استخدامه دون تسجيل الدخول؛ وتُحفظ بياناتك محليًا، مع المزامنة عند تسجيل الدخول حيث تكون متاحة.</p><span class="pill">نسخة تجريبية</span></section>
+    </aside>
   </div>
-  <div class="panel" style="margin-top:17px"><div class="panel-title"><div><h3>حول مَدى</h3><small>نسخة أولية تفاعلية</small></div><span class="pill">نسخة تجريبية</span></div><p class="tiny-note">مَدى مساحة لمساعدة الشباب على اكتشاف اهتماماتهم، إنشاء أعمال رقمية بسيطة، وبناء ملف إنجاز قابل للمشاركة. يمكنك استخدامها دون تسجيل الدخول، وتُحفظ بياناتك على هذا المتصفح. عند تسجيل الدخول، تتم مزامنة الملف والمشاريع والتصميمات والنتائج مع حسابك لتتابعها على أجهزتك. لا يستخدم توليد المحتوى خدمة ذكاء اصطناعي خارجية في النسخة الحالية.</p></div>
 </section>
 
 <footer style="padding:30px 0 0;text-align:center;color:#a09bad;font-size:11px">مَدى · اصنع ما يثبت قدراتك · <span id="year"></span></footer>
@@ -1819,10 +1845,11 @@ function renderHomeShowcase(){
  $$("[data-home-publish-design]").forEach(function(b){b.addEventListener("click",async function(){const d=state.designs.find(x=>x.id===b.dataset.homePublishDesign);if(!d)return;openCustomEditor(d.id);setTimeout(function(){publishCustomDesignToPortfolio()},0)})});
 }
 
-function renderAll(){renderJourney();renderStats();renderRecent();renderProjects();renderDesigns();renderHomeShowcase();renderQuizHistory();updateProfilePreview()}
+function updateSettingsOverview(){const projectCount=$("#settingsProjectCount"),designCount=$("#settingsDesignCount"),quizCount=$("#settingsQuizCount"),profileState=$("#settingsProfileState");if(projectCount)projectCount.textContent=state.projects.length;if(designCount)designCount.textContent=state.designs.length;if(quizCount)quizCount.textContent=state.quizzes.length;if(profileState)profileState.textContent=(state.profile.name&&state.profile.role&&state.profile.bio)?"مكتمل":"غير مكتمل"}
+function renderAll(){renderJourney();renderStats();renderRecent();renderProjects();renderDesigns();renderHomeShowcase();renderQuizHistory();updateProfilePreview();updateSettingsOverview()}
 $("#exportData").addEventListener("click",function(){downloadText("mada-data.json",JSON.stringify(state,null,2),"application/json;charset=utf-8");toast("تم تصدير نسخة من بياناتك")});
 $("#resetData").addEventListener("click",function(){if(confirm("سيُحذف ملفك الشخصي والمشاريع والتصميمات والنتائج من هذا المتصفح، وستتم مزامنة الحذف مع الحساب المتصل إن كنت مسجلًا. لا يمكن التراجع. هل تريد المتابعة؟")){state=blankState();save();syncProfile();renderAll();syncAccountSettings();toast("تم مسح بيانات مَدى من هذا المتصفح")}});
-function setupSwitch(id,key){const b=$("#"+id);function draw(){b.classList.toggle("on",!!state.settings[key])}draw();b.addEventListener("click",function(){state.settings[key]=!state.settings[key];save();draw();if(key==="motion")document.documentElement.style.scrollBehavior=state.settings.motion?"auto":"smooth";toast("تم تحديث الإعداد")})}
+function setupSwitch(id,key){const b=$("#"+id);function draw(){b.classList.toggle("on",!!state.settings[key]);b.setAttribute("aria-pressed",String(!!state.settings[key]))}draw();b.addEventListener("click",function(){state.settings[key]=!state.settings[key];save();draw();if(key==="motion")document.documentElement.style.scrollBehavior=state.settings.motion?"auto":"smooth";toast("تم تحديث الإعداد")})}
 setupSwitch("motionSwitch","motion");setupSwitch("noticeSwitch","notices");
 $("#year").textContent=new Date().getFullYear();
 /* Moved inside the editor's main scope so tool callbacks can access customDoc and editor helpers. */
