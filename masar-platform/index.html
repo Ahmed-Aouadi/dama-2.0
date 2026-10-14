@@ -1685,7 +1685,7 @@ document.addEventListener("click",function(event){
 #customEditorModal .custom-editor-layout{grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
 #customEditorModal .custom-tools{grid-template-columns:54px minmax(0,1fr);gap:6px;padding:0;height:auto;max-height:none;overflow:visible}
 #customEditorModal .custom-tools-section-intro{padding:7px}
-#customEditorModal .custom-tools-section-tabs{gap:4px;padding:3px;overflow:visible}
+#customEditorModal .custom-tools-section-tabs{gap:4px;padding:3px;overflow-y:auto;max-height:55vh;align-self:start}
 #customEditorModal .custom-tools-section-tabs button{font-size:9px;min-height:53px;padding:6px 2px}
 #customEditorModal .custom-tools-section-body{padding:8px;max-height:55vh}
 #customEditorModal .custom-template-toggle-top{grid-column:1/-1;max-width:none;width:100%;box-sizing:border-box;align-items:flex-start}
@@ -1782,6 +1782,19 @@ document.addEventListener("click",function(event){
       });
       customDoc.layout.push(...copies);customSelected=copies[copies.length-1].id;customMultiSelected=copies.map(x=>x.id);
       finishEdit();toast("تم تكرار العناصر المحددة.");
+    }}
+  ]);
+  addToolGroup("reference",[
+    {label:"◐ شفافية 25%",run:()=>{const input=$("#customReferenceOpacity");if(!input)return;input.value="0.25";input.dispatchEvent(new Event("input",{bubbles:true}));}},
+    {label:"◑ شفافية 50%",run:()=>{const input=$("#customReferenceOpacity");if(!input)return;input.value="0.5";input.dispatchEvent(new Event("input",{bubbles:true}));}},
+    {label:"◕ شفافية 75%",run:()=>{const input=$("#customReferenceOpacity");if(!input)return;input.value="0.75";input.dispatchEvent(new Event("input",{bubbles:true}));}}
+  ]);
+  addToolGroup("watermark",[
+    {label:"✎ استخدام اسم التصميم",run:()=>{if(!readyDoc())return;$("#customWatermarkText").value=customDoc.title||customDoc.name||"تصميم جديد";toast("تم إدراج اسم التصميم في حقل العلامة المائية.");}},
+    {label:"⌫ إزالة العلامة المائية",run:()=>{
+      if(!readyDoc())return;pushCustomHistory();delete customDoc.watermark;
+      (customDoc.pages||[]).forEach(page=>{if(page&&typeof page==="object")delete page.watermark;});
+      syncCustomPageToDoc();drawCustomPage();scheduleCustomAutoSave();toast("تمت إزالة العلامة المائية.");
     }}
   ]);
   addToolGroup("page",[
