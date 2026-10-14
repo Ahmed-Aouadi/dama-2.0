@@ -534,6 +534,20 @@ html,body{height:100%;overflow:hidden}
   #portfolioDesigner .designer-tabs>.designer-tab{min-height:40px!important;font-size:10px!important;padding:6px 2px!important}
 }
 </style>
+
+<style id="portfolio-controls-final-position-fix">
+/* Explicit RTL placement for the sharing tab and section actions. */
+#portfolioDesigner .designer-tabs{direction:rtl!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-flow:row!important;}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="sharing"]{grid-column:1!important;grid-row:1!important;}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="content"]{grid-column:2!important;grid-row:1!important;}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="profile"]{grid-column:3!important;grid-row:1!important;}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="appearance"]{grid-column:4!important;grid-row:1!important;}
+#gallerySectionManager .portfolio-publish-actions{display:flex!important;justify-content:flex-start!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;width:100%!important;margin-top:12px!important;}
+#gallerySectionManager #saveGallerySection{display:inline-flex!important;align-items:center!important;justify-content:center!important;order:0!important;float:none!important;position:static!important;margin:0!important;min-width:130px!important;max-width:100%!important;}
+#gallerySectionManager #cancelGallerySectionEdit{order:1!important;float:none!important;position:static!important;margin:0!important;}
+@media(max-width:560px){#portfolioDesigner .designer-tabs{gap:4px!important}#portfolioDesigner .designer-tabs>.designer-tab{min-width:0!important;padding:7px 2px!important;font-size:9px!important;overflow-wrap:anywhere!important}#gallerySectionManager .portfolio-publish-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important}#gallerySectionManager .portfolio-publish-actions button{width:100%!important;min-width:0!important}}
+</style>
+
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
