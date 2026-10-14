@@ -298,3 +298,67 @@ body:has(#customEditorModal.open){overflow:hidden!important;overscroll-behavior:
   #customEditorModal .custom-page-navigation{padding:6px!important;margin-bottom:7px!important}
   #customEditorModal .custom-page-workspace>#customPage{width:min(100%,440px)!important}
 }
+
+
+/* Compact single-row canvas controls; remove redundant labels and stray blank field */
+#customEditorModal .custom-stage-wrap{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:auto auto minmax(0,1fr) auto;
+  align-content:stretch;
+}
+#customEditorModal .custom-stage-top{
+  display:contents!important;
+}
+#customEditorModal .custom-page-navigation{
+  grid-row:1;
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-width:0;
+  padding:7px 12px!important;
+  overflow-x:auto;
+  scrollbar-width:none;
+  white-space:nowrap;
+}
+#customEditorModal .custom-page-navigation::-webkit-scrollbar{display:none}
+#customEditorModal .custom-stage-top>span:first-child,
+#customEditorModal #customPageDimensions,
+#customEditorModal .custom-page-count{display:none!important}
+#customEditorModal .custom-zoom-controls{
+  display:flex!important;
+  align-items:center;
+  gap:4px;
+  flex:0 0 auto;
+  order:1;
+}
+#customEditorModal .custom-zoom-controls button{
+  min-width:30px;
+  height:30px;
+  min-height:30px;
+  padding:0 8px;
+  border-radius:8px;
+}
+#customEditorModal .custom-zoom-controls #customZoomFit{padding:0 10px}
+#customEditorModal #customAddPage{order:2;flex:0 0 auto}
+#customEditorModal .custom-page-bulk{order:3;display:flex;align-items:center;gap:5px;flex:0 0 auto;margin:0;font-size:11px}
+#customEditorModal #customBulkPageCount{width:48px;min-width:48px;height:30px;padding:3px 5px;border-radius:7px}
+#customEditorModal #customSetPageCount{height:30px;min-height:30px;padding:0 8px;border-radius:7px;font-size:11px}
+#customEditorModal #customDuplicatePage,
+#customEditorModal #customDeletePage{order:4;flex:0 0 auto;min-height:30px;padding:0 9px;font-size:11px}
+#customEditorModal #customDeletePage{order:5}
+#customEditorModal #customPageTabs{order:6;display:flex;align-items:center;gap:5px;flex:0 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+#customEditorModal #customPageTabs::-webkit-scrollbar{display:none}
+#customEditorModal .custom-page-workspace{grid-row:3;min-height:0}
+#customEditorModal .custom-tools-section-intro #customDocName,
+#customEditorModal .custom-tools-section-intro input:placeholder-shown:empty{display:none!important}
+@media(max-width:980px){
+ #customEditorModal .custom-stage-wrap{display:flex!important;flex-direction:column!important;min-height:0!important;overflow:hidden!important}
+ #customEditorModal .custom-stage-top{display:contents!important}
+ #customEditorModal .custom-page-navigation{order:0;flex-wrap:nowrap!important;overflow-x:auto!important}
+ #customEditorModal .custom-page-workspace{order:1;flex:1;min-height:0}
+ #customEditorModal .custom-page-bulk{font-size:10px}
+ #customEditorModal #customDuplicatePage,
+ #customEditorModal #customDeletePage{font-size:10px;padding:0 7px}
+}
