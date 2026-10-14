@@ -362,3 +362,17 @@ body:has(#customEditorModal.open){overflow:hidden!important;overscroll-behavior:
  #customEditorModal #customDuplicatePage,
  #customEditorModal #customDeletePage{font-size:10px;padding:0 7px}
 }
+
+
+/* Remove the empty intro card above the creative tools tabs */
+#customEditorModal .custom-tools-section-intro{display:none!important}
+#customEditorModal .custom-tools{
+  grid-template-rows:minmax(0,1fr)!important;
+}
+#customEditorModal .custom-tools-section-tabs,
+#customEditorModal .custom-tools-section-body{
+  grid-row:1!important;
+}
+@media(max-width:980px){
+  #customEditorModal .custom-tools{grid-template-rows:minmax(0,1fr)!important}
+}
