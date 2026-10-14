@@ -1245,7 +1245,7 @@ $("#customDocName").addEventListener("input",e=>{$("#customDocNameTop").value=e.
 let customBrushMode=false,customBrushPoints=null,customCopiedStyle=null,customReferenceOpacity=.35;
 function customCurrentPage(){return customDoc&&customDoc.pages&&customDoc.pages[customPageIndex]||{}}
 function customSetReference(data){
- const panel=$("#customReferencePanel"),workspace=$("#customPageWorkspace"),page=$("#customPage");
+ const panel=$("#customReferencePanel"),workspace=$(".custom-page-workspace"),page=$("#customPage");
  if(!panel||!workspace||!page)return;
  if(panel.parentElement!==workspace)workspace.insertBefore(panel,page);
  panel.hidden=!data;workspace.classList.toggle("has-reference",!!data);
@@ -1884,6 +1884,41 @@ document.addEventListener("click",function(event){
     body.querySelectorAll("[data-custom-tool-panel]").forEach(panel=>panel.classList.toggle("active",panel.dataset.customToolPanel===key));
   });
   sidebar.dataset.sectionsReady="1";
+})();
+
+/* Reliable delegated actions for reference and watermark controls after studio tabs are rebuilt. */
+(function(){
+  document.addEventListener("click",function(event){
+    const button=event.target&&event.target.closest&&event.target.closest("button");
+    if(!button)return;
+    const id=button.id;
+    const label=(button.textContent||"").replace(/\\s+/g," ").trim();
+    const panel=button.closest("[data-custom-tool-panel]");
+    const section=panel&&panel.dataset.customToolPanel;
+    const isUseName=section==="watermark"&&label.includes("استخدام اسم التصميم");
+    const isRemoveMark=section==="watermark"&&label.includes("إزالة العلامة المائية");
+    if(!["customReferenceBtn","customRemoveReference","customApplyWatermark"].includes(id)&&!isUseName&&!isRemoveMark)return;
+    event.preventDefault();event.stopPropagation();
+    if(id==="customReferenceBtn"){const input=$("#customReferenceFile");if(input)input.click();return}
+    if(id==="customRemoveReference"){customSetReference("");return}
+    if(id==="customApplyWatermark"||isUseName){
+      if(!customDoc){toast("افتح تصميمًا أولًا.");return}
+      const input=$("#customWatermarkText");
+      const text=(isUseName?String(customDoc.title||customDoc.name||"تصميم جديد"):String(input&&input.value||"")).trim();
+      if(!text){toast("اكتب نص العلامة المائية أولًا.");return}
+      if(input)input.value=text;
+      pushCustomHistory();
+      customDoc.watermark={text,opacity:Math.max(.03,Math.min(.3,Number($("#customWatermarkOpacity").value)||.1)),size:Math.max(10,Math.min(100,Number($("#customWatermarkSize").value)||34)),color:customDoc.watermark&&customDoc.watermark.color||"#5b46e6"};
+      syncCustomPageToDoc();drawCustomPage();scheduleCustomAutoSave();toast("تم تطبيق العلامة المائية وحفظها.");return;
+    }
+    if(isRemoveMark){
+      if(!customDoc){toast("افتح تصميمًا أولًا.");return}
+      pushCustomHistory();delete customDoc.watermark;
+      (customDoc.pages||[]).forEach(function(page){if(page&&typeof page==="object")page.watermark=null});
+      const input=$("#customWatermarkText");if(input)input.value="";
+      syncCustomPageToDoc();customDoc.watermark=null;drawCustomPage();scheduleCustomAutoSave();toast("تمت إزالة العلامة المائية وحفظ التعديل.");
+    }
+  },true);
 })();
 </script>
 <style id="original-dark-purple-theme">
