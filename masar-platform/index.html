@@ -435,7 +435,7 @@ html,body{height:100%;overflow:hidden}
   <div class="cards" id="projectCards"></div>
   <div class="portfolio-publish-panel"><div class="portfolio-publish-copy" id="portfolioSettingsIntro"><span class="eyebrow">معرضك على الإنترنت</span><h2>أنت من يقرر ما يراه الزوار.</h2><p>اختر الأعمال والبيانات التي تريد عرضها. إعدادات المعرض مستقلة عن نسخة ملف الإنجاز التي تنزّلها، ويمكنك إيقاف المشاركة العامة في أي وقت.</p></div></div>
 <div class="portfolio-designer" id="portfolioDesigner">
-  <div class="portfolio-designer-heading"><div><span class="eyebrow">استوديو معرض الأعمال</span><h3>صمّم طريقة عرض أعمالك</h3><p>اختر قالبًا جاهزًا ثم عدّل النصوص والألوان وترتيب الأقسام. التغييرات تُحفظ في إعداداتك وتُطبّق عند النشر.</p></div><span class="designer-live">قابل للتخصيص</span></div>
+  <div class="portfolio-designer-heading"><div><span class="eyebrow">استوديو معرض الأعمال</span><h3>صمّم طريقة عرض أعمالك</h3><p>اختر قالبًا جاهزًا ثم عدّل النصوص والألوان وترتيب الأقسام. التغييرات تُحفظ في إعداداتك وتُطبّق عند النشر.</p></div></div>
   <div class="designer-tabs" role="tablist" aria-label="أقسام التخصيص">
 <button type="button" role="tab" class="designer-tab is-active" data-designer-tab="style" aria-selected="true">القالب</button>
 <button type="button" role="tab" class="designer-tab" data-designer-tab="colors" aria-selected="false">الألوان</button>
@@ -550,16 +550,7 @@ html,body{height:100%;overflow:hidden}
 <label class="designer-check"><input type="checkbox" id="galleryProfileShowDecoration" checked> إظهار الزخرفة الخلفية</label>
 <label class="designer-check"><input type="checkbox" id="galleryProfileShowKicker" checked> إظهار العبارة الصغيرة أعلى الاسم</label>
 </div>
-<div class="gallery-contact-style" aria-label="تخصيص مظهر أزرار التواصل">
-    <strong>تخصيص أزرار التواصل</strong>
-    <div class="gallery-contact-style-grid">
-      <label>لون الأزرار<input type="color" id="galleryContactButtonColor" value="#5b46e6"></label>
-      <label>لون النص<input type="color" id="galleryContactButtonTextColor" value="#ffffff"></label>
-      <label>حجم الأزرار<select id="galleryContactButtonSize"><option value="compact">صغير</option><option value="normal" selected>متوسط</option><option value="large">كبير</option></select></label>
-      <label>مكان الأزرار<select id="galleryContactButtonPosition"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
-    </div>
-    <small>تُطبّق الألوان والحجم والمكان على أزرار الهاتف وواتساب والبريد بعد نشر المعرض.</small>
-  </div>
+
 <p class="tiny-note">تتحكم هذه الخيارات في البطاقة العلوية فقط؛ إعدادات الأعمال والخلفية العامة لا تغيّر ألوانها أو أحجامها.</p>
 </section>
 
@@ -581,7 +572,17 @@ html,body{height:100%;overflow:hidden}
     <div class="gallery-contact-method" data-contact-method="email"><div class="gallery-contact-method-top"><label><input type="checkbox" data-contact-visible="email"> إظهار البريد الإلكتروني</label><div class="gallery-contact-order"><button type="button" data-contact-move="up" aria-label="تقديم البريد الإلكتروني">↑</button><button type="button" data-contact-move="down" aria-label="تأخير البريد الإلكتروني">↓</button></div></div><label class="gallery-contact-field">البريد الإلكتروني<input type="email" maxlength="254" data-contact-value="email" placeholder="name@example.com"></label></div>
   </div>
   <small class="gallery-contact-note">استخدم الأسهم لترتيب الأزرار في المعرض. سيُحفظ الترتيب عند تعديل الإعدادات، ويُطبّق بعد نشر المعرض أو تحديثه.</small>
-  
+  <div class="gallery-contact-style" aria-label="تخصيص مظهر أزرار التواصل">
+    <strong>تخصيص أزرار التواصل</strong>
+    <div class="gallery-contact-style-grid">
+      <label>لون الأزرار<input type="color" id="galleryContactButtonColor" value="#5b46e6"></label>
+      <label>لون النص<input type="color" id="galleryContactButtonTextColor" value="#ffffff"></label>
+      <label>حجم الأزرار<select id="galleryContactButtonSize"><option value="compact">صغير</option><option value="normal" selected>متوسط</option><option value="large">كبير</option></select></label>
+      <label>مكان الأزرار<select id="galleryContactButtonPosition"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
+    </div>
+    <small>تُطبّق الألوان والحجم والمكان على أزرار الهاتف وواتساب والبريد بعد نشر المعرض.</small>
+  </div>
+</div>
 </section>
 <div class="portfolio-designer-footer"><span id="portfolioDesignerStatus">المعاينة تطبّق إعداداتك عند نشر المعرض.</span><button type="button" class="secondary" id="resetPortfolioDesign">إعادة ضبط التصميم</button></div>
 </div><div class="portfolio-publish-controls"><label for="portfolioPublishVisibility">حالة المعرض</label><select id="portfolioPublishVisibility" class="filter"><option value="public">عام — يمكن لأي شخص فتح الرابط</option><option value="private">خاص — إيقاف المشاركة العامة</option></select><div class="portfolio-publish-actions"><button class="secondary" type="button" id="openPortfolioDesignerBtn">✦ تخصيص المعرض</button><button type="button" class="primary" id="publishPortfolioBtn">نشر / تحديث المعرض</button><button class="secondary" id="copyPortfolioLinkBtn" hidden>نسخ رابط المعرض</button><button class="secondary" id="previewPortfolioBtn" type="button">معاينة المعرض</button><button class="ghost" id="exportPortfolio">تنزيل نسخة HTML</button></div><p id="portfolioShareStatus" class="tiny-note" role="status">اختر محتوى المعرض ثم اضغط «نشر / تحديث المعرض» لتطبيق اختياراتك.</p><a id="portfolioShareLink" class="portfolio-share-link" hidden rel="noopener noreferrer" aria-label="رابط المعرض المنشور"></a></div></div>
