@@ -979,7 +979,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
   frame.dataset.previewBound="true";
   frame.addEventListener("load",function(){frame.dataset.previewReady="true";sendPortfolioPreviewFrame(frame)});
  }
- const src="/masar-platform/portfolio.html?preview=1&v=20261013c";
+ const src="/masar-platform/portfolio.html?preview=1&v=20261015a";
  if(frame.getAttribute("src")!==src){frame.dataset.previewReady="false";frame.setAttribute("src",src)}
  else sendPortfolioPreviewFrame(frame);
  }
