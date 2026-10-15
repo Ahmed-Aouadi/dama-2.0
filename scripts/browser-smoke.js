@@ -128,8 +128,11 @@ function assert(condition, message) {
 
     await page.locator("#publishPortfolioBtn").click();
     await page.waitForFunction(() => /تم نشر المعرض بنجاح/.test(document.querySelector("#portfolioShareStatus")?.textContent || ""), undefined, { timeout: 5000 });
+    assert(lastPublishedPayload && lastPublishedPayload.isPublic === true && lastPublishedPayload.portfolio && Array.isArray(lastPublishedPayload.portfolio.projects), "Publish click did not send the expected portfolio payload to the API");
+    assert(await page.locator("#portfolioShareLink").isVisible(), "Publish success did not reveal the share link");
+    assert((await page.locator("#portfolioShareLink").getAttribute("href") || "").includes("portfolio.html?id=browserSmokeTest123"), "Publish success did not expose the server share URL");
     assert(!errors.length, "Uncaught browser exceptions after portfolio publishing click: " + errors.join(" | "));
-    console.log("PASS publish button publishes and exposes a validated share URL");
+    console.log("PASS publish button sends portfolio data and displays the server share URL");
 
     await page.locator("#openPortfolioDesignerBtn").click();
     assert(await page.locator("#portfolioDesignerModal").evaluate(el => el.classList.contains("open")), "Gallery customization dialog did not open");
@@ -137,6 +140,13 @@ function assert(condition, message) {
     assert(desktopTabColumns.sharing === "1" && desktopTabColumns.content === "2" && desktopTabColumns.profile === "3" && desktopTabColumns.appearance === "4", "Gallery designer desktop tab order is incorrect: " + JSON.stringify(desktopTabColumns));
     assert(await page.locator("#gallerySectionManager #saveGallerySection").count() === 1, "Gallery section save button was moved out of its section by the modal toolbar");
     assert(await page.locator("#gallerySectionManager #cancelGallerySectionEdit").count() === 1, "Gallery section cancel button was moved out of its section by the modal toolbar");
+    await page.locator('#portfolioDesigner [data-designer-group-tab="profile"]').click();
+    assert(await page.locator('#portfolioDesigner [data-designer-pane="profile"]').isVisible(), "Profile tab did not reveal the profile settings pane");
+    assert(await page.locator('#portfolioDesigner [data-designer-pane="style"]').isHidden(), "Profile tab left the appearance pane visible");
+    await page.locator('#portfolioDesigner [data-designer-group-tab="sharing"]').click();
+    assert(await page.locator('#portfolioDesigner [data-designer-pane="sharing"]').isVisible(), "Sharing tab did not reveal the contact settings pane");
+    assert(await page.locator('#portfolioDesigner [data-designer-pane="profile"] .gallery-contact-style').count() === 0, "Contact button styling remained misplaced in the profile tab");
+    assert(await page.locator('#portfolioDesigner [data-designer-pane="sharing"] .gallery-contact-style').count() === 1, "Contact button styling is missing from the sharing tab");
     await page.locator('#portfolioDesigner [data-designer-group-tab="profile"]').click();
     const experienceToggle = page.locator("#galleryShowExperience");
     await experienceToggle.check();
