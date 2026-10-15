@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","editorial","minimal","mosaic"].includes(display.template)?display.template:"classic";
+const template=["classic","editorial","minimal","mosaic","split","bold","studio","gallery","magazine","timeline","polaroid","filmstrip","catalog","poster","stacked","sidebar","darkroom","typography","bento","circles","brutalist","masonry","landscape","archive","blueprint"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
