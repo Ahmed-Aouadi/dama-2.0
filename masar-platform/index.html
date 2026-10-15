@@ -1384,10 +1384,10 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
  const designerGroupPanes={appearance:["style","colors","fonts","layout"],profile:["profile"],content:["content"],sharing:["sharing"]};
  const activateDesignerGroup=function(key){
   const allowed=designerGroupPanes[key]||designerGroupPanes.appearance;
-  $("#portfolioDesigner [data-designer-group-tab]").forEach(function(t){const on=t.dataset.designerGroupTab===key;t.classList.toggle("is-active",on);t.setAttribute("aria-selected",on?"true":"false")});
-  $("#portfolioDesigner [data-designer-pane]").forEach(function(pane){const visible=allowed.includes(pane.dataset.designerPane);pane.hidden=!visible;pane.setAttribute("aria-hidden",visible?"false":"true")});
+  document.querySelectorAll("#portfolioDesigner [data-designer-group-tab]").forEach(function(t){const on=t.dataset.designerGroupTab===key;t.classList.toggle("is-active",on);t.setAttribute("aria-selected",on?"true":"false")});
+  document.querySelectorAll("#portfolioDesigner [data-designer-pane]").forEach(function(pane){const visible=allowed.includes(pane.dataset.designerPane);pane.hidden=!visible;pane.setAttribute("aria-hidden",visible?"false":"true")});
  };
- $("#portfolioDesigner [data-designer-group-tab]").forEach(function(tab){tab.addEventListener("click",function(){activateDesignerGroup(tab.dataset.designerGroupTab)})});
+ document.querySelectorAll("#portfolioDesigner [data-designer-group-tab]").forEach(function(tab){tab.addEventListener("click",function(){activateDesignerGroup(tab.dataset.designerGroupTab)})});
  activateDesignerGroup("appearance");
  [["data-hero-style","heroStyle","heroStyle"],["data-pattern","pattern","pattern"],["data-density","density","density"],["data-font","fontFamily","font"]].forEach(function(cfg){$$("#portfolioDesigner ["+cfg[0]+"]").forEach(function(btn){btn.addEventListener("click",function(){savePortfolioSetting(cfg[1],btn.dataset[cfg[2]]);syncPortfolioDesignControls()})})});
  $$("#portfolioDesigner [data-palette]").forEach(function(btn){btn.addEventListener("click",function(){state.portfolioSettings=Object.assign({},initial.portfolioSettings,state.portfolioSettings||{},{palette:btn.dataset.palette,accent:btn.dataset.accent,background:btn.dataset.bg,textColor:btn.dataset.text,headingColor:btn.dataset.heading,cardBackground:btn.dataset.card});save();syncPortfolioDesignControls();renderPortfolioLivePreview();const st=$("#portfolioDesignerStatus");if(st)st.textContent="طُبّقت اللوحة محليًا. انشر المعرض لتطبيقها على الرابط العام."})});
