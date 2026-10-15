@@ -26,3 +26,182 @@
 html.is-preview .public-top{display:none}
 html.is-preview body{overscroll-behavior:contain}
 #portfolioView:is(.portfolio-template-classic,.portfolio-template-mosaic)[data-hero-style="accent"] .profile-hero :is(.role,.bio,.meta,.count){color:#ffffffe6}
+
+
+/* ── MADA GALLERY REDESIGN · 2026 ─────────────────────────────────────
+   A cleaner editorial gallery with deliberate desktop/mobile behaviour.
+   Scoped to the public portfolio so the rest of the app remains untouched. */
+#portfolioView{
+  --gallery-paper:var(--gallery-paper,#f7f8fc);
+  --gallery-card-radius:20px;
+  --gallery-section-spacing:clamp(28px,4vw,48px);
+  width:100%;
+  border-radius:26px;
+  padding:clamp(14px,2.5vw,30px);
+  overflow:clip;
+  background-color:var(--gallery-paper,#f7f8fc);
+  background-attachment:scroll;
+}
+#portfolioView .profile-hero{
+  position:relative;
+  isolation:isolate;
+  min-height:210px;
+  padding:clamp(24px,4.5vw,56px);
+  border-radius:26px;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:clamp(20px,4vw,48px);
+  box-shadow:0 18px 50px #18142e12;
+}
+#portfolioView .profile-hero:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:clamp(180px,30vw,360px);
+  aspect-ratio:1;
+  inset-inline-start:-100px;
+  bottom:-210px;
+  border-radius:50%;
+  background:var(--gallery-accent,#5b46e6);
+  opacity:.11;
+  filter:blur(1px);
+}
+#portfolioView .profile-copy h1{
+  font-size:clamp(28px,4.2vw,var(--gallery-name-size,42px));
+  letter-spacing:-.035em;
+  line-height:1.35;
+  overflow-wrap:anywhere;
+}
+#portfolioView .profile-copy .bio{max-width:68ch;font-size:clamp(13px,1.2vw,var(--gallery-profile-body-size,16px));line-height:2}
+#portfolioView .profile-avatar{
+  width:clamp(82px,11vw,136px);
+  height:clamp(82px,11vw,136px);
+  flex-shrink:0;
+  border:4px solid #ffffff2b;
+  box-shadow:0 14px 38px #0b091c2b;
+}
+#portfolioView .section-head{
+  align-items:center;
+  padding-bottom:12px;
+  border-bottom:1px solid color-mix(in srgb,var(--gallery-accent,#5b46e6) 18%,transparent);
+  gap:14px;
+}
+#portfolioView .section-head h2{
+  font-size:clamp(20px,2.2vw,var(--gallery-title-size,30px));
+  line-height:1.4;
+  letter-spacing:-.025em;
+}
+#portfolioView .section-head p{font-size:13px;line-height:1.8}
+#portfolioView .count{white-space:nowrap;padding:7px 12px;font-size:12px}
+#portfolioView .works-grid{
+  grid-template-columns:repeat(var(--gallery-columns,3),minmax(0,1fr));
+  align-items:stretch;
+  gap:clamp(12px,1.5vw,22px);
+}
+#portfolioView .work,
+#portfolioView .project-tile{
+  min-width:0;
+  border:1px solid var(--gallery-card-border,#e8e8f1);
+  border-radius:var(--gallery-card-radius,20px);
+  overflow:hidden;
+  background:var(--gallery-card-bg,#fff);
+  box-shadow:var(--gallery-card-shadow,0 8px 26px #17152b0a);
+}
+#portfolioView .project-tile{
+  width:100%;
+  height:100%;
+  text-align:start;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+#portfolioView .project-tile:hover,
+#portfolioView .project-tile:focus-visible{
+  transform:translateY(-4px);
+  box-shadow:0 18px 42px #17152b18;
+  border-color:color-mix(in srgb,var(--gallery-accent,#5b46e6) 45%,white);
+}
+#portfolioView .project-tile:focus-visible{outline:3px solid color-mix(in srgb,var(--gallery-accent,#5b46e6) 65%,white);outline-offset:3px}
+#portfolioView .work-cover{
+  height:auto;
+  aspect-ratio:4/3;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--gallery-accent,#5b46e6) 9%,white),#f6f7fb);
+}
+#portfolioView[data-image-ratio="square"] .work-cover{aspect-ratio:1/1}
+#portfolioView[data-image-ratio="landscape"] .work-cover{aspect-ratio:16/9}
+#portfolioView[data-image-ratio="classic"] .work-cover{aspect-ratio:4/3}
+#portfolioView .work-cover img{transition:transform .45s cubic-bezier(.2,.7,.2,1);object-fit:cover}
+#portfolioView .project-tile:hover .work-cover img{transform:scale(1.035)}
+#portfolioView .project-tile-title{
+  padding:15px 16px 17px;
+  font-size:clamp(13px,1.15vw,16px);
+  line-height:1.7;
+  overflow-wrap:anywhere;
+}
+#portfolioView .work-body{padding:clamp(13px,1.5vw,19px)}
+#portfolioView .work h3{font-size:clamp(15px,1.3vw,19px);line-height:1.55}
+#portfolioView .description{font-size:13px;line-height:1.95}
+#portfolioView .tag{font-size:11px}
+#portfolioView .media-gallery{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+#portfolioView .media-gallery a{height:auto;aspect-ratio:4/3;border-radius:12px}
+#portfolioView .empty{padding:clamp(28px,5vw,58px) 18px;border-radius:22px;background:#ffffffd9}
+#projectDetailsModal .project-details-dialog{border-radius:25px}
+#projectDetailsContent{scrollbar-gutter:stable}
+#portfolioView .gallery-contact-actions{gap:10px}
+#portfolioView .contact-action{min-height:44px;padding:11px 16px;border-radius:13px}
+@media(min-width:1100px){
+  #portfolioView .works-grid{gap:20px}
+  #portfolioView .project-tile-title{padding:17px 18px 19px}
+}
+@media(max-width:850px){
+  #portfolioView{padding:14px;border-radius:20px}
+  #portfolioView .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #portfolioView .profile-hero{padding:clamp(22px,4vw,34px);gap:20px}
+  #portfolioView .profile-copy h1{font-size:clamp(27px,5vw,38px)}
+  #portfolioView.portfolio-template-mosaic .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #portfolioView.portfolio-template-mosaic .work:nth-child(5n+1){grid-column:span 2}
+}
+@media(max-width:560px){
+  #portfolioView{padding:10px;border-radius:17px}
+  #portfolioView .profile-hero{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:13px;
+    padding:21px 18px;
+    border-radius:19px;
+    margin-bottom:20px;
+  }
+  #portfolioView .profile-avatar{order:0;width:76px;height:76px;border-radius:22px;margin-bottom:2px}
+  #portfolioView .profile-copy h1{font-size:clamp(25px,7vw,33px);margin:7px 0 4px}
+  #portfolioView .profile-copy .role{font-size:13px}
+  #portfolioView .profile-copy .bio{font-size:13px;line-height:1.9;margin:11px 0}
+  #portfolioView .profile-meta,#portfolioView .skills{gap:6px}
+  #portfolioView .meta-chip,#portfolioView .skill{font-size:10px;padding:5px 8px}
+  #portfolioView .section-head{margin-top:27px;padding-bottom:10px;align-items:center}
+  #portfolioView .section-head h2{font-size:20px}
+  #portfolioView .section-head p{font-size:11px}
+  #portfolioView .count{font-size:10px;padding:6px 9px}
+  #portfolioView .works-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  #portfolioView .work,#portfolioView .project-tile{border-radius:14px}
+  #portfolioView .work-cover{aspect-ratio:4/3}
+  #portfolioView .project-tile-title{padding:10px 10px 12px;font-size:12px;line-height:1.55}
+  #portfolioView .work-body{padding:11px}
+  #portfolioView .work h3{font-size:14px;margin:9px 0 5px}
+  #portfolioView .description{font-size:11px;line-height:1.8}
+  #portfolioView .facts{gap:6px;margin-top:10px}
+  #portfolioView .fact{padding:8px;border-radius:9px}
+  #portfolioView .fact strong{font-size:9px}
+  #portfolioView .fact span{font-size:10px}
+  #portfolioView .media-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  #portfolioView .gallery-contact-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #portfolioView .contact-action{min-width:0;min-height:42px;padding:9px 8px;font-size:11px}
+  #portfolioView.portfolio-template-mosaic .work:nth-child(5n+1) .work-cover{height:auto;aspect-ratio:4/3}
+}
+@media(max-width:360px){
+  #portfolioView .works-grid{gap:7px}
+  #portfolioView .project-tile-title{padding:8px;font-size:11px}
+  #portfolioView .profile-hero{padding:17px 14px}
+  #portfolioView .facts{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  #portfolioView .project-tile,#portfolioView .work-cover img{transition:none!important}
+  #portfolioView .project-tile:hover,#portfolioView .project-tile:hover .work-cover img{transform:none!important}
+}
