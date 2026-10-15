@@ -378,6 +378,25 @@ html,body{height:100%;overflow:hidden}
 [hidden]{display:none!important}
 @media(max-width:760px){#page-studio .toolbar,#page-careers .toolbar,#page-growth .toolbar{flex-wrap:wrap;max-width:100%}#page-studio .panel,#page-careers .panel,#page-growth .panel,#page-profile .panel,#page-settings .panel{max-width:100%}}
 </style>
+<style>
+/* Additional portfolio templates: distinct, persistent visual layouts */
+.template-thumb-split:before{left:auto;right:7px;width:24%;height:58px;background:#203b45}
+.template-thumb-split i{right:calc(24% + 13px);width:58%;height:24px;background:#b9d8d0}
+.template-thumb-split b{top:45px;right:calc(24% + 13px);left:8px;height:5px;background:#9daeb5}
+.template-thumb-split em{top:56px;right:calc(24% + 13px);left:8px;height:5px;background:#c7d8d4}
+.template-thumb-bold{background:#191919}.template-thumb-bold:before{height:13px;background:#e5ff55}.template-thumb-bold i{background:#e5ff55;width:43%;height:37px}.template-thumb-bold b{background:#fff;height:9px}.template-thumb-bold em{background:#777;height:6px}
+.template-thumb-studio{background:#f4e7d7}.template-thumb-studio:before{background:#713f2c;height:12px}.template-thumb-studio i{background:#e2a078;width:38%;height:39px}.template-thumb-studio b{background:#b57c62;height:8px}.template-thumb-studio em{background:#dfc0a4;height:7px}
+.template-thumb-gallery{background:#e9f2ff}.template-thumb-gallery:before{background:#d1e2ff;height:6px}.template-thumb-gallery i{background:#4979bd;width:42%;height:42px}.template-thumb-gallery b{background:#90add7;height:18px}.template-thumb-gallery em{background:#bfd0e8;height:8px}
+@media(max-width:600px){.portfolio-template-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.portfolio-live-preview[data-template="split"] .preview-profile{background:#203b45;color:#fff;border-radius:12px 3px 3px 12px;border-right:5px solid var(--preview-accent)}
+.portfolio-live-preview[data-template="split"] .preview-work-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.portfolio-live-preview[data-template="bold"] .preview-profile{background:#191919;color:#fff;border-radius:2px;border-bottom:7px solid #e5ff55}
+.portfolio-live-preview[data-template="bold"] .preview-profile strong{letter-spacing:-.04em}
+.portfolio-live-preview[data-template="studio"] .preview-profile{background:#713f2c;color:#fff;border-radius:22px 4px 22px 4px}
+.portfolio-live-preview[data-template="studio"] .preview-work-card{border-radius:4px 16px 4px 16px}
+.portfolio-live-preview[data-template="gallery"] .preview-profile{background:#e9f2ff;color:#18345c;border-radius:8px}
+.portfolio-live-preview[data-template="gallery"] .preview-work-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -433,8 +452,7 @@ html,body{height:100%;overflow:hidden}
   <div class="section-intro"><h1>ملف إنجازي</h1><p>حوّل أفكارك ومحاولاتك إلى دليل ملموس على ما تستطيع فعله. وثّق دورك ونتيجتك، ثم اختر ما تريد إظهاره في ملفك القابل للمشاركة.</p></div><div class="project-insight-strip"><div><span class="insight-icon">◈</span><div><strong>الفكرة تستحق التوثيق</strong><small>لا يشترط أن يكون المشروع مثاليًا؛ وثّق ما جرّبته وما تعلمته.</small></div></div><div><span class="insight-icon">✦</span><div><strong>اعرض دورك بوضوح</strong><small>الأدوات والنتائج تشرح مساهمتك.</small></div></div><div><span class="insight-icon">↗</span><div><strong>تحكّم بما يظهر</strong><small>المشاريع الخاصة لا تُضمّن في ملف الإنجاز المُصدّر.</small></div></div></div>
   <div class="toolbar project-toolbar"><div class="search"><input id="projectSearch" placeholder="ابحث بالاسم أو الوصف أو المهارات..." /></div><select class="filter" id="projectFilter" aria-label="تصنيف المشاريع"><option value="all">كل التصنيفات</option><option value="tech">برمجة وتقنية</option><option value="design">تصميم وفنون</option><option value="media">إعلام وإنتاج محتوى</option><option value="writing">كتابة وتأليف</option><option value="study">دراسة وبحث</option><option value="education">تعليم وتدريب</option><option value="business">أعمال وريادة</option><option value="engineering">هندسة وصناعة</option><option value="science">علوم وتجارب</option><option value="community">مبادرات ومجتمع</option><option value="event">فعاليات وتنظيم</option><option value="personal">مشروع شخصي</option><option value="other">أخرى</option></select><select class="filter" id="projectStatusFilter" aria-label="حالة المشروع"><option value="all">كل الحالات</option><option value="done">مكتمل</option><option value="progress">قيد العمل</option><option value="idea">فكرة</option></select><select class="filter" id="projectGalleryFilter" aria-label="حالة الظهور في معرض الأعمال"><option value="all">كل حالات المعرض</option><option value="shown">ظاهر في المعرض</option><option value="hidden">مخفي عن المعرض</option></select><select class="filter" id="projectSort" aria-label="ترتيب المشاريع"><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option><option value="az">الاسم: أ إلى ي</option><option value="featured">المميزة أولًا</option></select><button class="primary" id="addProjectBtn">＋ مشروع جديد</button></div><div class="project-summary" id="projectSummary" aria-live="polite"></div>
   <div class="cards" id="projectCards"></div>
-  <div class="portfolio-publish-panel"><div class="portfolio-publish-copy" id="portfolioSettingsIntro"><span class="eyebrow">معرضك على الإنترنت</span><h2>أنت من يقرر ما يراه الزوار.</h2><p>اختر الأعمال والبيانات التي تريد عرضها. إعدادات المعرض مستقلة عن نسخة ملف الإنجاز التي تنزّلها، ويمكنك إيقاف المشاركة العامة في أي وقت.</p></div></div>
-<div class="portfolio-designer" id="portfolioDesigner">
+  <div class="portfolio-designer" id="portfolioDesigner">
   <div class="portfolio-designer-heading"><div><span class="eyebrow">استوديو معرض الأعمال</span><h3>صمّم طريقة عرض أعمالك</h3><p>اختر قالبًا جاهزًا ثم عدّل النصوص والألوان وترتيب الأقسام. التغييرات تُحفظ في إعداداتك وتُطبّق عند النشر.</p></div></div>
   <div class="designer-tabs" role="tablist" aria-label="أقسام التخصيص">
 <button type="button" role="tab" class="designer-tab is-active" data-designer-tab="style" aria-selected="true">القالب</button>
@@ -446,12 +464,15 @@ html,body{height:100%;overflow:hidden}
 <button type="button" role="tab" class="designer-tab" data-designer-tab="sharing" aria-selected="false">المشاركة والتواصل</button>
 </div>
 <section class="designer-pane is-active" data-designer-pane="style">
-<h4>القالب</h4>
 <div class="portfolio-template-options" role="group" aria-label="قوالب معرض الأعمال">
-    <button type="button" class="portfolio-template-choice is-selected" data-portfolio-template="classic"><span class="template-thumb template-thumb-classic"><i></i><b></b><em></em></span><strong>احترافي</strong><small>غلاف داكن وبطاقات واضحة</small></button>
-    <button type="button" class="portfolio-template-choice" data-portfolio-template="editorial"><span class="template-thumb template-thumb-editorial"><i></i><b></b><em></em></span><strong>تحريري</strong><small>مساحات بيضاء وعناوين بارزة</small></button>
-    <button type="button" class="portfolio-template-choice" data-portfolio-template="minimal"><span class="template-thumb template-thumb-minimal"><i></i><b></b><em></em></span><strong>بسيط</strong><small>هادئ وخفيف بلا زحام</small></button>
-    <button type="button" class="portfolio-template-choice" data-portfolio-template="mosaic"><span class="template-thumb template-thumb-mosaic"><i></i><b></b><em></em></span><strong>فسيفساء</strong><small>شبكة صور بأحجام متنوّعة</small></button>
+    <button type="button" class="portfolio-template-choice is-selected" data-portfolio-template="classic"><span class="template-thumb template-thumb-classic"><i></i><b></b><em></em></span><strong>احترافي</strong><small>واجهة متوازنة وبطاقات واضحة</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="editorial"><span class="template-thumb template-thumb-editorial"><i></i><b></b><em></em></span><strong>تحريري</strong><small>عناوين كبيرة ومساحات هادئة</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="minimal"><span class="template-thumb template-thumb-minimal"><i></i><b></b><em></em></span><strong>بسيط</strong><small>واجهة خفيفة قليلة الزخرفة</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="mosaic"><span class="template-thumb template-thumb-mosaic"><i></i><b></b><em></em></span><strong>فسيفساء</strong><small>شبكة أعمال بصور متنوعة</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="split"><span class="template-thumb template-thumb-split"><i></i><b></b><em></em></span><strong>عمود جانبي</strong><small>معلومات ثابتة وأعمال منظمة</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="bold"><span class="template-thumb template-thumb-bold"><i></i><b></b><em></em></span><strong>جريء</strong><small>عنوان قوي وتباين واضح</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="studio"><span class="template-thumb template-thumb-studio"><i></i><b></b><em></em></span><strong>استوديو</strong><small>مظهر إبداعي دافئ</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="gallery"><span class="template-thumb template-thumb-gallery"><i></i><b></b><em></em></span><strong>معرض صور</strong><small>التركيز على الصور والأعمال</small></button>
   </div>
   
 <h4>نقش الخلفية</h4>
