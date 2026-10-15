@@ -1571,6 +1571,11 @@ function customElementLabel(el){return ({text:"نص",image:"صورة",rect:"شك
 function drawCustomLayers(){const host=$("#customLayers");if(!host||!customDoc)return;host.innerHTML=customDoc.layout.map((el,index)=>'<div class="custom-layer-row '+((customSelected===el.id||customMultiSelected.includes(el.id))?'active':'')+'"><button type="button" class="custom-layer-name" data-layer-select="'+esc(el.id)+'"><span class="custom-layer-index">'+(index+1)+'</span><span><b>'+esc(customElementLabel(el))+'</b><small>'+(el.locked?"🔒 مقفل · ":"")+esc((el.text||el.name||"").slice(0,24)||"بدون عنوان")+'</small></span></button><span class="custom-layer-actions"><button type="button" title="إلى الأمام" data-layer-up="'+esc(el.id)+'">↑</button><button type="button" title="إلى الخلف" data-layer-down="'+esc(el.id)+'">↓</button></span></div>').reverse().join("")||'<p class="tiny-note">أضف عنصرًا لتظهر طبقاته هنا.</p>'}
 function customNewId(){return "custom-el-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9)}
 function customFillCss(el){const fill=String(el&&el.fill||"#e9e6ff").trim();return fill==="transparent"||/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(fill)?fill:"#e9e6ff"}
+// Shared studio template primitives: templates registered after the base list use these helpers too.
+function T(text,x,y,w,h,size,color,o){return Object.assign({id:customNewId(),type:"text",x:x,y:y,w:w,h:h,text:text,fontSize:size,color:color,fontFamily:"Cairo",align:"right",bold:false},o||{})}
+function R(x,y,w,h,fill,o){return Object.assign({id:customNewId(),type:"rect",x:x,y:y,w:w,h:h,fill:fill,borderless:true,strokeWidth:0,radius:0,color:"#17152b"},o||{})}
+function C(x,y,d,fill,o){return R(x,y,d,d,fill,Object.assign({radius:999},o||{}))}
+function L(x,y,w,color,s){return {id:customNewId(),type:"line",x:x,y:y,w:w,h:.4,color:color,stroke:s||1}}
 const STUDIO_TEMPLATES=(function(){
  const T=(text,x,y,w,h,size,color,o)=>Object.assign({id:customNewId(),type:"text",x:x,y:y,w:w,h:h,text:text,fontSize:size,color:color,fontFamily:"Cairo",align:"right",bold:false},o||{});
  const R=(x,y,w,h,fill,o)=>Object.assign({id:customNewId(),type:"rect",x:x,y:y,w:w,h:h,fill:fill,borderless:true,strokeWidth:0,radius:0,color:"#17152b"},o||{});
