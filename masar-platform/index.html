@@ -894,16 +894,7 @@ html,body{height:100%;overflow:hidden}
 <label class="designer-check"><input type="checkbox" id="galleryProfileShowDecoration" checked> إظهار الزخرفة الخلفية</label>
 <label class="designer-check"><input type="checkbox" id="galleryProfileShowKicker" checked> إظهار العبارة الصغيرة أعلى الاسم</label>
 </div>
-<div class="gallery-contact-style" aria-label="تخصيص مظهر أزرار التواصل">
-    <strong>تخصيص أزرار التواصل</strong>
-    <div class="gallery-contact-style-grid">
-      <label>لون الأزرار<input type="color" id="galleryContactButtonColor" value="#5b46e6"></label>
-      <label>لون النص<input type="color" id="galleryContactButtonTextColor" value="#ffffff"></label>
-      <label>حجم الأزرار<select id="galleryContactButtonSize"><option value="compact">صغير</option><option value="normal" selected>متوسط</option><option value="large">كبير</option></select></label>
-      <label>مكان الأزرار<select id="galleryContactButtonPosition"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
-    </div>
-    <small>تُطبّق الألوان والحجم والمكان على أزرار الهاتف وواتساب والبريد بعد نشر المعرض.</small>
-  </div>
+
 <p class="tiny-note">تتحكم هذه الخيارات في البطاقة العلوية فقط؛ إعدادات الأعمال والخلفية العامة لا تغيّر ألوانها أو أحجامها.</p>
 </section>
 
@@ -927,6 +918,16 @@ html,body{height:100%;overflow:hidden}
   <small class="gallery-contact-note">استخدم الأسهم لترتيب الأزرار في المعرض. سيُحفظ الترتيب عند تعديل الإعدادات، ويُطبّق بعد نشر المعرض أو تحديثه.</small>
   
 </section>
+<div class="gallery-contact-style" aria-label="تخصيص مظهر أزرار التواصل">
+    <strong>تخصيص أزرار التواصل</strong>
+    <div class="gallery-contact-style-grid">
+      <label>لون الأزرار<input type="color" id="galleryContactButtonColor" value="#5b46e6"></label>
+      <label>لون النص<input type="color" id="galleryContactButtonTextColor" value="#ffffff"></label>
+      <label>حجم الأزرار<select id="galleryContactButtonSize"><option value="compact">صغير</option><option value="normal" selected>متوسط</option><option value="large">كبير</option></select></label>
+      <label>مكان الأزرار<select id="galleryContactButtonPosition"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
+    </div>
+    <small>تُطبّق الألوان والحجم والمكان على أزرار الهاتف وواتساب والبريد بعد نشر المعرض.</small>
+  </div>
 <div class="portfolio-designer-footer"><span id="portfolioDesignerStatus">المعاينة تطبّق إعداداتك عند نشر المعرض.</span><button type="button" class="secondary" id="resetPortfolioDesign">إعادة ضبط التصميم</button></div>
 </div><div class="portfolio-publish-controls"><label for="portfolioPublishVisibility">حالة المعرض</label><select id="portfolioPublishVisibility" class="filter"><option value="public">عام — يمكن لأي شخص فتح الرابط</option><option value="private">خاص — إيقاف المشاركة العامة</option></select><div class="portfolio-publish-actions"><button class="secondary" type="button" id="openPortfolioDesignerBtn">✦ تخصيص المعرض</button><button type="button" class="primary" id="publishPortfolioBtn">نشر / تحديث المعرض</button><button class="secondary" type="button" id="copyPortfolioLinkBtn" disabled>⧉ نسخ رابط المعرض</button><button class="secondary" type="button" id="visitPortfolioBtn" disabled>↗ زيارة المعرض</button><button class="secondary" id="previewPortfolioBtn" type="button">معاينة المعرض</button><button class="ghost" id="exportPortfolio">تنزيل نسخة HTML</button></div><p id="portfolioShareStatus" class="tiny-note" role="status">اختر محتوى المعرض ثم اضغط «نشر / تحديث المعرض» لتطبيق اختياراتك.</p><a id="portfolioShareLink" class="portfolio-share-link" hidden rel="noopener noreferrer" aria-label="رابط المعرض المنشور"></a></div></div>
 </section>
@@ -1380,7 +1381,14 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
  Object.keys(portfolioDesignInputs).forEach(function(id){const el=$("#"+id);if(el)el.addEventListener("input",function(){const item=portfolioDesignInputs[id];savePortfolioSetting(item[0],item[1]==="checked"?el.checked:(el.type==="range"?Number(el.value):el.value));if(el.type==="range"){const out=$("#"+id+"Output");if(out)out.textContent=el.value+"px"}});if(el&&el.type==="checkbox")el.addEventListener("change",function(){const item=portfolioDesignInputs[id];savePortfolioSetting(item[0],el.checked)})});
  $$("#portfolioDesigner [data-portfolio-template]").forEach(function(btn){btn.addEventListener("click",function(){savePortfolioSetting("template",btn.dataset.portfolioTemplate);syncPortfolioDesignControls()})});
  $("#resetPortfolioDesign").addEventListener("click",function(){state.portfolioSettings=Object.assign({},initial.portfolioSettings);save();syncPortfolioControls();renderPortfolioLivePreview();toast("تمت إعادة ضبط تصميم المعرض")});
- $$("#portfolioDesigner [data-designer-group-tab]").forEach(function(tab){tab.addEventListener("click",function(){const key=tab.dataset.designerGroupTab;$$("#portfolioDesigner [data-designer-group-tab]").forEach(function(t){const on=t===tab;t.classList.toggle("is-active",on);t.setAttribute("aria-selected",on?"true":"false")});$$("#portfolioDesigner [data-designer-group-pane]").forEach(function(pane){pane.hidden=pane.dataset.designerGroupPane!==key})})});
+ const designerGroupPanes={appearance:["style","colors","fonts","layout"],profile:["profile"],content:["content"],sharing:["sharing"]};
+ const activateDesignerGroup=function(key){
+  const allowed=designerGroupPanes[key]||designerGroupPanes.appearance;
+  $("#portfolioDesigner [data-designer-group-tab]").forEach(function(t){const on=t.dataset.designerGroupTab===key;t.classList.toggle("is-active",on);t.setAttribute("aria-selected",on?"true":"false")});
+  $("#portfolioDesigner [data-designer-pane]").forEach(function(pane){const visible=allowed.includes(pane.dataset.designerPane);pane.hidden=!visible;pane.setAttribute("aria-hidden",visible?"false":"true")});
+ };
+ $("#portfolioDesigner [data-designer-group-tab]").forEach(function(tab){tab.addEventListener("click",function(){activateDesignerGroup(tab.dataset.designerGroupTab)})});
+ activateDesignerGroup("appearance");
  [["data-hero-style","heroStyle","heroStyle"],["data-pattern","pattern","pattern"],["data-density","density","density"],["data-font","fontFamily","font"]].forEach(function(cfg){$$("#portfolioDesigner ["+cfg[0]+"]").forEach(function(btn){btn.addEventListener("click",function(){savePortfolioSetting(cfg[1],btn.dataset[cfg[2]]);syncPortfolioDesignControls()})})});
  $$("#portfolioDesigner [data-palette]").forEach(function(btn){btn.addEventListener("click",function(){state.portfolioSettings=Object.assign({},initial.portfolioSettings,state.portfolioSettings||{},{palette:btn.dataset.palette,accent:btn.dataset.accent,background:btn.dataset.bg,textColor:btn.dataset.text,headingColor:btn.dataset.heading,cardBackground:btn.dataset.card});save();syncPortfolioDesignControls();renderPortfolioLivePreview();const st=$("#portfolioDesignerStatus");if(st)st.textContent="طُبّقت اللوحة محليًا. انشر المعرض لتطبيقها على الرابط العام."})});
  const cardStyleSel=$("#galleryCardStyle");if(cardStyleSel)cardStyleSel.addEventListener("input",function(){savePortfolioSetting("cardRadius",cardStyleSel.value==="square"?7:20);syncPortfolioDesignControls()});
@@ -1826,9 +1834,12 @@ function renderDesigns(){
 }
 $("#exportPortfolio").addEventListener("click",exportPortfolio);$("#previewExport").addEventListener("click",exportPortfolio);
 async function publishPortfolio(){
- const button=$("#publishPortfolioBtn"),status=$("#portfolioShareStatus"),linkEl=$("#portfolioShareLink"),copyButton=$("#copyPortfolioLinkBtn"),visitButton=$("#visitPortfolioBtn"),previewButton=$("#previewPortfolioBtn"),visibility=$("#portfolioPublishVisibility"),user=window.MadaAuth&&window.MadaAuth.getUser?window.MadaAuth.getUser():null;
+ const button=$("#publishPortfolioBtn"),status=$("#portfolioShareStatus"),linkEl=$("#portfolioShareLink"),copyButton=$("#copyPortfolioLinkBtn"),visitButton=$("#visitPortfolioBtn"),previewButton=$("#previewPortfolioBtn"),visibility=$("#portfolioPublishVisibility");let user=window.MadaAuth&&window.MadaAuth.getUser?window.MadaAuth.getUser():null;
  if(!button||!status||!linkEl||!copyButton||!visitButton||!previewButton||!visibility){console.error("Mada portfolio publish controls are incomplete");if(status)status.textContent="تعذّر بدء النشر لأن بعض عناصر المعرض غير موجودة. أعد تحميل الصفحة.";return}
- if(!user){status.textContent="سجّل الدخول أولًا حتى نربط المعرض باسم حسابك.";toast(status.textContent);if(window.MadaAuth&&typeof window.MadaAuth.open==="function")window.MadaAuth.open("login");return}
+ if(!user){
+  try{const authResponse=await fetch("/api/account?action=me",{method:"GET",credentials:"same-origin",headers:{"Accept":"application/json"},cache:"no-store"});const authResult=await authResponse.json().catch(function(){return {}});if(authResponse.ok&&authResult.user)user=authResult.user;}catch(authError){console.warn("Could not refresh session before portfolio publishing:",authError)}
+ }
+ if(!user){status.textContent="لم يتم تسجيل الدخول إلى الخادم. سجّل الدخول ثم أعد الضغط على «نشر / تحديث المعرض».";toast(status.textContent);if(window.MadaAuth&&typeof window.MadaAuth.open==="function")window.MadaAuth.open("login");return}
  const isPublic=visibility.value==="public";
  const originalText=button.textContent;
  button.disabled=true;button.setAttribute("aria-busy","true");button.textContent="جارٍ الحفظ…";status.textContent="جارٍ تجهيز المعرض وإرساله إلى الخادم…";
