@@ -2547,7 +2547,7 @@ document.addEventListener("click",function(event){
     let toolbar=modal.querySelector(":scope > .modal-save-toolbar");
     if(!toolbar){toolbar=document.createElement("div");toolbar.className="modal-save-toolbar";toolbar.setAttribute("aria-label","أزرار الحفظ والإجراءات");modal.insertBefore(toolbar,modal.firstChild);}
     const buttons=Array.from(modal.querySelectorAll("button")).filter(function(button){
-      return !button.closest(".modal-save-toolbar")&&!button.closest(".modal-head")&&isSaveAction(button)&&!button.dataset.modalSaveMoved;
+      return !button.closest(".modal-save-toolbar")&&!button.closest(".modal-head")&&!button.matches('[role="tab"],[data-designer-group-tab]')&&isSaveAction(button)&&!button.dataset.modalSaveMoved;
     });
     buttons.forEach(function(button){
       const placeholder=document.createElement("span");placeholder.className="modal-save-placeholder";button.parentNode.insertBefore(placeholder,button);
