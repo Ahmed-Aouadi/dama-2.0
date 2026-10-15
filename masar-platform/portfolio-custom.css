@@ -205,3 +205,36 @@ html.is-preview body{overscroll-behavior:contain}
   #portfolioView .project-tile,#portfolioView .work-cover img{transition:none!important}
   #portfolioView .project-tile:hover,#portfolioView .project-tile:hover .work-cover img{transform:none!important}
 }
+
+
+/* Mobile-first compact cards: reduce text height without sacrificing readability */
+@media(max-width:560px){
+  #portfolioView .profile-copy h1{font-size:clamp(21px,5.5vw,27px)!important;line-height:1.3!important}
+  #portfolioView .profile-copy .role{font-size:11px!important;line-height:1.55!important}
+  #portfolioView .profile-copy .bio{font-size:11px!important;line-height:1.65!important;margin:7px 0!important}
+  #portfolioView .profile-meta .meta-chip,#portfolioView .skills .skill{font-size:9px!important;padding:4px 6px!important;line-height:1.4!important}
+  #portfolioView .section-head{margin-top:20px!important;padding-bottom:7px!important}
+  #portfolioView .section-head h2{font-size:17px!important;line-height:1.35!important}
+  #portfolioView .section-head p{font-size:10px!important;line-height:1.5!important}
+  #portfolioView .project-tile-title{font-size:11px!important;line-height:1.4!important;padding:8px!important}
+  #portfolioView .work-body{padding:8px!important}
+  #portfolioView .work h3{font-size:12px!important;line-height:1.4!important;margin:5px 0 4px!important}
+  #portfolioView .description{font-size:10px!important;line-height:1.55!important}
+  #portfolioView .facts{margin-top:7px!important;gap:5px!important}
+  #portfolioView .fact{padding:6px!important}
+  #portfolioView .fact strong{font-size:9px!important;line-height:1.35!important}
+  #portfolioView .fact span{font-size:9px!important;line-height:1.4!important}
+  #portfolioView .tag{font-size:9px!important;padding:3px 6px!important}
+  #portfolioView .work-cover{aspect-ratio:5/3!important}
+  #portfolioView .project-tile .work-cover{aspect-ratio:5/3!important}
+  #portfolioView .gallery-contact-actions{gap:6px!important}
+  #portfolioView .contact-action{font-size:10px!important;min-height:37px!important;padding:7px 6px!important}
+}
+@media(max-width:380px){
+  #portfolioView .works-grid{gap:7px!important}
+  #portfolioView .work h3{font-size:11px!important}
+  #portfolioView .project-tile-title{font-size:10px!important;padding:7px!important}
+  #portfolioView .work-body{padding:7px!important}
+  #portfolioView .description{font-size:9px!important}
+  #portfolioView .profile-copy h1{font-size:21px!important}
+}
