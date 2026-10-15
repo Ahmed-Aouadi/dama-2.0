@@ -18,3 +18,9 @@ jobs:
           node-version: 22
       - name: Check JavaScript syntax
         run: node scripts/check-syntax.js
+      - name: Install Playwright browser test dependency
+        run: npm install --no-save --no-package-lock playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser smoke tests
+        run: node scripts/browser-smoke.js
