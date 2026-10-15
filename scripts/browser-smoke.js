@@ -140,7 +140,14 @@ function assert(condition, message) {
     await page.locator("#openPortfolioDesignerBtn").click();
     assert(await page.locator("#portfolioDesignerModal").evaluate(el => el.classList.contains("open")), "Gallery customization dialog did not open");
     assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
+    assert(await page.locator("#portfolioSettingsIntro").count() === 0, "Redundant public-gallery introduction is still visible");
     assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
+    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 8, "Gallery designer must offer eight distinct templates");
+    for (const template of ["classic", "editorial", "minimal", "mosaic", "split", "bold", "studio", "gallery"]) {
+      await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').click();
+      assert(await page.evaluate(t => window.MadaApp.getState().portfolioSettings.template === t, template), "Selecting portfolio template did not save: " + template);
+      assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected")), "Selected portfolio template was not visually highlighted: " + template);
+    }
     for (const key of ["style", "colors", "fonts", "layout", "profile", "content", "sharing"]) {
       await page.locator(`#portfolioDesigner [data-designer-tab="${key}"]`).click();
       assert(await page.locator(`#portfolioDesigner [data-designer-pane="${key}"]`).isVisible(), `Gallery designer tab ${key} did not show its panel`);
