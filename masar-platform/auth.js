@@ -140,40 +140,53 @@
     return ["name", "headline", "email", "phone", "city", "summary", "education", "experience", "projects", "skills"]
       .some(key => String(cv[key] || "").trim().length > 0);
   }
+  function mergeSavedItems() {
+    const groups = Array.from(arguments);
+    const itemsById = new Map();
+    groups.forEach(function (items) {
+      (Array.isArray(items) ? items : []).forEach(function (item) {
+        if (!item || item.id == null) return;
+        const id = String(item.id);
+        const previous = itemsById.get(id);
+        if (!previous) { itemsById.set(id, item); return; }
+        const previousTime = Date.parse(previous.updated || previous.created || "") || 0;
+        const nextTime = Date.parse(item.updated || item.created || "") || 0;
+        if (nextTime >= previousTime) itemsById.set(id, item);
+      });
+    });
+    return Array.from(itemsById.values());
+  }
   async function restoreAccountData(migrateGuest) {
     if (!user || !window.MadaApp) return;
     const guestState = window.MadaApp.getState();
     window.MadaApp.setKey("mada-platform-v1:" + user.id);
     const result = await request("data", "GET");
-    // Preserve projects created while the account's cloud data was loading.
+    // The account-local cache may change while the cloud request is in flight.
+    // Merge guest, current local and cloud records instead of replacing old work.
     const latestState = window.MadaApp.getState();
-    const originalProjectIds = new Set((guestState.projects || []).map(project => String(project.id)));
-    const cloudProjects = result.data && Array.isArray(result.data.projects) ? result.data.projects : [];
-    const cloudProjectIds = new Set(cloudProjects.map(project => String(project.id)));
-    const projectsAddedDuringRestore = (latestState.projects || []).filter(project =>
-      !originalProjectIds.has(String(project.id)) && !cloudProjectIds.has(String(project.id))
-    );
+    const cloudState = result.data && typeof result.data === "object" ? result.data : null;
     const guestHasContent = hasMeaningfulProfile(guestState) ||
       ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
       hasMeaningfulGrowth(guestState);
-    const cloudIsEmpty = !result.data ||
-      (!hasMeaningfulProfile(result.data) &&
-       !["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) &&
-       !hasMeaningfulGrowth(result.data));
-    if (result.data && !(migrateGuest && cloudIsEmpty && guestHasContent)) {
-      const needsName = !result.data.profile || !result.data.profile.name;
-      const restoredState = Object.assign({}, result.data, {
-        projects: projectsAddedDuringRestore.concat(cloudProjects)
-      });
-      window.MadaApp.applyCloudState(restoredState, user.name);
-      if (needsName || projectsAddedDuringRestore.length) await request("data", "POST", { data: window.MadaApp.getState() });
-    } else {
-      const initialState = migrateGuest && guestHasContent ? Object.assign({}, guestState, {
-        projects: projectsAddedDuringRestore.concat(guestState.projects || [])
-      }) : Object.assign({}, latestState, {
-        projects: projectsAddedDuringRestore.concat(latestState.projects || [])
-      });
-      window.MadaApp.applyCloudState(initialState, user.name);
+    const cloudIsEmpty = !cloudState ||
+      (!hasMeaningfulProfile(cloudState) &&
+       !["projects", "designs", "quizzes"].some(key => Array.isArray(cloudState[key]) && cloudState[key].length > 0) &&
+       !hasMeaningfulGrowth(cloudState));
+    const baseState = cloudState && !(migrateGuest && cloudIsEmpty && guestHasContent)
+      ? cloudState
+      : (migrateGuest && guestHasContent ? guestState : latestState);
+    const restoredState = Object.assign({}, baseState, {
+      projects: mergeSavedItems(guestState.projects, latestState.projects, cloudState && cloudState.projects),
+      designs: mergeSavedItems(guestState.designs, latestState.designs, cloudState && cloudState.designs),
+      quizzes: mergeSavedItems(guestState.quizzes, latestState.quizzes, cloudState && cloudState.quizzes)
+    });
+    const needsName = !restoredState.profile || !restoredState.profile.name;
+    const needsCloudMerge = !cloudState ||
+      ["projects", "designs", "quizzes"].some(key =>
+        JSON.stringify(restoredState[key]) !== JSON.stringify(Array.isArray(cloudState[key]) ? cloudState[key] : [])
+      );
+    window.MadaApp.applyCloudState(restoredState, user.name);
+    if (needsName || needsCloudMerge) {
       await request("data", "POST", { data: window.MadaApp.getState() });
     }
   }
