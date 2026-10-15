@@ -133,8 +133,14 @@ function assert(condition, message) {
 
     await page.locator("#openPortfolioDesignerBtn").click();
     assert(await page.locator("#portfolioDesignerModal").evaluate(el => el.classList.contains("open")), "Gallery customization dialog did not open");
-    const desktopTabColumns = await page.evaluate(() => Object.fromEntries(["sharing","content","profile","appearance"].map(name => [name, getComputedStyle(document.querySelector('#portfolioDesigner [data-designer-group-tab="' + name + '"]')).gridColumnStart])));
-    assert(desktopTabColumns.sharing === "1" && desktopTabColumns.content === "2" && desktopTabColumns.profile === "3" && desktopTabColumns.appearance === "4", "Gallery designer desktop tab order is incorrect: " + JSON.stringify(desktopTabColumns));
+    const desktopTabColumns = await page.evaluate(() => {
+      const tabs = Array.from(document.querySelectorAll("#portfolioDesigner .designer-tabs > [data-designer-group-tab]"));
+      const columns = Object.fromEntries(tabs.map(tab => [tab.dataset.designerGroupTab, getComputedStyle(tab).gridColumnStart]));
+      return { count: tabs.length, columns };
+    });
+    assert(desktopTabColumns.count === 4, "Expected four gallery designer tabs, found " + desktopTabColumns.count);
+    const desktopTabColumnMap = desktopTabColumns.columns;
+    assert(desktopTabColumnMap.sharing === "1" && desktopTabColumnMap.content === "2" && desktopTabColumnMap.profile === "3" && desktopTabColumnMap.appearance === "4", "Gallery designer desktop tab order is incorrect: " + JSON.stringify(desktopTabColumnMap));
     await page.locator('#portfolioDesigner [data-designer-tab="profile"]').click();
     const experienceToggle = page.locator("#galleryShowExperience");
     await experienceToggle.check();
