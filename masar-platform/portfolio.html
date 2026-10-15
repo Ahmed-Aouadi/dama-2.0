@@ -327,7 +327,7 @@
 #portfolioView .profile-hero .kicker{color:var(--gallery-profile-kicker-color,#a79bff)!important}
 #portfolioView .profile-copy .role{color:var(--gallery-profile-role-color,#d4d0e5)!important;font-size:var(--gallery-profile-body-size,var(--gallery-body-size,16px))!important}
 #portfolioView .profile-copy .bio{color:var(--gallery-profile-bio-color,#c8c4db)!important;font-size:var(--gallery-body-size,16px)!important}
-#portfolioView .profile-meta .meta-chip{color:var(--gallery-profile-meta-color,#eeebfa)!important}#portfolioView .skills .skill{background:color-mix(in srgb,var(--gallery-accent,#5b46e6) 12%,white)!important;color:var(--gallery-accent,#5b46e6)!important;border:1px solid color-mix(in srgb,var(--gallery-accent,#5b46e6) 24%,transparent);font-weight:700}
+#portfolioView .profile-meta .meta-chip,#portfolioView .skills .skill{color:var(--gallery-profile-meta-color,#eeebfa)!important}
 #portfolioView .profile-hero:before{display:block}
 #portfolioView[data-profile-decoration="off"] .profile-hero:before{display:none}
 #portfolioView[data-profile-kicker="off"] .profile-hero .kicker{display:none}
@@ -352,32 +352,8 @@
  #portfolioView .profile-copy h1{font-size:clamp(20px,min(var(--gallery-profile-name-size,var(--gallery-name-size,38px)),34px),34px)!important}
  #portfolioView[data-profile-layout="centered"] .profile-copy{ text-align:center}
 }
-
-/* Responsive profile card: compact by default on phones, with designer-controlled sizing. */
-#portfolioView[data-profile-card-width="compact"] .profile-hero{max-width:980px;margin-inline:auto}
-@media(max-width:640px){
- #portfolioView .profile-hero{padding:var(--gallery-profile-mobile-padding,12px);gap:10px;grid-template-columns:minmax(0,1fr) var(--gallery-profile-mobile-avatar-size,56px);border-radius:16px;margin-bottom:16px;min-width:0}
- #portfolioView .profile-avatar{width:var(--gallery-profile-mobile-avatar-size,56px);height:var(--gallery-profile-mobile-avatar-size,56px);border-radius:14px;font-size:22px;box-shadow:0 6px 16px #0d0b2320;align-self:start}
- #portfolioView .profile-copy{min-width:0;overflow-wrap:anywhere}
- #portfolioView .profile-copy h1{font-size:var(--gallery-profile-mobile-name-size,22px);line-height:1.25;letter-spacing:0;margin:2px 0 4px;overflow-wrap:anywhere}
- #portfolioView .profile-copy .kicker{font-size:9px;line-height:1.4}
- #portfolioView .profile-copy .role{font-size:11px;line-height:1.5}
- #portfolioView .profile-copy .bio{font-size:11px;line-height:1.65;margin:6px 0;max-width:100%}
- #portfolioView .profile-meta{gap:4px}
- #portfolioView .meta-chip{font-size:9px;padding:3px 7px;max-width:100%;overflow-wrap:anywhere}
- #portfolioView .skills{gap:4px;margin-top:7px}
- #portfolioView .skill{font-size:9px;padding:3px 7px}
- #portfolioView .gallery-contact-actions{gap:5px;margin-top:8px;flex-wrap:wrap}
- #portfolioView .gallery-contact-actions .contact-action{font-size:10px;padding:6px 8px;min-height:32px}
- #portfolioView[data-profile-mobile-layout="stacked"] .profile-hero{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
- #portfolioView[data-profile-mobile-layout="stacked"] .profile-avatar{grid-row:1;order:0}
- #portfolioView[data-profile-mobile-layout="stacked"] .profile-copy{width:100%;text-align:center;align-items:center}
- #portfolioView[data-profile-mobile-layout="stacked"] .profile-meta,#portfolioView[data-profile-mobile-layout="stacked"] .skills,#portfolioView[data-profile-mobile-layout="stacked"] .gallery-contact-actions{justify-content:center}
- #portfolioView[data-profile-mobile-layout="stacked"] .bio{margin-inline:auto}
-}
 </style>
 
-<link rel="stylesheet" href="/masar-platform/portfolio-custom.css?v=20261016b">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -402,6 +378,6 @@
   <div class="mada-footer-bottom"><span>مَدى · مساحة تصنع مستقبلك</span><a href="/">الصفحة الرئيسية</a></div>
 </footer>
 </main>
-<script src="/masar-platform/portfolio-public.js?v=20261014b" defer></script>
+<script src="/masar-platform/portfolio-public.js?v=20261013f" defer></script>
 </body>
 </html>

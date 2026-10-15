@@ -90,11 +90,6 @@ view.style.setProperty("--gallery-profile-avatar-size",Math.max(56,Math.min(200,
 view.style.setProperty("--gallery-profile-radius",Math.max(0,Math.min(48,Number.isFinite(Number(display.profileCardRadius))?Number(display.profileCardRadius):28))+"px");
 view.style.setProperty("--gallery-profile-padding",Math.max(12,Math.min(64,Number(display.profileCardPadding)||36))+"px");
 view.style.setProperty("--gallery-profile-gap",Math.max(0,Math.min(56,Number.isFinite(Number(display.profileCardGap))?Number(display.profileCardGap):25))+"px");
-view.style.setProperty("--gallery-profile-mobile-avatar-size",Math.max(36,Math.min(96,Number(display.profileMobileAvatarSize)||56))+"px");
-view.style.setProperty("--gallery-profile-mobile-name-size",Math.max(16,Math.min(32,Number(display.profileMobileNameSize)||22))+"px");
-view.style.setProperty("--gallery-profile-mobile-padding",Math.max(6,Math.min(24,Number(display.profileMobilePadding)||12))+"px");
-view.dataset.profileCardWidth=["full","compact"].includes(display.profileCardWidth)?display.profileCardWidth:"full";
-view.dataset.profileMobileLayout=["side","stacked"].includes(display.profileMobileLayout)?display.profileMobileLayout:"side";
 view.style.setProperty("--gallery-profile-border-color",safeHex(display.profileCardBorderColor,"#ffffff"));
 view.style.setProperty("--gallery-profile-border-width",Math.max(0,Math.min(6,Number(display.profileCardBorderWidth)||0))+"px");
 view.style.setProperty("--gallery-profile-name-weight",["600","700","800","900"].includes(String(display.profileNameWeight))?String(display.profileNameWeight):"700");
@@ -158,7 +153,9 @@ const extraDetails=extraContent?'<details class="profile-extra"><summary>عرض 
 const hero='<header class="profile-hero"><div class="profile-copy"><span class="kicker">'+esc(display.brandText||"معرض أعمال شخصي · مَدى")+'</span><h1>'+esc(name)+'</h1>'+
 (display.showRole!==false&&profile.role?'<p class="role">'+esc(profile.role)+'</p>':"")+
 bioPreview+compactMeta+contactSection+extraDetails+'</div>'+(avatar?'<div class="profile-avatar"><img src="'+esc(avatar)+'" alt="الصورة الشخصية"></div>':"")+'</header>';
-const sectionHead="";
+const title=String(display.title||"الأعمال المختارة").trim();
+const subtitle=String(display.subtitle||"أعمال وتجارب وروابط شاركها صاحب المعرض.").trim();
+const sectionHead=(display.showSectionTitle===false?"":'<div class="section-head"><div><h2>'+esc(title||"الأعمال المختارة")+'</h2>'+(subtitle?'<p>'+esc(subtitle)+'</p>':"")+'</div>'+(display.showWorkCount!==false?'<span class="count">'+projects.length+' أعمال</span>':"")+'</div>');
 const sectionDefs=Array.isArray(display.gallerySections)?display.gallerySections:[];
 const visibleSections=sectionDefs.filter(function(section){return section.visible!==false});
 const sectionById=new Map(visibleSections.map(function(section){return [String(section.id),section]}));

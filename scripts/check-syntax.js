@@ -153,7 +153,7 @@ if (!profile.includes("state.portfolioSettings") || !profile.includes("settings.
 console.log("OK project editing, downloads, per-project gallery visibility, and gallery content settings");
 console.log("OK modal-first work gallery actions and media previews");
 console.log("OK public portfolio publishing, media, routing, and copy integration");
-if (!portfolioPage.includes('id="publishPortfolioBtn"') || !(portfolioPage.includes('event.target.closest("#publishPortfolioBtn")') && portfolioPage.includes('Promise.resolve(publishPortfolio())') || portfolioPage.includes('const portfolioPublishButton=$("#publishPortfolioBtn")') && portfolioPage.includes('portfolioPublishButton.addEventListener("click"') && portfolioPage.includes('Promise.resolve().then(publishPortfolio)'))) throw new Error("Gallery publish button must be bound to a working publish click handler");
+if (!portfolioPage.includes('id="publishPortfolioBtn"') || !portfolioPage.includes('event.target.closest("#publishPortfolioBtn")') || !portfolioPage.includes('Promise.resolve(publishPortfolio())')) throw new Error("Gallery publish button must be bound to the delegated publish workflow");
 if (!portfolioPage.includes('event.target.closest("#newBlankDesign")') || !portfolioPage.includes('event.target.closest("[data-delete-design]")')) throw new Error("Studio create/delete buttons must use resilient delegated click handlers");
 if (!portfolioPage.includes('typeof result.shareUrl!=="string"') || !portfolioPage.includes('Mada portfolio publish failed:')) throw new Error("Gallery publishing must validate the returned share URL and report runtime failures");
 if (!portfolioPage.includes("new TextEncoder().encode(requestBody).length>3900000") || !portfolioPage.includes("aria-busy") || !portfolioApi.includes('module.exports.config = { api: { bodyParser: { sizeLimit: "4mb" } } }')) throw new Error("Portfolio publishing must support bounded media payloads and expose a clear size error");
@@ -208,13 +208,12 @@ console.log("OK Growth Hub account-state restoration after sign-in");
 const studioPage = fs.readFileSync("masar-platform/index.html", "utf8");
 const studioCss = fs.readFileSync("masar-platform/mada-studio.css", "utf8");
 if (!studioPage.includes('href="/masar-platform/mada-studio.css"')) throw new Error("Dama 2.0 Creative Studio stylesheet is not linked");
-for (const id of ["openCustomExport", "customExportModal", "customExportFormat", "customExportSelectAll", "customExportClearAll", "runCustomExport", "addTableElement", "customBackgroundImageBtn", "customReferenceBtn", "customApplyWatermark", "customBrushToggle", "customAddPage", "customLayers", "customAllowTemplateUse", "customFullscreen"]) {
+for (const id of ["exportCustomImages", "exportCustomPdfTop", "exportCustomArchive", "customSmartLayout", "addTableElement", "customBackgroundImageBtn", "customReferenceBtn", "customApplyWatermark", "customBrushToggle", "customAddPage", "customLayers", "customAllowTemplateUse", "customFullscreen"]) {
   if (!studioPage.includes('id="' + id + '"')) throw new Error("Mada Creative Studio addition was lost: " + id);
 }
 if (!studioCss.includes("#customEditorModal .custom-editor-header") || !studioCss.includes("#customEditorModal .custom-tools") || !studioCss.includes("@media (max-width:980px)")) throw new Error("Dama 2.0 Studio styling or responsive layout is missing");
 if (!studioCss.includes("#customEditorModal .custom-header-actions #customFullscreen{display:inline-flex!important")) throw new Error("Fullscreen control must remain visible after the style migration");
-for (const feature of ["customExportPageList", "customExportSelectionCount", "customExportOptions", "customExportSelectAll", "customExportClearAll"]) { if (!studioPage.includes('id="' + feature + '"')) throw new Error("Mada export dialog is missing a page-selection control: " + feature); }
-console.log("OK Dama 2.0 Creative Studio unified export dialog, page selection, styles, layout, reference, watermark and fullscreen features preserved");
+console.log("OK Dama 2.0 Creative Studio styles with Mada export, layout, page, reference, watermark and fullscreen features preserved");
 
 const growthTemplateEditorRegression = fs.readFileSync("masar-platform/growth-templates.js", "utf8");
 for (const control of ["data-gt-x", "data-gt-y", "data-gt-width", "data-gt-height", "data-gt-font", "data-gt-color"]) {
