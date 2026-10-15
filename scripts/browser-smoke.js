@@ -135,6 +135,8 @@ function assert(condition, message) {
     assert(await page.locator("#portfolioDesignerModal").evaluate(el => el.classList.contains("open")), "Gallery customization dialog did not open");
     const desktopTabColumns = await page.evaluate(() => Object.fromEntries(["sharing","content","profile","appearance"].map(name => [name, getComputedStyle(document.querySelector('#portfolioDesigner [data-designer-group-tab="' + name + '"]')).gridColumnStart])));
     assert(desktopTabColumns.sharing === "1" && desktopTabColumns.content === "2" && desktopTabColumns.profile === "3" && desktopTabColumns.appearance === "4", "Gallery designer desktop tab order is incorrect: " + JSON.stringify(desktopTabColumns));
+    assert(await page.locator("#gallerySectionManager #saveGallerySection").count() === 1, "Gallery section save button was moved out of its section by the modal toolbar");
+    assert(await page.locator("#gallerySectionManager #cancelGallerySectionEdit").count() === 1, "Gallery section cancel button was moved out of its section by the modal toolbar");
     await page.locator('#portfolioDesigner [data-designer-tab="profile"]').click();
     const experienceToggle = page.locator("#galleryShowExperience");
     await experienceToggle.check();
