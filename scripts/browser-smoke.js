@@ -50,6 +50,7 @@ function assert(condition, message) {
   const errors = [];
   const failedScripts = [];
   let lastPublishedPayload = null;
+  let sessionRefreshRequested = false;
   try {
     await new Promise((resolve, reject) => {
       server.once("error", reject);
@@ -68,7 +69,7 @@ function assert(condition, message) {
         growth: { cv: { name: "", headline: "", languages: "العربية، الفرنسية" }, skills: [], paths: {}, history: [], requests: [], customTemplates: [], locale: "ar" }
       };
       let body = { ok: true };
-      if (action === "me") body = { user };
+      if (action === "me") { sessionRefreshRequested = true; body = { user }; }
       else if (action === "data" && route.request().method() === "GET") body = { data };
       else if (action === "publish-portfolio") { lastPublishedPayload = route.request().postDataJSON(); body = { shareUrl: "/portfolio.html?id=browserSmokeTest123" }; }
       else if (action === "data") body = { ok: true };
@@ -126,8 +127,13 @@ function assert(condition, message) {
     await page.locator('#projectModal [data-close="projectModal"]').click();
     console.log("PASS add-project button opens and closes its dialog");
 
+    await page.evaluate(() => {
+      if (!window.MadaAuth || typeof window.MadaAuth.getUser !== "function") throw new Error("MadaAuth.getUser is unavailable for the stale-session regression test");
+      window.MadaAuth.getUser = () => null;
+    });
     await page.locator("#publishPortfolioBtn").click();
     await page.waitForFunction(() => /تم نشر المعرض بنجاح/.test(document.querySelector("#portfolioShareStatus")?.textContent || ""), undefined, { timeout: 5000 });
+    assert(sessionRefreshRequested, "Publishing did not refresh the server session when client auth state was empty");
     assert(!errors.length, "Uncaught browser exceptions after portfolio publishing click: " + errors.join(" | "));
     console.log("PASS publish button publishes and exposes a validated share URL");
 

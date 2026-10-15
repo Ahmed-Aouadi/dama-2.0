@@ -1305,9 +1305,18 @@ function renderDesigns(){
 }
 $("#exportPortfolio").addEventListener("click",exportPortfolio);$("#previewExport").addEventListener("click",exportPortfolio);
 async function publishPortfolio(){
- const button=$("#publishPortfolioBtn"),status=$("#portfolioShareStatus"),linkEl=$("#portfolioShareLink"),copyButton=$("#copyPortfolioLinkBtn"),previewButton=$("#previewPortfolioBtn"),visibility=$("#portfolioPublishVisibility"),user=window.MadaAuth&&window.MadaAuth.getUser?window.MadaAuth.getUser():null;
+ const button=$("#publishPortfolioBtn"),status=$("#portfolioShareStatus"),linkEl=$("#portfolioShareLink"),copyButton=$("#copyPortfolioLinkBtn"),previewButton=$("#previewPortfolioBtn"),visibility=$("#portfolioPublishVisibility");
+ let user=window.MadaAuth&&window.MadaAuth.getUser?window.MadaAuth.getUser():null;
  if(!button||!status||!linkEl||!copyButton||!previewButton||!visibility){console.error("Mada portfolio publish controls are incomplete");if(status)status.textContent="تعذّر بدء النشر لأن بعض عناصر المعرض غير موجودة. أعد تحميل الصفحة.";return}
- if(!user){status.textContent="سجّل الدخول أولًا حتى نربط المعرض باسم حسابك.";toast(status.textContent);if(window.MadaAuth&&typeof window.MadaAuth.open==="function")window.MadaAuth.open("login");return}
+ /* The server session cookie is authoritative if the client auth state has not hydrated yet. */
+ if(!user){
+  try{
+   const sessionResponse=await fetch("/api/account?action=me",{method:"GET",credentials:"same-origin",cache:"no-store"});
+   const sessionData=await sessionResponse.json().catch(function(){return {}});
+   if(sessionResponse.ok&&sessionData.user)user=sessionData.user;
+  }catch(sessionError){console.warn("Mada portfolio session refresh failed:",sessionError)}
+ }
+ if(!user){status.textContent="لم يتم العثور على جلسة دخول صالحة. سجّل الدخول ثم أعد نشر المعرض.";toast(status.textContent);if(window.MadaAuth&&typeof window.MadaAuth.open==="function")window.MadaAuth.open("login");return}
  const isPublic=visibility.value==="public";
  const originalText=button.textContent;
  button.disabled=true;button.setAttribute("aria-busy","true");button.textContent="جارٍ الحفظ…";status.textContent="جارٍ تجهيز المعرض وإرساله إلى الخادم…";
