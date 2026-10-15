@@ -378,6 +378,125 @@ input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select{b
 #customEditorModal .custom-tools-section-tabs{gap:6px}
 #customEditorModal .custom-tools-section-tabs button{border-radius:11px;transition:background .18s,border-color .18s}
 @media(max-width:680px){#customEditorModal .custom-tools-section-panel[data-custom-tool-panel="smart"] .custom-added-tools{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#customEditorModal .custom-added-tools .custom-tool-card{min-height:86px;padding:7px 4px}#customEditorModal .custom-preset-preview{width:38px;height:35px;font-size:17px}#customEditorModal .custom-preset-caption{font-size:9px}}
+
+/* Template library: grouped collapsible catalog and responsive editor layout. */
+.studio-templates{margin:12px 0;border:1px solid #ded7fa;border-radius:14px;background:#faf8ff;overflow:hidden}
+.studio-templates>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;background:#eee8ff;color:#45318f;font-weight:800;font-size:13px;cursor:pointer;list-style:none}
+.studio-templates>summary::-webkit-details-marker,.studio-template-category>summary::-webkit-details-marker{display:none}
+.studio-templates>summary:after{content:"＋";font-size:17px;margin-inline-start:auto}.studio-templates[open]>summary:after{content:"−"}
+.studio-templates>summary small,.studio-template-category>summary small{font-size:10px;font-weight:600;color:#6d5caa}
+.studio-template-category{margin:9px;border:1px solid #e6e0f4;border-radius:11px;background:#fff;overflow:hidden}
+.studio-template-category>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 11px;background:#f7f4ff;color:#30264b;font-size:12px;font-weight:800;cursor:pointer;list-style:none}
+.studio-template-category>summary:after{content:"⌄";margin-inline-start:auto;font-size:15px}.studio-template-category[open]>summary:after{content:"⌃"}
+.studio-template-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px}
+.studio-template-grid .tpl-card{display:flex;min-width:0;flex-direction:column;align-items:stretch;gap:7px;padding:8px;border:1px solid #e7e2f2;border-radius:11px;background:#fff;color:#30264b;text-align:center;font-size:11px;font-weight:800;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s}
+.studio-template-grid .tpl-card:hover{border-color:#8b7bff;transform:translateY(-2px);box-shadow:0 7px 16px #35206f12}
+.studio-template-grid .tpl-paper{display:block;position:relative;width:100%;overflow:hidden;border-radius:5px;box-shadow:0 2px 8px #17152b18}.studio-template-grid .tpl-paper i{position:absolute;display:block;box-sizing:border-box}
+#customEditorModal .custom-editor-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto}
+#customEditorModal .custom-editor-title{flex:1 1 220px;min-width:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#customEditorModal .custom-editor-title h3{flex:0 0 auto}#customEditorModal .custom-editor-title input{flex:1 1 150px;min-width:0;max-width:300px}
+#customEditorModal .custom-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:0 1 auto;min-width:0}
+#customEditorModal .custom-header-actions button{position:static;float:none;transform:none;white-space:nowrap;flex:0 0 auto}
+#customEditorModal .custom-editor-layout{display:grid;grid-template-columns:minmax(275px,320px) minmax(0,1fr);align-items:start;gap:14px;min-width:0}
+#customEditorModal .custom-stage-wrap{min-width:0;grid-column:2;grid-row:1;position:sticky;top:8px;align-self:start}
+#customEditorModal .custom-tools{min-width:0;grid-column:1;grid-row:1;align-self:start}
+#customEditorModal .custom-tools-section-intro:empty{display:none}
+#customEditorModal .custom-tools-section-panel .tool-buttons button,#customEditorModal .custom-tools-section-panel .custom-advanced-tools button{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.45}
+#customEditorModal .custom-page-navigation{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#customEditorModal .custom-page-navigation>button,#customEditorModal .custom-page-navigation .custom-page-bulk{position:static;float:none;transform:none;flex:0 0 auto;max-width:100%}
+#customEditorModal .custom-page-tabs{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+#customEditorModal .custom-selection-panel{min-width:0;max-width:100%;box-sizing:border-box}
+#customEditorModal .custom-selection-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#customEditorModal .custom-selection-toolbar button{position:static;float:none;transform:none;flex:0 0 auto;max-width:100%;white-space:normal}
+#customEditorModal .custom-floating-toolbar{max-width:calc(100% - 16px);box-sizing:border-box;flex-wrap:wrap}
+@media(max-width:900px){
+ #customEditorModal .custom-editor-modal{overflow-y:auto}
+ #customEditorModal .custom-editor-layout{grid-template-columns:minmax(0,1fr);display:flex;flex-direction:column;align-items:stretch;overflow:visible}
+ #customEditorModal .custom-stage-wrap{order:1;position:relative;top:auto;width:100%;max-width:100%;grid-column:auto;grid-row:auto}
+ #customEditorModal .custom-tools{order:2;width:100%;max-height:none;height:auto;overflow:visible;grid-column:auto;grid-row:auto}
+ #customEditorModal .custom-header-actions{justify-content:flex-start;flex-wrap:wrap}
+ #customEditorModal .custom-editor-header{align-items:flex-start}
+ #customEditorModal .custom-editor-title{flex-basis:100%}
+ #customEditorModal .custom-template-toggle-top{max-width:none;width:100%;box-sizing:border-box}
+ #customEditorModal .custom-tools-section-tabs{max-height:48vh}
+ #customEditorModal .custom-tools-section-body{max-height:48vh}
+}
+@media(max-width:620px){
+ #customEditorModal .custom-editor-header{gap:8px}
+ #customEditorModal .custom-editor-title{width:100%;flex:0 0 100%}
+ #customEditorModal .custom-editor-title input{width:100%;max-width:none;flex-basis:100%}
+ #customEditorModal .custom-header-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:7px}
+ #customEditorModal .custom-header-actions button{width:100%;min-width:0;white-space:normal;padding:9px 6px;font-size:11px}
+ #customEditorModal .custom-stage-wrap{min-height:0;padding:8px}
+ #customEditorModal .custom-stage-top{gap:7px;flex-wrap:wrap}
+ #customEditorModal .custom-page-navigation{align-items:stretch}
+ #customEditorModal .custom-page-navigation>button{flex:1 1 calc(50% - 8px)}
+ #customEditorModal .custom-page-navigation .custom-page-bulk{flex:1 1 100%;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+ #customEditorModal .custom-tools{padding:8px;grid-template-columns:minmax(0,1fr)}
+ #customEditorModal .custom-tools-section-tabs{grid-template-columns:repeat(4,minmax(0,1fr));display:grid;grid-column:1/-1;grid-row:auto;max-height:none;overflow:visible}
+ #customEditorModal .custom-tools-section-tabs button{min-height:48px;font-size:10px}
+ #customEditorModal .custom-tools-section-body{grid-column:1/-1;grid-row:auto;max-height:none;overflow:visible}
+ #customEditorModal .custom-tools-section-intro{grid-column:1/-1}
+ #customEditorModal .studio-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #customEditorModal .custom-selection-toolbar button{font-size:10px;padding:7px}
+}
+@media(max-width:360px){
+ #customEditorModal .custom-header-actions{grid-template-columns:minmax(0,1fr)}
+ #customEditorModal .custom-header-actions button{grid-column:1}
+ #customEditorModal .custom-tools-section-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #customEditorModal .studio-template-grid{grid-template-columns:minmax(0,1fr)}
+}
+
+/* Functional fixes: presets, watermark actions, and centered reference comparison */
+#customEditorModal .custom-tools-section-panel [data-preset-kind],
+#customEditorModal .custom-added-tools button{cursor:pointer!important;pointer-events:auto!important}
+#customEditorModal .custom-page-workspace{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;justify-items:center!important;
+  align-items:center!important;position:relative!important;gap:18px!important;
+}
+#customEditorModal .custom-page-workspace>#customPage{
+  grid-column:1!important;grid-row:1!important;justify-self:center!important;
+  align-self:center!important;margin:0!important;
+}
+#customEditorModal .custom-page-workspace>.custom-reference-panel{
+  display:flex;flex-direction:column;align-self:center;justify-self:center;
+  width:clamp(160px,22vw,260px);max-height:min(65vh,700px);
+  margin:0!important;padding:10px!important;overflow:hidden;
+  border:1px solid #514875;border-radius:12px;background:#211d3d;color:#f4f0ff;
+}
+#customEditorModal .custom-page-workspace>.custom-reference-panel[hidden]{display:none!important}
+#customEditorModal .custom-page-workspace>.custom-reference-panel img{
+  width:100%;height:auto;max-height:calc(65vh - 45px);object-fit:contain;margin-top:8px;
+}
+#customEditorModal .custom-page-workspace.has-reference{
+  grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr)!important;
+}
+#customEditorModal .custom-page-workspace.has-reference>#customPage{
+  grid-column:2!important;grid-row:1!important;justify-self:center!important;
+}
+#customEditorModal .custom-page-workspace.has-reference>.custom-reference-panel{
+  grid-column:3!important;grid-row:1!important;
+}
+#customEditorModal .custom-page-workspace>#customSelectionPanel{
+  grid-column:4!important;grid-row:1!important;z-index:2;
+}
+@media(max-width:980px){
+ #customEditorModal .custom-page-workspace,
+ #customEditorModal .custom-page-workspace.has-reference{
+   display:flex!important;flex-direction:row!important;justify-content:center!important;align-items:center!important;
+   flex-wrap:nowrap!important;gap:10px!important;overflow:auto!important;
+ }
+ #customEditorModal .custom-page-workspace>#customPage{flex:0 0 auto!important;max-width:none!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel{flex:0 0 30%!important;width:30%!important;max-width:220px!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel img{max-height:45vh!important}
+ #customEditorModal .custom-page-workspace>#customSelectionPanel{position:absolute!important;inset-inline-start:0!important;top:0!important;max-width:min(90vw,320px)!important}
+}
+@media(max-width:620px){
+ #customEditorModal .custom-page-workspace.has-reference{gap:7px!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel{flex-basis:34%!important;width:34%!important;padding:5px!important}
+ #customEditorModal .custom-page-workspace>.custom-reference-panel small{font-size:9px!important}
+}
 </style>
   <link rel="stylesheet" href="/masar-platform/discover-path.css?v=20261014-redesign2">
   <link rel="stylesheet" href="/masar-platform/portfolio-work.css">
@@ -1464,14 +1583,27 @@ const STUDIO_TEMPLATES=(function(){
  {id:"idcard",name:"بطاقة تعريف",size:"Post",bg:"#f6f4ff",build:function(){return[C(40,10,28,"#8b7bff"),T("اسمك الكامل",8,44,92,11,18,"#17152b",{align:"center",bold:true}),T("تخصصك أو دورك",8,57,92,8,11,"#6a6882",{align:"center"}),R(8,74,28,9,"#e9e6ff",{radius:999}),T("مهارة ١",8,75.4,28,7,9,"#5b46e6",{align:"center",bold:true}),R(40,74,28,9,"#e9e6ff",{radius:999}),T("مهارة ٢",40,75.4,28,7,9,"#5b46e6",{align:"center",bold:true}),R(72,74,28,9,"#e9e6ff",{radius:999}),T("مهارة ٣",72,75.4,28,7,9,"#5b46e6",{align:"center",bold:true}),R(0,98,108,10,"#17152b"),T("بريدك أو رابطك",8,99.3,92,7,9,"#c9c5e6",{align:"center"})]}},
  {id:"event",name:"إعلان فعالية",size:"A4",bg:"#ffffff",build:function(){return[R(0,0,210,128,"#5b46e6",{gradient:true,fill2:"#ff6fa5",gradientAngle:150}),T("اسم الفعالية",15,38,180,34,46,"#ffffff",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("جملة تعريفية قصيرة تجذب الحضور",15,80,180,12,16,"#ffffff",{align:"center"}),C(150,100,40,"#34d6b0"),T("١٥",150,111,40,18,30,"#17152b",{align:"center",bold:true,fontFamily:"Reem Kufi"}),T("المكان: اكتب العنوان\nالتاريخ: اكتب التاريخ\nالوقت: اكتب الساعة",20,154,170,52,16,"#17152b",{lineHeight:1.9}),R(0,272,210,25,"#17152b"),T("للتسجيل والاستفسار: اكتب وسيلة التواصل",15,281,180,9,13,"#ffffff",{align:"center"})]}}
  ]})();
+STUDIO_TEMPLATES.push(
+{id:"portfolio",name:"ملف إنجاز",category:"أعمال ودراسة",size:"A4",bg:"#f7f5ff",build:function(){return[R(0,0,210,52,"#17152b"),T("ملف الإنجاز",16,12,178,18,31,"#fff",{fontFamily:"Reem Kufi",bold:true}),T("الاسم والتخصص",17,35,170,8,12,"#c9c5e6"),T("نبذة عني",16,75,178,12,22,"#5b46e6",{bold:true}),R(16,94,178,35,"#ece8ff",{radius:5}),T("اكتب نبذة عن مهاراتك وأهدافك.",22,105,166,12,13,"#30264b"),T("المهارات",16,151,178,12,22,"#5b46e6",{bold:true}),R(16,171,52,13,"#d9d2ff",{radius:6}),R(76,171,52,13,"#d9d2ff",{radius:6}),R(136,171,58,13,"#d9d2ff",{radius:6}),T("أبرز المشاريع",16,211,178,12,22,"#5b46e6",{bold:true}),L(16,235,178,"#d5cee9",1),L(16,250,178,"#d5cee9",1),T("البريد · الرابط · التواصل",16,278,178,8,11,"#6a6882")]}},
+{id:"resume",name:"سيرة ذاتية",category:"أعمال ودراسة",size:"A4",bg:"#fff",build:function(){return[R(0,0,65,297,"#201b43"),T("الاسم الكامل",8,20,50,24,22,"#fff",{fontFamily:"Reem Kufi",bold:true}),T("المسمى المهني",8,49,50,18,12,"#d4ccff"),T("التواصل",8,86,50,10,15,"#34d6b0", {bold:true}),T("الهاتف\nالبريد\nالمدينة",8,102,50,34,11,"#fff",{lineHeight:1.8}),T("المهارات",8,159,50,10,15,"#34d6b0",{bold:true}),T("مهارة أولى\nمهارة ثانية\nمهارة ثالثة",8,176,50,37,11,"#fff",{lineHeight:1.9}),T("الخبرات",77,23,117,14,24,"#5b46e6",{bold:true}),T("المسمى الوظيفي · المؤسسة",77,48,117,9,13,"#17152b",{bold:true}),T("اكتب وصفًا مختصرًا للمهام والنتائج.",77,61,117,24,11,"#6a6882"),T("التعليم",77,113,117,14,24,"#5b46e6",{bold:true}),T("الشهادة · المؤسسة · السنة",77,138,117,10,12,"#17152b"),T("المشاريع",77,169,117,14,24,"#5b46e6",{bold:true}),T("اسم المشروع ودورك والنتيجة",77,193,117,15,11,"#6a6882"),T("اللغات",77,244,117,14,24,"#5b46e6",{bold:true}),T("العربية · الفرنسية · الإنجليزية",77,269,117,10,12,"#17152b")]}},
+{id:"infographic",name:"إنفوجرافيك",category:"أعمال ودراسة",size:"A4",bg:"#f8fafc",build:function(){return[R(0,0,210,48,"#0f766e"),T("عنوان الإنفوجرافيك",12,10,186,20,29,"#fff",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("الفكرة الأساسية في جملة واحدة",16,32,178,8,12,"#d1fae5",{align:"center"}),C(22,68,43,"#ccfbf1"),C(83,68,43,"#fde68a"),C(144,68,43,"#ddd6fe"),T("01",22,82,43,12,24,"#115e59",{align:"center",bold:true}),T("02",83,82,43,12,24,"#92400e",{align:"center",bold:true}),T("03",144,82,43,12,24,"#5b21b6",{align:"center",bold:true}),T("المرحلة الأولى",12,120,58,10,13,"#0f766e",{align:"center",bold:true}),T("المرحلة الثانية",76,120,58,10,13,"#b45309",{align:"center",bold:true}),T("المرحلة الثالثة",140,120,58,10,13,"#6d28d9",{align:"center",bold:true}),R(14,147,182,32,"#fff",{radius:7,strokeWidth:1,strokeColor:"#dbe4ee"}),T("أهم رقم أو معلومة",20,154,170,10,20,"#0f766e",{align:"center",bold:true}),T("خطوات العمل",14,199,182,12,20,"#17152b",{bold:true}),L(14,224,182,"#cbd5e1",1),L(14,242,160,"#cbd5e1",1),L(14,260,174,"#cbd5e1",1),T("المصدر · التاريخ · الجهة",14,281,182,8,10,"#64748b",{align:"center"})]}},
+{id:"product-ad",name:"إعلان منتج",category:"تسويق وإعلانات",size:"Post",bg:"#fff7ed",build:function(){return[R(0,0,108,30,"#7c2d12"),T("وصل حديثًا",8,8,92,10,16,"#ffedd5",{align:"center",bold:true}),C(27,39,55,"#fed7aa"),R(38,51,32,28,"#fff",{radius:7,strokeWidth:1,strokeColor:"#fdba74"}),T("اسم المنتج",8,98,92,10,17,"#7c2d12",{align:"center",bold:true}),T("وصف قصير ومميز",8,112,92,8,10,"#9a3412",{align:"center"}),R(20,130,68,18,"#ea580c",{radius:999}),T("اطلبه الآن",20,134,68,9,12,"#fff",{align:"center",bold:true}),T("السعر · وسيلة التواصل",8,166,92,8,9,"#7c2d12",{align:"center"})]}},
+{id:"sale-promo",name:"تخفيضات",category:"تسويق وإعلانات",size:"Post",bg:"#fff1f2",build:function(){return[R(0,0,108,108,"#be123c"),C(69,9,35,"#fb7185"),T("تخفيضات",8,14,88,14,26,"#fff",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("حتى",8,44,88,8,13,"#ffe4e6",{align:"center"}),T("50%",8,54,88,27,42,"#fff",{align:"center",bold:true}),R(20,91,68,12,"#fff",{radius:999}),T("لفترة محدودة",20,93,68,8,10,"#be123c",{align:"center",bold:true})]}},
+{id:"event-poster",name:"ملصق فعالية",category:"فعاليات ومناسبات",size:"A4",bg:"#f5f3ff",build:function(){return[R(0,0,210,90,"#312e81"),C(152,12,42,"#a78bfa"),T("فعالية مميزة",14,17,180,20,35,"#fff",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("عنوان فرعي يشرح المناسبة",14,48,180,10,15,"#ddd6fe",{align:"center"}),R(18,106,174,45,"#fff",{radius:10}),T("اليوم والتاريخ",24,114,162,10,20,"#5b21b6",{align:"center",bold:true}),T("الوقت · المكان",24,131,162,8,12,"#6b7280",{align:"center"}),T("ماذا ينتظر المشاركين؟",18,177,174,12,21,"#312e81",{bold:true}),T("اكتب وصف الفعالية وأبرز الأنشطة.",18,198,174,24,13,"#4b5563",{lineHeight:1.7}),R(30,247,150,18,"#34d399",{radius:999}),T("التسجيل والاستفسار",30,252,150,8,12,"#172554",{align:"center",bold:true}),T("الجهة المنظمة · الشعار",18,280,174,8,10,"#6b7280",{align:"center"})]}},
+{id:"certificate-modern",name:"شهادة عصرية",category:"فعاليات ومناسبات",size:"A4",bg:"#f8fafc",build:function(){return[R(7,7,196,283,"transparent",{borderless:false,strokeWidth:2,strokeColor:"#0f766e"}),R(12,12,186,273,"transparent",{borderless:false,strokeWidth:.7,strokeColor:"#99f6e4"}),C(87,22,36,"#ccfbf1"),T("شهادة مشاركة",20,76,170,22,35,"#115e59",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("تُمنح هذه الشهادة إلى",20,111,170,10,15,"#64748b",{align:"center"}),T("اسم المشارك",20,130,170,20,30,"#0f172a",{fontFamily:"Amiri",align:"center",bold:true}),L(50,163,110,"#0f766e",1.2),T("لمشاركته الفعالة وإسهامه في إنجاح النشاط.",30,178,150,20,14,"#334155",{align:"center"}),T("التاريخ: .................",20,238,76,8,11,"#64748b",{align:"center"}),T("التوقيع: .................",114,238,76,8,11,"#64748b",{align:"center"}),T("اسم المؤسسة أو الجهة المنظمة",20,267,170,8,12,"#0f766e",{align:"center",bold:true})]}},
+{id:"schedule",name:"جدول برنامج",category:"أعمال ودراسة",size:"A4",bg:"#fff",build:function(){return[R(0,0,210,44,"#1e1b4b"),T("برنامج النشاط",14,8,182,17,28,"#fff",{fontFamily:"Reem Kufi",bold:true}),T("التاريخ · المكان · الجهة المنظمة",14,29,182,8,12,"#c7d2fe"),R(14,61,182,16,"#e0e7ff",{radius:4}),T("الوقت",18,65,32,7,11,"#3730a3",{bold:true}),T("النشاط",55,65,85,7,11,"#3730a3",{bold:true}),T("المسؤول",145,65,44,7,11,"#3730a3",{bold:true}),R(14,81,182,30,"#f8fafc",{radius:3}),R(14,116,182,30,"#eef2ff",{radius:3}),R(14,151,182,30,"#f8fafc",{radius:3}),R(14,186,182,30,"#eef2ff",{radius:3}),R(14,221,182,30,"#f8fafc",{radius:3}),T("08:00",18,91,32,8,11,"#17152b"),T("النشاط الأول",55,91,85,8,11,"#17152b"),T("الاسم",145,91,44,8,11,"#17152b"),T("09:00",18,126,32,8,11,"#17152b"),T("النشاط الثاني",55,126,85,8,11,"#17152b"),T("الاسم",145,126,44,8,11,"#17152b"),T("10:00",18,161,32,8,11,"#17152b"),T("النشاط الثالث",55,161,85,8,11,"#17152b"),T("الاسم",145,161,44,8,11,"#17152b"),T("11:00",18,196,32,8,11,"#17152b"),T("استراحة",55,196,85,8,11,"#17152b"),T("—",145,196,44,8,11,"#17152b"),T("12:00",18,231,32,8,11,"#17152b"),T("النشاط الختامي",55,231,85,8,11,"#17152b"),T("الاسم",145,231,44,8,11,"#17152b"),T("ملاحظات وتجهيزات",14,267,182,8,13,"#5b46e6",{bold:true}),L(14,283,182,"#cbd5e1",1)]}},
+{id:"businesscard",name:"بطاقة أعمال",category:"هويات وبطاقات",size:"Post",bg:"#17152b",build:function(){return[R(0,0,108,108,"#17152b"),C(72,10,25,"#34d6b0"),T("الاسم الكامل",8,26,92,13,21,"#fff",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("التخصص أو المسمى",8,43,92,8,11,"#c9c5e6",{align:"center"}),L(28,60,52,"#5b46e6",1.5),T("الهاتف · البريد",8,70,92,8,10,"#fff",{align:"center"}),T("الموقع أو الحساب",8,84,92,8,10,"#34d6b0",{align:"center"})]}},
+{id:"socialquote",name:"اقتباس هادئ",category:"منشورات اجتماعية",size:"Post",bg:"#ecfeff",build:function(){return[C(9,8,36,"#a5f3fc"),C(66,63,35,"#cffafe"),T("❝",10,13,30,20,48,"#0e7490",{fontFamily:"Georgia"}),T("اكتب عبارة ملهمة\nتستحق المشاركة",12,37,84,34,21,"#164e63",{align:"center",bold:true,lineHeight:1.5}),L(39,80,30,"#0891b2",1.5),T("— اسم القائل",12,87,84,8,10,"#0e7490",{align:"center"})]}},
+{id:"webinar",name:"دعوة ورشة",category:"فعاليات ومناسبات",size:"Story",bg:"#eef2ff",build:function(){return[R(0,0,108,56,"#3730a3"),T("ورشة تدريبية",8,12,92,13,23,"#fff",{fontFamily:"Reem Kufi",align:"center",bold:true}),T("تعلم مهارة جديدة معنا",8,33,92,8,12,"#e0e7ff",{align:"center"}),C(34,68,40,"#c7d2fe"),T("سجّل الآن",10,120,88,12,22,"#312e81",{align:"center",bold:true}),T("التاريخ: اكتب الموعد\nالمكان: اكتب المكان",12,140,84,24,12,"#4338ca",{align:"center",lineHeight:1.8}),R(20,173,68,12,"#4f46e5",{radius:999}),T("مقاعد محدودة",20,175,68,8,10,"#fff",{align:"center",bold:true})]}}
+);
 function studioTemplateThumb(tpl){const dim=customSizes[tpl.size];const els=tpl.build(dim).map(function(el){const pos="left:"+(el.x/dim[0]*100)+"%;top:"+(el.y/dim[1]*100)+"%;width:"+(el.w/dim[0]*100)+"%;height:"+Math.max(el.h/dim[1]*100,.8)+"%;";if(el.type==="rect"){return '<i style="'+pos+"background:"+customFillCss(el)+";border-radius:"+(el.radius>=999?"50%":Math.min(el.radius,8)+"px")+";opacity:"+(el.opacity==null?1:el.opacity)+";"+(el.strokeWidth>0?"border:1px solid "+esc(el.strokeColor||"#999")+";":"")+'"></i>'}if(el.type==="line")return '<i style="'+pos+"height:1px;background:"+esc(el.color)+'"></i>';return '<i style="'+pos+"background:"+esc(el.color)+";opacity:.55;border-radius:2px;height:"+Math.max(el.fontSize*.1,1.2)+'%;margin-top:'+(el.h/dim[1]*50)+'%"></i>'}).join("");return '<span class="tpl-paper" style="aspect-ratio:'+dim[0]+"/"+dim[1]+";background:"+esc(tpl.bg)+'">'+els+'</span>'}
-function renderStudioTemplates(){const host=$("#studioTemplateGrid");if(!host)return;host.innerHTML=STUDIO_TEMPLATES.map(function(t){return '<button type="button" class="tpl-card" data-studio-template="'+t.id+'">'+studioTemplateThumb(t)+'<span>'+esc(t.name)+'</span></button>'}).join("")}
+function renderStudioTemplates(){const host=$("#studioTemplateGrid");if(!host)return;const groups=[{name:"تسويق وإعلانات",ids:["product","product-ad","sale","sale-promo","restaurant","launch"]},{name:"أعمال ودراسة",ids:["cover","certificate","portfolio","resume","infographic","schedule","report"]},{name:"فعاليات ومناسبات",ids:["event","event-poster","certificate-modern","thankyou","webinar"]},{name:"هويات وبطاقات",ids:["idcard","businesscard"]},{name:"منشورات اجتماعية",ids:["quote","socialquote","story"]}];host.innerHTML=groups.map(function(group,index){const items=STUDIO_TEMPLATES.filter(function(t){return group.ids.includes(t.id)});if(!items.length)return "";return '<details class="studio-template-category" '+(index===0?'open':'')+'><summary><span>'+esc(group.name)+'</span><small>'+items.length+' قوالب</small></summary><div class="studio-template-grid">'+items.map(function(t){return '<button type="button" class="tpl-card" data-studio-template="'+t.id+'">'+studioTemplateThumb(t)+'<span>'+esc(t.name)+'</span></button>'}).join("")+'</div></details>'}).join("")}
 function applyStudioTemplate(id){const tpl=STUDIO_TEMPLATES.find(function(t){return t.id===id});if(!tpl||!customDoc)return;if(customDoc.layout.length&&!window.confirm("سيستبدل القالب محتوى هذه الصفحة. يمكنك التراجع بعد ذلك بـ Ctrl+Z. هل تريد المتابعة؟"))return;pushCustomHistory();customDoc.pageSize=tpl.size;customDoc.pageBackground=tpl.bg;customDoc.layout=tpl.build(customSizes[tpl.size]);customSelected=null;customMultiSelected=[];$("#customPageSize").value=tpl.size;$("#customPageBackground").value=tpl.bg;syncCustomPageToDoc();drawCustomPage();updateCustomZoom();drawCustomProperties();renderCustomPageTabs();toast("تم تطبيق القالب. انقر مرتين على أي نص لتعديله.")}
 function addTextPreset(kind){if(!customDoc)return;pushCustomHistory();const dim=customDimensions(),p={title:{text:"عنوان رئيسي",fontSize:36,bold:true,fontFamily:"Reem Kufi",h:18},sub:{text:"عنوان فرعي",fontSize:22,bold:true,fontFamily:"Cairo",h:12},body:{text:"اكتب هنا فقرة نصية قصيرة تشرح الفكرة بوضوح وبأسلوب مباشر.",fontSize:13,bold:false,fontFamily:"Cairo",h:24}}[kind];if(!p)return;const w=Math.min(150,dim[0]-12),el={id:customNewId(),type:"text",x:Math.max(0,(dim[0]-w)/2),y:Math.max(0,Math.min(dim[1]-p.h,(dim[1]-p.h)/2+(customDoc.layout.length%5)*4)),w:w,h:p.h,text:p.text,fontSize:p.fontSize,bold:p.bold,fontFamily:p.fontFamily,color:"#17152b",align:"right"};if(kind==="body")el.lineHeight=1.6;customDoc.layout.push(el);customSelected=el.id;customMultiSelected=[];drawCustomPage();drawCustomProperties()}
 function customStartInlineEdit(el){if(!el||el.type!=="text"||el.locked)return;pushCustomHistory();customEditingId=el.id;customSelected=el.id;drawCustomPage();const body=$("#customPage [contenteditable=true]");if(!body)return;body.focus();const r=document.createRange();r.selectNodeContents(body);const s=window.getSelection();s.removeAllRanges();s.addRange(r);body.addEventListener("input",function(){el.text=body.innerText.replace(/\n$/,"");customDirty=true;const ta=$("#customProperties [data-cprop=text]");if(ta)ta.value=el.text});body.addEventListener("blur",function(){customEditingId=null;drawCustomPage();drawCustomProperties()},{once:true});body.addEventListener("keydown",function(ev){if(ev.key==="Escape"){ev.preventDefault();ev.stopPropagation();body.blur()}})}
 $("#customPage").addEventListener("dblclick",function(e){const hit=document.elementFromPoint(e.clientX,e.clientY)||e.target,node=hit.closest?hit.closest("[data-custom-element]"):null;if(!node||!customDoc)return;const el=customDoc.layout.find(function(x){return x.id===node.dataset.customElement});if(!el||el.locked)return;if(el.type==="image"){customSelected=el.id;$("#customImageFile").click();return}customStartInlineEdit(el)});
 $$("[data-text-preset]").forEach(function(b){b.addEventListener("click",function(){addTextPreset(b.dataset.textPreset)})});
-const customStudioGrid=$("#studioTemplateGrid");if(customStudioGrid){renderStudioTemplates();customStudioGrid.addEventListener("click",function(e){const b=e.target.closest("[data-studio-template]");if(b)applyStudioTemplate(b.dataset.studioTemplate)})}
+const customStudioGrid=$("#studioTemplateGrid");if(customStudioGrid){renderStudioTemplates();customStudioGrid.addEventListener("click",function(e){const b=e.target.closest("[data-studio-template]");if(b){applyStudioTemplate(b.dataset.studioTemplate);const category=b.closest("details.studio-template-category");if(category)category.open=false}})}
 const customPropsHost=$("#customProperties");if(customPropsHost){customPropsHost.addEventListener("focusin",function(e){if(e.target.closest("[data-cprop]")&&!customPropSnap){pushCustomHistory();customPropSnap=true}});customPropsHost.addEventListener("focusout",function(){customPropSnap=false})}
 const customStageWrap=$(".custom-stage-wrap");if(customStageWrap)customStageWrap.addEventListener("wheel",function(e){if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();setCustomZoom(customZoom+(e.deltaY<0?.1:-.1))},{passive:false});
 
@@ -2500,54 +2632,3 @@ document.addEventListener("click",function(event){
 </style>
 </body>
 </html>
-
-/* Functional fixes: presets, watermark actions, and centered reference comparison */
-#customEditorModal .custom-tools-section-panel [data-preset-kind],
-#customEditorModal .custom-added-tools button{cursor:pointer!important;pointer-events:auto!important}
-#customEditorModal .custom-page-workspace{
-  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:minmax(0,1fr)!important;justify-items:center!important;
-  align-items:center!important;position:relative!important;gap:18px!important;
-}
-#customEditorModal .custom-page-workspace>#customPage{
-  grid-column:1!important;grid-row:1!important;justify-self:center!important;
-  align-self:center!important;margin:0!important;
-}
-#customEditorModal .custom-page-workspace>.custom-reference-panel{
-  display:flex;flex-direction:column;align-self:center;justify-self:center;
-  width:clamp(160px,22vw,260px);max-height:min(65vh,700px);
-  margin:0!important;padding:10px!important;overflow:hidden;
-  border:1px solid #514875;border-radius:12px;background:#211d3d;color:#f4f0ff;
-}
-#customEditorModal .custom-page-workspace>.custom-reference-panel[hidden]{display:none!important}
-#customEditorModal .custom-page-workspace>.custom-reference-panel img{
-  width:100%;height:auto;max-height:calc(65vh - 45px);object-fit:contain;margin-top:8px;
-}
-#customEditorModal .custom-page-workspace.has-reference{
-  grid-template-columns:minmax(0,1fr) auto auto minmax(0,1fr)!important;
-}
-#customEditorModal .custom-page-workspace.has-reference>#customPage{
-  grid-column:2!important;grid-row:1!important;justify-self:center!important;
-}
-#customEditorModal .custom-page-workspace.has-reference>.custom-reference-panel{
-  grid-column:3!important;grid-row:1!important;
-}
-#customEditorModal .custom-page-workspace>#customSelectionPanel{
-  grid-column:4!important;grid-row:1!important;z-index:2;
-}
-@media(max-width:980px){
- #customEditorModal .custom-page-workspace,
- #customEditorModal .custom-page-workspace.has-reference{
-   display:flex!important;flex-direction:row!important;justify-content:center!important;align-items:center!important;
-   flex-wrap:nowrap!important;gap:10px!important;overflow:auto!important;
- }
- #customEditorModal .custom-page-workspace>#customPage{flex:0 0 auto!important;max-width:none!important}
- #customEditorModal .custom-page-workspace>.custom-reference-panel{flex:0 0 30%!important;width:30%!important;max-width:220px!important}
- #customEditorModal .custom-page-workspace>.custom-reference-panel img{max-height:45vh!important}
- #customEditorModal .custom-page-workspace>#customSelectionPanel{position:absolute!important;inset-inline-start:0!important;top:0!important;max-width:min(90vw,320px)!important}
-}
-@media(max-width:620px){
- #customEditorModal .custom-page-workspace.has-reference{gap:7px!important}
- #customEditorModal .custom-page-workspace>.custom-reference-panel{flex-basis:34%!important;width:34%!important;padding:5px!important}
- #customEditorModal .custom-page-workspace>.custom-reference-panel small{font-size:9px!important}
-}
