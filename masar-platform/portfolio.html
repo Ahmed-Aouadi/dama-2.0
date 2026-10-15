@@ -354,6 +354,22 @@
 }
 </style>
 
+<style>
+/* Additional public portfolio template treatments */
+#portfolioView.portfolio-template-split .profile-hero{background:#203b45;color:#fff;border-radius:12px 3px 3px 12px;border-right:7px solid var(--gallery-accent,#5b46e6)}
+#portfolioView.portfolio-template-split .profile-hero:before{display:none}
+#portfolioView.portfolio-template-split .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#portfolioView.portfolio-template-bold .profile-hero{background:#191919;color:#fff;border-radius:3px;border-bottom:8px solid var(--gallery-accent,#e5ff55)}
+#portfolioView.portfolio-template-bold .profile-hero:before{border-radius:0}
+#portfolioView.portfolio-template-bold .profile-copy h1{font-weight:900;letter-spacing:-1.5px}
+#portfolioView.portfolio-template-studio .profile-hero{background:#713f2c;color:#fff;border-radius:26px 4px 26px 4px}
+#portfolioView.portfolio-template-studio .work{border-radius:4px 18px 4px 18px}
+#portfolioView.portfolio-template-gallery .profile-hero{background:#e9f2ff;color:#18345c;border:1px solid #cbdcf5;border-radius:10px}
+#portfolioView.portfolio-template-gallery .profile-hero:before{display:none}
+#portfolioView.portfolio-template-gallery .profile-copy h1{color:#18345c}
+#portfolioView.portfolio-template-gallery .works-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:700px){#portfolioView.portfolio-template-split .works-grid,#portfolioView.portfolio-template-gallery .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
