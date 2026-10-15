@@ -149,6 +149,9 @@ function assert(condition, message) {
       assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected") && el.getAttribute("aria-pressed") === "true"), "Selected portfolio template was not visually highlighted: " + template);
       await page.waitForFunction(t => { const frame = document.querySelector("#portfolioLivePreview iframe"); try { return !!frame && frame.contentDocument.querySelector("#portfolioView")?.classList.contains("portfolio-template-" + t); } catch (_) { return false; } }, template, { timeout: 5000 }).catch(() => {});
       assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView").evaluate((el, t) => el.classList.contains("portfolio-template-" + t), template), "Live preview did not apply selected template layout: " + template);
+      const compositionClass = { classic: "", mosaic: "layout-mosaic", split: "layout-split", magazine: "layout-magazine", timeline: "layout-timeline", sidebar: "layout-sidebar" }[template];
+      if (compositionClass) assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView ." + compositionClass).count() === 1, template + " must render its own page composition");
+
     }
     for (const key of ["style", "colors", "fonts", "layout", "profile", "content", "sharing"]) {
       await page.locator(`#portfolioDesigner [data-designer-tab="${key}"]`).click();
