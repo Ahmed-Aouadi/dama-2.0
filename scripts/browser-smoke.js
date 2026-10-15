@@ -133,6 +133,8 @@ function assert(condition, message) {
 
     await page.locator("#openPortfolioDesignerBtn").click();
     assert(await page.locator("#portfolioDesignerModal").evaluate(el => el.classList.contains("open")), "Gallery customization dialog did not open");
+    const desktopTabColumns = await page.evaluate(() => Object.fromEntries(["sharing","content","profile","appearance"].map(name => [name, getComputedStyle(document.querySelector('#portfolioDesigner [data-designer-group-tab="' + name + '"]')).gridColumnStart])));
+    assert(desktopTabColumns.sharing === "1" && desktopTabColumns.content === "2" && desktopTabColumns.profile === "3" && desktopTabColumns.appearance === "4", "Gallery designer desktop tab order is incorrect: " + JSON.stringify(desktopTabColumns));
     await page.locator('#portfolioDesigner [data-designer-tab="profile"]').click();
     const experienceToggle = page.locator("#galleryShowExperience");
     await experienceToggle.check();
@@ -161,6 +163,14 @@ function assert(condition, message) {
     await page.locator("#portfolioPublicPreviewModal .project-details-actions [data-close=\"portfolioPublicPreviewModal\"]").click();
     assert(!(await page.locator("#portfolioPublicPreviewModal").evaluate(el => el.classList.contains("open"))), "Gallery preview dialog did not close");
     console.log("PASS gallery content toggles, contact button appearance controls, and in-page public preview");
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator("#openPortfolioDesignerBtn").click();
+    const mobileGalleryLayout = await page.evaluate(() => ({ columns: getComputedStyle(document.querySelector("#portfolioDesigner .designer-tabs")).gridTemplateColumns.split(" ").length, modalWidth: document.querySelector("#portfolioDesignerModal").clientWidth, modalScrollWidth: document.querySelector("#portfolioDesignerModal").scrollWidth }));
+    assert(mobileGalleryLayout.columns === 2, "Gallery designer should use two tab columns on mobile: " + JSON.stringify(mobileGalleryLayout));
+    assert(mobileGalleryLayout.modalScrollWidth <= mobileGalleryLayout.modalWidth + 2, "Gallery customization modal overflows horizontally on mobile: " + JSON.stringify(mobileGalleryLayout));
+    await page.locator("#portfolioDesignerModal [data-close]").first().click();
+    await page.setViewportSize({ width: 1365, height: 900 });
+    console.log("PASS gallery designer desktop tab order and mobile layout");
 
     await page.locator('[data-page="studio"]').first().click();
     await page.waitForFunction(() => document.querySelector("#page-studio")?.classList.contains("active"), undefined, { timeout: 5000 });
