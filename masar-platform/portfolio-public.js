@@ -169,7 +169,28 @@ const works=groupedProjects.length?(function(){
  return Array.from(groups.values()).filter(function(group){return group.projects.length>0}).map(function(group){const section=group.section;return '<section class="gallery-work-group" data-gallery-section="'+esc(section.id)+'"><div class="section-head gallery-group-heading"><div><h2>'+esc(section.name)+'</h2>'+(section.description?'<p>'+esc(section.description)+'</p>':"")+'</div><span class="count">'+group.projects.length+' أعمال</span></div><div class="works-grid">'+group.projects.map(function(project){return projectCard(project,projects.indexOf(project))}).join("")+'</div></section>'}).join("");
 })():'<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>هذا المعرض لا يحتوي على أعمال متاحة للعرض حاليًا.</div>';
 const profileFirst=display.sectionOrder!=="works-first";
-view.innerHTML=profileFirst?hero+sectionHead+works:sectionHead+works+hero;
+const mainContent=(profileFirst?sectionHead+works:works+sectionHead);
+const brandName=esc(display.brandText||"معرض أعمال شخصي · مَدى");
+const identity=hero;
+switch(template){
+ case "mosaic":
+  view.innerHTML='<div class="layout-mosaic"><div class="mosaic-masthead"><span class="mosaic-brand">'+brandName+'</span><span class="mosaic-mark">SELECTED / WORKS</span></div><header class="mosaic-profile">'+identity+'</header><main class="mosaic-gallery">'+sectionHead+works+'</main></div>';
+  break;
+ case "split":
+  view.innerHTML='<div class="layout-split"><aside class="split-rail">'+identity+'<div class="split-rail-footer"><span>PORTFOLIO</span><span>01 — '+String(projects.length).padStart(2,"0")+'</span></div></aside><main class="split-main"><div class="split-topline"><span>PROJECT INDEX</span><span>'+String(projects.length).padStart(2,"0")+' WORKS</span></div>'+sectionHead+works+'</main></div>';
+  break;
+ case "magazine":
+  view.innerHTML='<div class="layout-magazine"><header class="magazine-masthead"><span class="magazine-wordmark">WORKS / JOURNAL</span><span class="magazine-edition">PORTFOLIO — SELECTED EDITION</span></header><div class="magazine-profile">'+identity+'</div><main class="magazine-content"><div class="magazine-section-label"><span>01</span><span>SELECTED PROJECTS</span><span>SCROLL TO EXPLORE</span></div>'+sectionHead+works+'</main><footer class="magazine-footer">END OF SELECTION <span>— '+esc(profile.name||"PORTFOLIO")+'</span></footer></div>';
+  break;
+ case "timeline":
+  view.innerHTML='<div class="layout-timeline"><header class="timeline-intro"><div class="timeline-wordmark">FIELD NOTES <span>/ PORTFOLIO</span></div>'+identity+'<div class="timeline-intro-caption">A RECORD OF SELECTED WORK</div></header><main class="timeline-main"><div class="timeline-index"><span>CHRONOLOGICAL INDEX</span><span>'+String(projects.length).padStart(2,"0")+' ENTRIES</span></div>'+sectionHead+works+'</main></div>';
+  break;
+ case "sidebar":
+  view.innerHTML='<div class="layout-sidebar"><main class="sidebar-main"><div class="sidebar-topbar"><span>SELECTED WORKS</span><span>'+String(projects.length).padStart(2,"0")+' PROJECTS</span></div>'+sectionHead+works+'</main><aside class="sidebar-profile">'+identity+'<div class="sidebar-navigation"><span class="sidebar-nav-label">NAVIGATION</span><a href="#portfolioView" class="sidebar-nav-current">الأعمال المختارة <span>↙</span></a><span class="sidebar-nav-note">معرض أعمال شخصي</span></div><div class="sidebar-bottom-mark">M / PORTFOLIO</div></aside></div>';
+  break;
+ default:
+  view.innerHTML=mainContent.indexOf(sectionHead)===0?identity+mainContent:mainContent+identity;
+}
 }
 async function load(){
 if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}

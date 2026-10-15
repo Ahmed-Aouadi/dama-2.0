@@ -371,64 +371,125 @@
 @media(max-width:700px){#portfolioView.portfolio-template-split .works-grid,#portfolioView.portfolio-template-gallery .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <style id="portfolio-template-layouts">
-/* Six templates with genuinely different content structures. */
+/* Classic: centered profile and regular project grid. */
+#portfolioView.portfolio-template-classic{max-width:1120px;margin:auto}
 #portfolioView.portfolio-template-classic .works-grid{grid-template-columns:repeat(var(--gallery-columns,3),minmax(0,1fr));gap:18px}
-#portfolioView.portfolio-template-classic .project-tile{display:flex;flex-direction:column;text-align:right}
-#portfolioView.portfolio-template-classic .work-cover{aspect-ratio:4/3;height:auto}
-
-/* Mosaic: one large lead project plus smaller tiles. */
-#portfolioView.portfolio-template-mosaic .works-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense;gap:12px}
-#portfolioView.portfolio-template-mosaic .project-tile:nth-child(6n+1){grid-column:span 2;grid-row:span 2;position:relative;min-height:290px}
-#portfolioView.portfolio-template-mosaic .project-tile:nth-child(6n+1) .work-cover{position:absolute;inset:0;height:100%;min-height:290px}
-#portfolioView.portfolio-template-mosaic .project-tile:nth-child(6n+1) .work-cover img{height:100%;object-fit:cover}
-#portfolioView.portfolio-template-mosaic .project-tile:nth-child(6n+1) .project-tile-title{position:absolute;z-index:2;right:0;bottom:0;left:0;color:#fff;font-size:clamp(18px,2.5vw,28px);padding:24px;background:linear-gradient(transparent,#000c)}
-#portfolioView.portfolio-template-mosaic .project-tile:not(:nth-child(6n+1)) .work-cover{height:auto;aspect-ratio:1/1}
-
-/* Split: a true list of horizontal project rows. */
+#portfolioView.portfolio-template-classic .work-cover{height:auto;aspect-ratio:4/3}
+/* Mosaic: magazine masthead and asymmetrical image wall. */
+#portfolioView.portfolio-template-mosaic{max-width:1320px;margin:auto;padding:clamp(14px,3vw,34px);background:var(--gallery-paper,#f6f4ff)}
+#portfolioView.portfolio-template-mosaic .mosaic-masthead{display:flex;justify-content:space-between;padding:12px 0 18px;border-bottom:1px solid #8886;font-size:10px;letter-spacing:.15em;font-weight:900}
+#portfolioView.portfolio-template-mosaic .mosaic-brand{font-size:14px;letter-spacing:0}
+#portfolioView.portfolio-template-mosaic .mosaic-profile .profile-hero{display:flex;align-items:center;justify-content:space-between;padding:18px 0;margin:0 0 24px;background:transparent!important;color:var(--gallery-text,#17152b)!important;border-radius:0;box-shadow:none;border-bottom:1px solid #8885}
+#portfolioView.portfolio-template-mosaic .profile-hero:before{display:none}
+#portfolioView.portfolio-template-mosaic .profile-copy h1,#portfolioView.portfolio-template-mosaic .profile-copy .role,#portfolioView.portfolio-template-mosaic .profile-copy .bio{color:var(--gallery-text,#17152b)!important}
+#portfolioView.portfolio-template-mosaic .profile-avatar{width:64px;height:64px;border-radius:50%;order:-1}
+#portfolioView.portfolio-template-mosaic .works-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense;gap:12px}
+#portfolioView.portfolio-template-mosaic .project-tile{position:relative;min-height:170px;border:0;border-radius:0;box-shadow:none;background:transparent}
+#portfolioView.portfolio-template-mosaic .project-tile:nth-child(7n+1){grid-column:span 2;grid-row:span 2;min-height:340px}
+#portfolioView.portfolio-template-mosaic .project-tile:nth-child(7n+1) .work-cover{position:absolute;inset:0;height:100%}
+#portfolioView.portfolio-template-mosaic .project-tile:nth-child(7n+1) .project-tile-title{position:absolute;bottom:0;right:0;left:0;padding:28px 16px 16px;color:white;background:linear-gradient(transparent,#000c);font-size:clamp(18px,2vw,28px)}
+#portfolioView.portfolio-template-mosaic .project-tile:not(:nth-child(7n+1)) .work-cover{height:100%;min-height:170px}
+#portfolioView.portfolio-template-mosaic .work-cover img{height:100%;object-fit:cover}
+/* Split: persistent profile rail, horizontal project index. */
+#portfolioView.portfolio-template-split{max-width:1440px;margin:auto}
+#portfolioView.portfolio-template-split .layout-split{display:grid;grid-template-columns:minmax(240px,310px) minmax(0,1fr);gap:clamp(22px,4vw,64px);direction:rtl;min-height:75vh}
+#portfolioView.portfolio-template-split .split-rail{position:sticky;top:0;align-self:start;min-height:80vh;background:var(--gallery-profile-bg,#17152b);color:white;padding:clamp(20px,3vw,38px);display:flex;flex-direction:column;justify-content:space-between;border-radius:0 0 18px 18px}
+#portfolioView.portfolio-template-split .split-rail .profile-hero{display:flex;flex-direction:column;align-items:flex-start;padding:0;margin:0;background:transparent!important;color:white!important;box-shadow:none;border-radius:0}
+#portfolioView.portfolio-template-split .split-rail .profile-hero:before{display:none}
+#portfolioView.portfolio-template-split .split-rail .profile-copy h1{font-size:clamp(26px,3vw,40px);color:white!important}
+#portfolioView.portfolio-template-split .split-rail .profile-copy .bio,#portfolioView.portfolio-template-split .split-rail .profile-copy .role{color:#ded9f0!important}
+#portfolioView.portfolio-template-split .split-rail .profile-avatar{order:-1;width:86px;height:86px;border-radius:18px;margin-bottom:18px}
+#portfolioView.portfolio-template-split .split-rail .profile-meta{flex-direction:column;align-items:flex-start}
+#portfolioView.portfolio-template-split .split-rail-footer{border-top:1px solid #ffffff35;padding-top:15px;font-size:10px;letter-spacing:.14em}
+#portfolioView.portfolio-template-split .split-main{min-width:0;padding:28px 20px 50px 0}
+#portfolioView.portfolio-template-split .split-topline{display:flex;justify-content:space-between;border-bottom:1px solid #8885;padding-bottom:12px;font-size:10px;letter-spacing:.16em}
 #portfolioView.portfolio-template-split .works-grid{grid-template-columns:1fr;gap:0}
-#portfolioView.portfolio-template-split .project-tile{display:grid;grid-template-columns:minmax(125px,.8fr) minmax(0,1.2fr);grid-template-areas:"cover title";align-items:stretch;min-height:170px;border:0;border-bottom:1px solid #dedbe7;border-radius:0;box-shadow:none;background:transparent}
-#portfolioView.portfolio-template-split .work-cover{grid-area:cover;height:100%;min-height:170px;aspect-ratio:auto}
-#portfolioView.portfolio-template-split .project-tile-title{grid-area:title;align-self:center;padding:clamp(14px,3vw,28px);font-size:clamp(16px,2vw,23px)}
-#portfolioView.portfolio-template-split .project-tile:hover{transform:none;box-shadow:none}
-
-/* Magazine: lead story spans the grid with title over image. */
-#portfolioView.portfolio-template-magazine .works-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-#portfolioView.portfolio-template-magazine .project-tile:first-child{grid-column:span 2;grid-row:span 2;position:relative;min-height:360px}
+#portfolioView.portfolio-template-split .project-tile{display:grid;grid-template-columns:minmax(125px,.75fr) minmax(0,1.25fr);align-items:center;gap:20px;border:0;border-bottom:1px solid #8884;border-radius:0;box-shadow:none;background:transparent;padding:18px 0}
+#portfolioView.portfolio-template-split .work-cover{grid-column:1;height:auto;aspect-ratio:16/9}
+#portfolioView.portfolio-template-split .project-tile-title{grid-column:2;padding:10px 0;font-size:clamp(16px,2vw,24px)}
+/* Magazine: oversized editorial title and cover story. */
+#portfolioView.portfolio-template-magazine{max-width:1240px;margin:auto;background:var(--gallery-paper,#fff);padding:clamp(16px,3vw,42px)}
+#portfolioView.portfolio-template-magazine .magazine-masthead{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:4px solid var(--gallery-text,#17152b);border-bottom:1px solid var(--gallery-text,#17152b);font-size:10px;letter-spacing:.15em;font-weight:900}
+#portfolioView.portfolio-template-magazine .magazine-wordmark{font-family:Georgia,serif;font-size:clamp(19px,3vw,34px)}
+#portfolioView.portfolio-template-magazine .magazine-profile .profile-hero{display:block;margin:0;padding:clamp(20px,4vw,48px) 0 24px;border-radius:0;border-bottom:1px solid var(--gallery-text,#17152b);background:transparent!important;color:var(--gallery-text,#17152b)!important;box-shadow:none}
+#portfolioView.portfolio-template-magazine .profile-hero:before{display:none}
+#portfolioView.portfolio-template-magazine .profile-copy h1{font-family:Georgia,serif;font-size:clamp(36px,7vw,86px);line-height:.98;letter-spacing:-.06em;color:var(--gallery-text,#17152b)!important}
+#portfolioView.portfolio-template-magazine .profile-copy .role,#portfolioView.portfolio-template-magazine .profile-copy .bio{color:var(--gallery-text,#17152b)!important}
+#portfolioView.portfolio-template-magazine .profile-avatar{display:none}
+#portfolioView.portfolio-template-magazine .magazine-section-label{display:flex;justify-content:space-between;gap:10px;margin:30px 0 8px;padding-bottom:10px;border-bottom:1px solid var(--gallery-text,#17152b);font-size:9px;font-weight:900;letter-spacing:.13em}
+#portfolioView.portfolio-template-magazine .works-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+#portfolioView.portfolio-template-magazine .project-tile{position:relative;border:0;border-radius:0;box-shadow:none;background:transparent}
+#portfolioView.portfolio-template-magazine .project-tile:first-child{grid-column:span 2;grid-row:span 2;min-height:360px}
 #portfolioView.portfolio-template-magazine .project-tile:first-child .work-cover{position:absolute;inset:0;height:100%;min-height:360px}
 #portfolioView.portfolio-template-magazine .project-tile:first-child .work-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#portfolioView.portfolio-template-magazine .project-tile:first-child .project-tile-title{position:absolute;z-index:2;bottom:0;right:0;left:0;color:#fff;font-size:clamp(21px,3vw,34px);padding:26px;background:linear-gradient(transparent,#000d)}
-#portfolioView.portfolio-template-magazine .project-tile:not(:first-child) .work-cover{aspect-ratio:4/3;height:auto}
-
-/* Timeline: numbered rows with a distinct index, title and thumbnail. */
-#portfolioView.portfolio-template-timeline .works-grid{grid-template-columns:1fr;gap:0;counter-reset:workindex}
-#portfolioView.portfolio-template-timeline .project-tile{counter-increment:workindex;display:grid;grid-template-columns:54px minmax(0,1fr) minmax(100px,.55fr);align-items:center;gap:12px;border:0;border-bottom:1px solid #d9dce3;border-radius:0;box-shadow:none;background:transparent;padding:15px 0}
-#portfolioView.portfolio-template-timeline .project-tile:before{content:counter(workindex,decimal-leading-zero);font-size:24px;font-weight:900;color:var(--gallery-accent);align-self:center}
+#portfolioView.portfolio-template-magazine .project-tile:first-child .project-tile-title{position:absolute;bottom:0;right:0;left:0;padding:45px 18px 18px;color:white;font-size:clamp(20px,3vw,35px);background:linear-gradient(transparent,#000d)}
+#portfolioView.portfolio-template-magazine .project-tile:not(:first-child) .work-cover{height:auto;aspect-ratio:4/3}
+#portfolioView.portfolio-template-magazine .magazine-footer{margin-top:40px;border-top:3px solid var(--gallery-text,#17152b);padding-top:12px;font-size:10px;letter-spacing:.12em;font-weight:900}
+/* Timeline: full-width dark identity cover and numbered chronology. */
+#portfolioView.portfolio-template-timeline{max-width:1180px;margin:auto}
+#portfolioView.portfolio-template-timeline .timeline-intro{background:var(--gallery-profile-bg,#17152b);color:white;padding:clamp(22px,5vw,58px)}
+#portfolioView.portfolio-template-timeline .timeline-wordmark{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.16em;border-bottom:1px solid #ffffff40;padding-bottom:18px;margin-bottom:25px}
+#portfolioView.portfolio-template-timeline .timeline-wordmark span{color:var(--gallery-accent,#b4ff62)}
+#portfolioView.portfolio-template-timeline .timeline-intro .profile-hero{display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;padding:0;margin:0;background:transparent!important;color:white!important;border-radius:0;box-shadow:none}
+#portfolioView.portfolio-template-timeline .timeline-intro .profile-hero:before{display:none}
+#portfolioView.portfolio-template-timeline .timeline-intro .profile-copy h1{font-size:clamp(32px,6vw,68px);color:white!important}
+#portfolioView.portfolio-template-timeline .timeline-intro .profile-copy .bio,#portfolioView.portfolio-template-timeline .timeline-intro .profile-copy .role{color:#e3def5!important}
+#portfolioView.portfolio-template-timeline .timeline-intro .profile-avatar{width:clamp(76px,12vw,140px);height:clamp(76px,12vw,140px);border-radius:50%}
+#portfolioView.portfolio-template-timeline .timeline-intro-caption{text-align:left;font-size:9px;letter-spacing:.18em;margin-top:22px;color:#d6d1e8}
+#portfolioView.portfolio-template-timeline .timeline-main{padding:25px clamp(16px,4vw,48px) 50px;background:var(--gallery-paper,#fff)}
+#portfolioView.portfolio-template-timeline .timeline-index{display:flex;justify-content:space-between;border-bottom:1px solid #8885;padding-bottom:12px;font-size:10px;letter-spacing:.13em}
+#portfolioView.portfolio-template-timeline .works-grid{grid-template-columns:1fr;gap:0;counter-reset:workindex;border-right:1px solid var(--gallery-accent,#5b46e6);margin-right:12px;padding-right:24px}
+#portfolioView.portfolio-template-timeline .project-tile{counter-increment:workindex;display:grid;grid-template-columns:54px minmax(0,1fr) minmax(100px,.45fr);align-items:center;gap:12px;border:0;border-bottom:1px solid #8884;border-radius:0;box-shadow:none;background:transparent;padding:20px 0}
+#portfolioView.portfolio-template-timeline .project-tile:before{content:counter(workindex,decimal-leading-zero);font-size:22px;font-weight:900;color:var(--gallery-accent,#5b46e6)}
 #portfolioView.portfolio-template-timeline .work-cover{grid-column:3;grid-row:1;height:auto;aspect-ratio:4/3}
-#portfolioView.portfolio-template-timeline .project-tile-title{grid-column:2;grid-row:1;padding:12px;font-size:17px}
-#portfolioView.portfolio-template-timeline .project-tile:hover{transform:none;box-shadow:none}
-
-/* Sidebar: profile occupies its own column while work is shown beside it. */
-#portfolioView.portfolio-template-sidebar{display:grid;grid-template-columns:minmax(220px,.72fr) minmax(0,2fr);gap:0 28px;align-items:start}
-#portfolioView.portfolio-template-sidebar .profile-hero{grid-column:1;grid-row:1 / span 50;position:sticky;top:18px;display:flex;flex-direction:column;align-items:stretch;text-align:right;background:var(--gallery-profile-bg,#20233a)!important;border-radius:16px;padding:24px}
-#portfolioView.portfolio-template-sidebar .profile-avatar{align-self:flex-start}
-#portfolioView.portfolio-template-sidebar .section-head,#portfolioView.portfolio-template-sidebar .gallery-work-group{grid-column:2}
-#portfolioView.portfolio-template-sidebar .works-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#portfolioView.portfolio-template-timeline .project-tile-title{grid-column:2;grid-row:1;padding:12px;font-size:clamp(15px,2vw,21px)}
+/* Sidebar: profile/navigation panel on right, gallery on left. */
+#portfolioView.portfolio-template-sidebar{max-width:1400px;margin:auto}
+#portfolioView.portfolio-template-sidebar .layout-sidebar{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,310px);direction:rtl;gap:clamp(18px,3vw,42px);align-items:start}
+#portfolioView.portfolio-template-sidebar .sidebar-main{grid-column:1;min-width:0;padding:20px 0}
+#portfolioView.portfolio-template-sidebar .sidebar-profile{grid-column:2;position:sticky;top:18px;background:var(--gallery-profile-bg,#17152b);color:white;padding:clamp(18px,2.5vw,30px);border-radius:18px;min-height:70vh;display:flex;flex-direction:column;justify-content:space-between}
+#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-hero{display:flex;flex-direction:column;align-items:flex-start;padding:0;margin:0 0 30px;background:transparent!important;color:white!important;box-shadow:none;border-radius:0}
+#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-hero:before{display:none}
+#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-copy h1{font-size:clamp(24px,2.8vw,37px);color:white!important;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-copy .bio,#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-copy .role{color:#ded9f0!important}
+#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-avatar{order:-1;width:80px;height:80px;border-radius:50%;margin-bottom:18px}
+#portfolioView.portfolio-template-sidebar .sidebar-profile .profile-meta{flex-direction:column;align-items:flex-start}
+#portfolioView.portfolio-template-sidebar .sidebar-navigation{border-top:1px solid #ffffff38;padding-top:18px;margin-top:auto}
+#portfolioView.portfolio-template-sidebar .sidebar-nav-label{display:block;font-size:9px;letter-spacing:.18em;color:#b6adce;margin-bottom:12px}
+#portfolioView.portfolio-template-sidebar .sidebar-nav-current{display:flex;justify-content:space-between;text-decoration:none;color:white;padding:12px 0;border-bottom:1px solid #ffffff38;font-size:12px}
+#portfolioView.portfolio-template-sidebar .sidebar-nav-note{display:block;color:#b6adce;font-size:10px;margin-top:12px}
+#portfolioView.portfolio-template-sidebar .sidebar-bottom-mark{font-size:10px;letter-spacing:.18em;margin-top:25px;color:var(--gallery-accent,#b4ff62)}
+#portfolioView.portfolio-template-sidebar .sidebar-topbar{display:flex;justify-content:space-between;padding:0 0 15px;border-bottom:1px solid #8885;font-size:10px;letter-spacing:.14em}
+#portfolioView.portfolio-template-sidebar .works-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+#portfolioView.portfolio-template-sidebar .work-cover{height:auto;aspect-ratio:4/3}
 @media(max-width:760px){
  #portfolioView.portfolio-template-mosaic .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- #portfolioView.portfolio-template-mosaic .project-tile:nth-child(6n+1){grid-row:span 2;grid-column:span 2}
+ #portfolioView.portfolio-template-mosaic .project-tile:nth-child(7n+1){grid-row:span 2;grid-column:span 2;min-height:280px}
+ #portfolioView.portfolio-template-split .layout-split{grid-template-columns:1fr;gap:0}
+ #portfolioView.portfolio-template-split .split-rail{position:relative;min-height:auto;border-radius:14px;padding:22px;margin-bottom:20px}
+ #portfolioView.portfolio-template-split .split-rail .profile-hero{display:grid;grid-template-columns:minmax(0,1fr) auto}
+ #portfolioView.portfolio-template-split .split-rail .profile-avatar{grid-column:2;grid-row:1;width:65px;height:65px}
+ #portfolioView.portfolio-template-split .split-rail .profile-copy{grid-column:1;grid-row:1}
+ #portfolioView.portfolio-template-split .split-main{padding:0}
  #portfolioView.portfolio-template-magazine .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  #portfolioView.portfolio-template-magazine .project-tile:first-child{grid-column:span 2}
- #portfolioView.portfolio-template-magazine .project-tile:first-child .work-cover{min-height:260px}
- #portfolioView.portfolio-template-sidebar{display:block}
- #portfolioView.portfolio-template-sidebar .profile-hero{position:static;margin-bottom:22px}
- #portfolioView.portfolio-template-timeline .project-tile{grid-template-columns:38px minmax(0,1fr) 88px}
+ #portfolioView.portfolio-template-magazine .project-tile:first-child .work-cover{min-height:280px}
+ #portfolioView.portfolio-template-sidebar .layout-sidebar{grid-template-columns:1fr}
+ #portfolioView.portfolio-template-sidebar .sidebar-profile{grid-column:1;grid-row:1;position:relative;min-height:auto;margin-bottom:18px}
+ #portfolioView.portfolio-template-sidebar .sidebar-main{grid-column:1;grid-row:2}
+ #portfolioView.portfolio-template-sidebar .sidebar-profile .profile-hero{display:grid;grid-template-columns:minmax(0,1fr) auto}
+ #portfolioView.portfolio-template-sidebar .sidebar-profile .profile-avatar{grid-column:2;grid-row:1;width:62px;height:62px}
+ #portfolioView.portfolio-template-sidebar .sidebar-profile .profile-copy{grid-column:1;grid-row:1}
 }
 @media(max-width:480px){
- #portfolioView.portfolio-template-split .project-tile{grid-template-columns:105px minmax(0,1fr);min-height:120px}
- #portfolioView.portfolio-template-split .work-cover{min-height:120px}
- #portfolioView.portfolio-template-split .project-tile-title{padding:10px;font-size:13px}
+ #portfolioView.portfolio-template-mosaic .mosaic-mark,#portfolioView.portfolio-template-magazine .magazine-edition{display:none}
+ #portfolioView.portfolio-template-split .project-tile{grid-template-columns:105px minmax(0,1fr);gap:10px}
+ #portfolioView.portfolio-template-split .project-tile-title{font-size:14px}
+ #portfolioView.portfolio-template-timeline .timeline-intro .profile-hero{display:block}
+ #portfolioView.portfolio-template-timeline .timeline-intro .profile-avatar{display:none}
  #portfolioView.portfolio-template-timeline .project-tile{grid-template-columns:30px minmax(0,1fr)}
  #portfolioView.portfolio-template-timeline .work-cover{display:none}
+ #portfolioView.portfolio-template-sidebar .works-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -455,6 +516,6 @@
   <div class="mada-footer-bottom"><span>مَدى · مساحة تصنع مستقبلك</span><a href="/">الصفحة الرئيسية</a></div>
 </footer>
 </main>
-<script src="/masar-platform/portfolio-public.js?v=20261015b" defer></script>
+<script src="/masar-platform/portfolio-public.js?v=20261015c" defer></script>
 </body>
 </html>
