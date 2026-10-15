@@ -2599,13 +2599,16 @@ document.addEventListener("click",function(event){
  grid-auto-flow:row!important;direction:rtl!important;gap:8px!important;
 }
 #portfolioDesigner .designer-tabs>[data-designer-group-tab]{
- grid-column:auto!important;grid-row:auto!important;order:initial!important;
+ grid-row:1!important;order:initial!important;
  position:static!important;float:none!important;min-width:0!important;width:100%!important;
  white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.4!important;
  display:flex!important;align-items:center!important;justify-content:center!important;
  text-align:center!important;padding:10px 6px!important;min-height:44px!important;
 }
-#portfolioDesigner .designer-tabs>[data-designer-group-tab="appearance"],#portfolioDesigner .designer-tabs>[data-designer-group-tab="profile"],#portfolioDesigner .designer-tabs>[data-designer-group-tab="content"],#portfolioDesigner .designer-tabs>[data-designer-group-tab="sharing"]{grid-column:auto!important;grid-row:auto!important;order:initial!important}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="sharing"]{grid-column:1!important}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="content"]{grid-column:2!important}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="profile"]{grid-column:3!important}
+#portfolioDesigner .designer-tabs>[data-designer-group-tab="appearance"]{grid-column:4!important}
 /* Keep the add/cancel controls directly under the section fields, aligned to RTL start. */
 #gallerySectionManager .portfolio-publish-actions{
  display:flex!important;flex-direction:row!important;justify-content:flex-start!important;
