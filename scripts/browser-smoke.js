@@ -139,12 +139,21 @@ function assert(condition, message) {
 
     await page.locator("#openPortfolioDesignerBtn").click();
     assert(await page.locator("#portfolioDesignerModal").evaluate(el => el.classList.contains("open")), "Gallery customization dialog did not open");
+    assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
+    assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
+    for (const key of ["style", "colors", "fonts", "layout", "profile", "content", "sharing"]) {
+      await page.locator(`#portfolioDesigner [data-designer-tab="${key}"]`).click();
+      assert(await page.locator(`#portfolioDesigner [data-designer-pane="${key}"]`).isVisible(), `Gallery designer tab ${key} did not show its panel`);
+      assert(await page.locator("#portfolioDesigner [data-designer-pane]:visible").count() === 1, "Gallery designer shows multiple panels at once");
+    }
     await page.locator('#portfolioDesigner [data-designer-tab="profile"]').click();
     const experienceToggle = page.locator("#galleryShowExperience");
     await experienceToggle.check();
     const bioToggle = page.locator("#galleryShowBio");
     await bioToggle.uncheck();
     await page.locator("#galleryProfileNameColor").fill("#123456");
+    await page.locator('#portfolioDesigner [data-designer-tab="sharing"]').click();
+    assert(await page.locator("#galleryContactSettings #galleryContactButtonColor").count() === 1, "Contact appearance controls are not in the sharing section");
     await page.locator("#galleryContactButtonColor").fill("#123456");
     await page.locator("#galleryContactButtonTextColor").fill("#ffffff");
     await page.locator("#galleryContactButtonSize").selectOption("large");
