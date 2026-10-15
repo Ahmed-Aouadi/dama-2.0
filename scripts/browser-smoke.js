@@ -142,8 +142,8 @@ function assert(condition, message) {
     assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
     assert(await page.locator("#portfolioSettingsIntro").count() === 0, "Redundant public-gallery introduction is still visible");
     assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
-    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 25, "Gallery designer must offer 25 distinct templates");
-    for (const template of ["classic","editorial","minimal","mosaic","split","bold","studio","gallery","magazine","timeline","polaroid","filmstrip","catalog","poster","stacked","sidebar","darkroom","typography","bento","circles","brutalist","masonry","landscape","archive","blueprint"]) {
+    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 6, "Gallery designer must offer exactly six distinct templates");
+    for (const template of ["classic","mosaic","split","magazine","timeline","sidebar"]) {
       await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').click();
       assert(await page.evaluate(t => window.MadaApp.getState().portfolioSettings.template === t, template), "Selecting portfolio template did not save: " + template);
       assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected") && el.getAttribute("aria-pressed") === "true"), "Selected portfolio template was not visually highlighted: " + template);
