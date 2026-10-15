@@ -1851,16 +1851,25 @@ async function publishPortfolio(){
 /* Bind once; the button is disabled while the async publish request is in flight. */
 
 
-/* Keep these three actions delegated so dynamic re-rendering never detaches them. */
-document.addEventListener("click",function(event){
- const publishButton=event.target.closest("#publishPortfolioBtn");
- if(publishButton){
+/* Bind publishing directly to its stable button so bubbling/other modal handlers cannot swallow the click. */
+const portfolioPublishButton=$("#publishPortfolioBtn");
+if(portfolioPublishButton&&!portfolioPublishButton.dataset.madaPublishBound){
+ portfolioPublishButton.dataset.madaPublishBound="true";
+ portfolioPublishButton.addEventListener("click",function(event){
   event.preventDefault();
-  if(publishButton.dataset.madaBusy==="true")return;
-  publishButton.dataset.madaBusy="true";
-  Promise.resolve(publishPortfolio()).finally(function(){publishButton.dataset.madaBusy="false"});
-  return;
- }
+  if(portfolioPublishButton.dataset.madaBusy==="true")return;
+  portfolioPublishButton.dataset.madaBusy="true";
+  Promise.resolve().then(publishPortfolio).catch(function(error){
+   const status=$("#portfolioShareStatus");
+   const message=error&&error.message?error.message:"تعذّر نشر المعرض. أعد المحاولة.";
+   if(status)status.textContent=message;
+   toast(message);
+   console.error("Mada portfolio publish handler failed:",error);
+  }).finally(function(){portfolioPublishButton.dataset.madaBusy="false"});
+ });
+}
+/* Keep other dynamic actions delegated so re-rendering never detaches them. */
+document.addEventListener("click",function(event){
  const newDesignButton=event.target.closest("#newBlankDesign");
  if(newDesignButton){
   event.preventDefault();
