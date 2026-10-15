@@ -142,11 +142,13 @@ function assert(condition, message) {
     assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
     assert(await page.locator("#portfolioSettingsIntro").count() === 0, "Redundant public-gallery introduction is still visible");
     assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
-    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 8, "Gallery designer must offer eight distinct templates");
-    for (const template of ["classic", "editorial", "minimal", "mosaic", "split", "bold", "studio", "gallery"]) {
+    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 25, "Gallery designer must offer 25 distinct templates");
+    for (const template of ["classic","editorial","minimal","mosaic","split","bold","studio","gallery","magazine","timeline","polaroid","filmstrip","catalog","poster","stacked","sidebar","darkroom","typography","bento","circles","brutalist","masonry","landscape","archive","blueprint"]) {
       await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').click();
       assert(await page.evaluate(t => window.MadaApp.getState().portfolioSettings.template === t, template), "Selecting portfolio template did not save: " + template);
-      assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected")), "Selected portfolio template was not visually highlighted: " + template);
+      assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected") && el.getAttribute("aria-pressed") === "true"), "Selected portfolio template was not visually highlighted: " + template);
+      await page.waitForFunction(t => { const frame = document.querySelector("#portfolioLivePreview iframe"); try { return !!frame && frame.contentDocument.querySelector("#portfolioView")?.classList.contains("portfolio-template-" + t); } catch (_) { return false; } }, template, { timeout: 5000 }).catch(() => {});
+      assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView").evaluate((el, t) => el.classList.contains("portfolio-template-" + t), template), "Live preview did not apply selected template layout: " + template);
     }
     for (const key of ["style", "colors", "fonts", "layout", "profile", "content", "sharing"]) {
       await page.locator(`#portfolioDesigner [data-designer-tab="${key}"]`).click();
