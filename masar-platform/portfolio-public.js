@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","cv","engineering","marketing","rose","resume-sidebar"].includes(display.template)?display.template:"classic";
+const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -200,6 +200,20 @@ switch(template){
     profileBlock("التعليم",profile.education)+profileBlock("الخبرة",profile.experience)+profileBlock("الاهتمامات",profile.interests)+profileBlock("الهدف الحالي",profile.goal)+
     '</aside><main class="resume-sidebar-main"><div class="resume-sidebar-heading"><div><span>PORTFOLIO / CV</span><h2>المشاريع وملف الإنجاز</h2></div><b>'+String(projects.length).padStart(2,"0")+'</b></div>'+
     (works||'<p class="resume-sidebar-muted">أضف مشاريعك إلى ملفك الشخصي لتظهر هنا.</p>')+'</main></div><footer class="resume-sidebar-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
+  break;
+ }
+ case "resume-creative": {
+  const creativeSkills=skills.map(function(skill){return '<span class="resume-creative-skill">'+esc(skill)+'</span>'}).join("");
+  const creativeLanguages=String(profile.languages||"").split(/[,،]/).map(function(language){return language.trim()}).filter(Boolean);
+  const creativeLanguageList=creativeLanguages.map(function(language){return '<li>'+esc(language)+'</li>'}).join("");
+  const creativeProfileBlock=function(title,value){return value?'<section class="resume-creative-block"><h2>'+esc(title)+'</h2><p>'+esc(value)+'</p></section>':""};
+  view.innerHTML='<div class="resume-creative-layout"><aside class="resume-creative-rail"><div class="resume-creative-identity">'+identity+'</div>'+
+    (profile.bio?'<section class="resume-creative-block"><h2>نبذة</h2><p>'+esc(profile.bio)+'</p></section>':'')+
+    '<section class="resume-creative-block"><h2>المهارات</h2><div class="resume-creative-skills">'+(creativeSkills||'<p class="resume-creative-muted">أضف مهاراتك من الملف الشخصي.</p>')+'</div></section>'+
+    '<section class="resume-creative-block"><h2>اللغات</h2>'+(creativeLanguageList?'<ul class="resume-creative-languages">'+creativeLanguageList+'</ul>':'<p class="resume-creative-muted">أضف لغاتك من الملف الشخصي.</p>')+'</section>'+
+    creativeProfileBlock("التعليم",profile.education)+creativeProfileBlock("الخبرة",profile.experience)+creativeProfileBlock("الاهتمامات",profile.interests)+creativeProfileBlock("الهدف الحالي",profile.goal)+
+    '</aside><main class="resume-creative-main"><header class="resume-creative-heading"><span>PROFILE / SELECTED WORK</span><h2>المشاريع وملف الإنجاز</h2><b>'+String(projects.length).padStart(2,"0")+'</b></header>'+
+    (works||'<p class="resume-creative-muted">أضف مشاريعك إلى ملفك الشخصي لتظهر هنا.</p>')+'</main></div><footer class="resume-creative-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
   break;
  }
  case "rose": {
