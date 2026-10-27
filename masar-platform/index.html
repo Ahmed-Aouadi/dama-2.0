@@ -522,6 +522,7 @@ html,body{height:100%;overflow:hidden}
     <button type="button" class="portfolio-template-choice" data-portfolio-template="marketing" aria-pressed="false"><span class="template-thumb template-thumb-marketing" aria-hidden="true"><i></i><b></b><em></em></span><strong>التسويق الإبداعي</strong><small>تصميم جريء بالأسود والوردي لإبراز النتائج والحملات</small></button>
     <button type="button" class="portfolio-template-choice" data-portfolio-template="rose" aria-pressed="false"><span class="template-thumb template-thumb-rose" aria-hidden="true"><i></i><b></b><em></em></span><strong>الملف الوردي الإبداعي</strong><small>قالب وردي أنيق بصورة شخصية وأقسام مرنة للسيرة والأعمال</small></button>
     <button type="button" class="portfolio-template-choice" data-portfolio-template="resume-sidebar" aria-pressed="false"><span class="template-thumb template-thumb-resume-sidebar" aria-hidden="true"><i></i><b></b><em></em></span><strong>السيرة ذات العمود الجانبي</strong><small>سيرة عملية بمهارات ولغات وتعليم في الجانب ومشاريع في مساحة مستقلة</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="resume-creative" aria-pressed="false"><span class="template-thumb template-thumb-resume-creative" aria-hidden="true"><i></i><b></b><em></em></span><strong>السيرة الإبداعية الداكنة</strong><small>عمود جانبي داكن للمعلومات والمهارات مع مساحة واسعة للمشاريع</small></button>
   </div>
   
 <h4>نقش الخلفية</h4>
@@ -996,7 +997,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
   frame.referrerPolicy="same-origin";
   host.appendChild(frame);
  }
- host.dataset.template=["classic","cv","engineering","marketing","rose","resume-sidebar"].includes(s.template)?s.template:"classic";
+ host.dataset.template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative"].includes(s.template)?s.template:"classic";
  host.dataset.contactButtonPosition=["right","center","left"].includes(s.contactButtonPosition)?s.contactButtonPosition:"right";
  loadPortfolioPreviewFrame(frame);
  applyPortfolioPreviewDevice();
