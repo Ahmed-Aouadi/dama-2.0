@@ -142,14 +142,14 @@ function assert(condition, message) {
     assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
     assert(await page.locator("#portfolioSettingsIntro").count() === 0, "Redundant public-gallery introduction is still visible");
     assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
-    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 7, "Gallery designer must offer exactly seven distinct templates");
-    for (const template of ["classic","mosaic","split","magazine","timeline","sidebar","cv"]) {
+    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 2, "Gallery designer must offer exactly two templates");
+    for (const template of ["classic","cv"]) {
       await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').click();
       assert(await page.evaluate(t => window.MadaApp.getState().portfolioSettings.template === t, template), "Selecting portfolio template did not save: " + template);
       assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected") && el.getAttribute("aria-pressed") === "true"), "Selected portfolio template was not visually highlighted: " + template);
       await page.waitForFunction(t => { const frame = document.querySelector("#portfolioLivePreview iframe"); try { return !!frame && frame.contentDocument.querySelector("#portfolioView")?.classList.contains("portfolio-template-" + t); } catch (_) { return false; } }, template, { timeout: 5000 }).catch(() => {});
       assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView").evaluate((el, t) => el.classList.contains("portfolio-template-" + t), template), "Live preview did not apply selected template layout: " + template);
-      const compositionClass = { classic: "", mosaic: "layout-mosaic", split: "layout-split", magazine: "layout-magazine", timeline: "layout-timeline", sidebar: "layout-sidebar", cv: "cv-layout" }[template];
+      const compositionClass = { classic: "", cv: "cv-layout" }[template];
       if (compositionClass) assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView ." + compositionClass).count() === 1, template + " must render its own page composition");
 
     }
