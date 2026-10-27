@@ -398,7 +398,7 @@ html,body{height:100%;overflow:hidden}
 .portfolio-live-preview[data-template="gallery"] .preview-work-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 </style>
 <style id="portfolio-template-picker-visuals">
-.portfolio-template-options{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.portfolio-template-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .portfolio-template-choice{height:100%;align-content:start}
 .portfolio-template-choice[aria-pressed="true"]{outline:2px solid #7658e7;outline-offset:1px}
 .template-thumb{height:78px;background:#f0eef7}.template-thumb:before{background:#25243a}
@@ -431,6 +431,7 @@ html,body{height:100%;overflow:hidden}
 @media(max-width:560px){.portfolio-template-options{grid-template-columns:repeat(2,minmax(0,1fr))}.template-thumb{height:68px}}
 </style>
 <style id="cv-template-picker-style">.template-thumb-cv{background:#f6f8fb!important;border:1px solid #dbe3ee}.template-thumb-cv:before{content:"";position:absolute;top:12%;right:10%;width:44%;height:10%;background:#1e293b;border-radius:3px}.template-thumb-cv:after{content:"";position:absolute;top:29%;right:10%;width:44%;height:5%;background:#2563eb;border-radius:3px}.template-thumb-cv i{position:absolute;top:42%;right:10%;width:48%;height:3px;background:#cbd5e1}.template-thumb-cv b{position:absolute;top:52%;right:10%;width:48%;height:3px;background:#cbd5e1}.template-thumb-cv em{position:absolute;top:18%;left:10%;width:23%;height:65%;background:#e2e8f0;border-radius:3px}</style>
+<style id="engineering-template-picker-style">.template-thumb-engineering{background-color:#e9edf2!important;background-image:linear-gradient(#d8dee7 1px,transparent 1px),linear-gradient(90deg,#d8dee7 1px,transparent 1px);background-size:9px 9px}.template-thumb-engineering:before{top:0;right:0;left:0;height:27px;background:#1c2530;border-radius:0;border-bottom:4px solid #ea580c}.template-thumb-engineering i{top:36px;right:7px;left:7px;height:12px;background:#fff;border:1px solid #cfd6df}.template-thumb-engineering b{top:52px;right:7px;left:58%;height:12px;background:#fff;border:1px solid #cfd6df}.template-thumb-engineering em{top:52px;right:45%;left:7px;height:12px;background:#fff;border:1px solid #cfd6df}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -513,9 +514,10 @@ html,body{height:100%;overflow:hidden}
 <button type="button" role="tab" class="designer-tab" data-designer-tab="sharing" aria-selected="false">المشاركة والتواصل</button>
 </div>
 <section class="designer-pane is-active" data-designer-pane="style">
-<div class="portfolio-template-options" role="group" aria-label="قالبان متاحان">
+<div class="portfolio-template-options" role="group" aria-label="ثلاثة قوالب متاحة">
     <button type="button" class="portfolio-template-choice is-selected" data-portfolio-template="classic" aria-pressed="true"><span class="template-thumb template-thumb-classic" aria-hidden="true"><i></i><b></b><em></em></span><strong>القالب الأصلي</strong><small>التصميم الأساسي لمعرض الأعمال</small></button>
     <button type="button" class="portfolio-template-choice" data-portfolio-template="cv" aria-pressed="false"><span class="template-thumb template-thumb-cv" aria-hidden="true"><i></i><b></b><em></em></span><strong>السيرة الذاتية</strong><small>سيرة احترافية بعمود للمهارات والتعليم</small></button>
+    <button type="button" class="portfolio-template-choice" data-portfolio-template="engineering" aria-pressed="false"><span class="template-thumb template-thumb-engineering" aria-hidden="true"><i></i><b></b><em></em></span><strong>السيرة الهندسية</strong><small>تصميم شبكي داكن بلمسات برتقالية للأعمال والخبرة</small></button>
   </div>
   
 <h4>نقش الخلفية</h4>
@@ -972,7 +974,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
   frame.dataset.previewBound="true";
   frame.addEventListener("load",function(){frame.dataset.previewReady="true";sendPortfolioPreviewFrame(frame)});
  }
- const src="/masar-platform/portfolio.html?preview=1&v=20261015c";
+ const src="/masar-platform/portfolio.html?preview=1&v=20261027b";
  if(frame.getAttribute("src")!==src){frame.dataset.previewReady="false";frame.setAttribute("src",src)}
  else sendPortfolioPreviewFrame(frame);
  }
@@ -990,7 +992,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
   frame.referrerPolicy="same-origin";
   host.appendChild(frame);
  }
- host.dataset.template=["classic","mosaic","split","magazine","timeline","sidebar","cv"].includes(s.template)?s.template:"classic";
+ host.dataset.template=["classic","cv","engineering"].includes(s.template)?s.template:"classic";
  host.dataset.contactButtonPosition=["right","center","left"].includes(s.contactButtonPosition)?s.contactButtonPosition:"right";
  loadPortfolioPreviewFrame(frame);
  applyPortfolioPreviewDevice();
