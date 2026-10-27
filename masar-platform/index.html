@@ -483,7 +483,22 @@ html,body{height:100%;overflow:hidden}
 
 <section class="page" id="page-portfolio">
   <div class="section-intro"><h1>ملف إنجازي</h1><p>حوّل أفكارك ومحاولاتك إلى دليل ملموس على ما تستطيع فعله. وثّق دورك ونتيجتك، ثم اختر ما تريد إظهاره في ملفك القابل للمشاركة.</p></div><div class="project-insight-strip"><div><span class="insight-icon">◈</span><div><strong>الفكرة تستحق التوثيق</strong><small>لا يشترط أن يكون المشروع مثاليًا؛ وثّق ما جرّبته وما تعلمته.</small></div></div><div><span class="insight-icon">✦</span><div><strong>اعرض دورك بوضوح</strong><small>الأدوات والنتائج تشرح مساهمتك.</small></div></div><div><span class="insight-icon">↗</span><div><strong>تحكّم بما يظهر</strong><small>المشاريع الخاصة لا تُضمّن في ملف الإنجاز المُصدّر.</small></div></div></div>
-  <div class="toolbar project-toolbar"><div class="search"><input id="projectSearch" placeholder="ابحث بالاسم أو الوصف أو المهارات..." /></div><select class="filter" id="projectFilter" aria-label="تصنيف المشاريع"><option value="all">كل التصنيفات</option><option value="tech">برمجة وتقنية</option><option value="design">تصميم وفنون</option><option value="media">إعلام وإنتاج محتوى</option><option value="writing">كتابة وتأليف</option><option value="study">دراسة وبحث</option><option value="education">تعليم وتدريب</option><option value="business">أعمال وريادة</option><option value="engineering">هندسة وصناعة</option><option value="science">علوم وتجارب</option><option value="community">مبادرات ومجتمع</option><option value="event">فعاليات وتنظيم</option><option value="personal">مشروع شخصي</option><option value="other">أخرى</option></select><select class="filter" id="projectStatusFilter" aria-label="حالة المشروع"><option value="all">كل الحالات</option><option value="done">مكتمل</option><option value="progress">قيد العمل</option><option value="idea">فكرة</option></select><select class="filter" id="projectGalleryFilter" aria-label="حالة الظهور في معرض الأعمال"><option value="all">كل حالات المعرض</option><option value="shown">ظاهر في المعرض</option><option value="hidden">مخفي عن المعرض</option></select><select class="filter" id="projectSort" aria-label="ترتيب المشاريع"><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option><option value="az">الاسم: أ إلى ي</option><option value="featured">المميزة أولًا</option></select><button class="primary" id="addProjectBtn">＋ مشروع جديد</button></div><div class="project-summary" id="projectSummary" aria-live="polite"></div>
+  <section class="panel" id="portfolioJsonBackup" style="margin:18px 0;padding:20px;border:1px solid #ded8f5;background:linear-gradient(135deg,#fff 0%,#f7f5ff 100%);border-radius:20px">
+  <div style="display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+    <div style="flex:1;min-width:220px">
+      <span class="eyebrow">نسخة احتياطية قابلة للنقل</span>
+      <h3 style="margin:4px 0 7px;font-size:18px">حفظ واستيراد ملف الإنجاز JSON</h3>
+      <p style="margin:0;color:#77738e;font-size:13px;line-height:1.9">احفظ معلوماتك الشخصية التفصيلية، وإعدادات تصميم المعرض، وأقسامه، ومشاريعك وبيانات ظهورها في ملف واحد. يمكنك استيراده لاحقًا لاستعادة الإعدادات والمعلومات.</p>
+    </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+      <button type="button" class="primary" id="exportPortfolioJson">⬇ حفظ ملف JSON</button>
+      <button type="button" class="secondary" id="importPortfolioJsonBtn">⬆ استيراد ملف JSON</button>
+      <input type="file" id="importPortfolioJsonFile" accept=".json,application/json" hidden>
+    </div>
+  </div>
+  <div id="portfolioJsonStatus" role="status" aria-live="polite" style="margin-top:12px;color:#77738e;font-size:12px">يشمل: الملف الشخصي، إعدادات المعرض والتصميم، أقسام المعرض، ومشاريعك وتفاصيلها. لا يشمل كلمة المرور أو بيانات تسجيل الدخول.</div>
+</section>
+<div class="toolbar project-toolbar"><div class="search"><input id="projectSearch" placeholder="ابحث بالاسم أو الوصف أو المهارات..." /></div><select class="filter" id="projectFilter" aria-label="تصنيف المشاريع"><option value="all">كل التصنيفات</option><option value="tech">برمجة وتقنية</option><option value="design">تصميم وفنون</option><option value="media">إعلام وإنتاج محتوى</option><option value="writing">كتابة وتأليف</option><option value="study">دراسة وبحث</option><option value="education">تعليم وتدريب</option><option value="business">أعمال وريادة</option><option value="engineering">هندسة وصناعة</option><option value="science">علوم وتجارب</option><option value="community">مبادرات ومجتمع</option><option value="event">فعاليات وتنظيم</option><option value="personal">مشروع شخصي</option><option value="other">أخرى</option></select><select class="filter" id="projectStatusFilter" aria-label="حالة المشروع"><option value="all">كل الحالات</option><option value="done">مكتمل</option><option value="progress">قيد العمل</option><option value="idea">فكرة</option></select><select class="filter" id="projectGalleryFilter" aria-label="حالة الظهور في معرض الأعمال"><option value="all">كل حالات المعرض</option><option value="shown">ظاهر في المعرض</option><option value="hidden">مخفي عن المعرض</option></select><select class="filter" id="projectSort" aria-label="ترتيب المشاريع"><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option><option value="az">الاسم: أ إلى ي</option><option value="featured">المميزة أولًا</option></select><button class="primary" id="addProjectBtn">＋ مشروع جديد</button></div><div class="project-summary" id="projectSummary" aria-live="polite"></div>
   <div class="cards" id="projectCards"></div>
   <div class="portfolio-designer" id="portfolioDesigner">
   <div class="portfolio-designer-heading"><div><span class="eyebrow">استوديو معرض الأعمال</span><h3>صمّم طريقة عرض أعمالك</h3><p>اختر قالبًا جاهزًا ثم عدّل النصوص والألوان وترتيب الأقسام. التغييرات تُحفظ في إعداداتك وتُطبّق عند النشر.</p></div></div>
@@ -1578,6 +1593,49 @@ function renderHomeShowcase(){
 }
 
 function renderAll(){renderJourney();renderStats();renderRecent();renderProjects();renderDesigns();renderHomeShowcase();renderQuizHistory();updateProfilePreview()}
+function portfolioBackupPayload(){
+ return {format:"mada-portfolio-backup",version:1,exportedAt:new Date().toISOString(),profile:JSON.parse(JSON.stringify(state.profile||{})),portfolioSettings:JSON.parse(JSON.stringify(state.portfolioSettings||initial.portfolioSettings)),projects:JSON.parse(JSON.stringify(state.projects||[]))};
+}
+function setPortfolioJsonStatus(message,isError){
+ const el=$("#portfolioJsonStatus");if(!el)return;el.textContent=message;el.style.color=isError?"#b42348":"#77738e";
+}
+$("#exportPortfolioJson").addEventListener("click",function(){
+ try{const payload=portfolioBackupPayload();const date=new Date().toISOString().slice(0,10);downloadText("mada-file-anjazi-"+date+".json",JSON.stringify(payload,null,2),"application/json;charset=utf-8");setPortfolioJsonStatus("تم تجهيز النسخة الاحتياطية: "+(payload.projects||[]).length+" مشروعًا، مع المعلومات الشخصية وإعدادات المعرض وأقسامه.");toast("تم حفظ ملف إنجازك بصيغة JSON")}
+ catch(error){setPortfolioJsonStatus("تعذّر إنشاء الملف الاحتياطي. حاول مجددًا.",true);toast("تعذّر تصدير ملف JSON")}
+});
+$("#importPortfolioJsonBtn").addEventListener("click",function(){$("#importPortfolioJsonFile").click()});
+$("#importPortfolioJsonFile").addEventListener("change",async function(event){
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ try{
+  if(file.size>25*1024*1024)throw new Error("حجم الملف أكبر من 25 ميغابايت.");
+  const parsed=JSON.parse(await file.text());
+  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("محتوى JSON ليس كائن بيانات صالحًا.");
+  const source=parsed;
+  const profile=source.profile,settings=source.portfolioSettings,projects=source.projects;
+  if(!profile||typeof profile!=="object"||Array.isArray(profile))throw new Error("لم يتم العثور على معلومات الملف الشخصي (profile).");
+  if(!settings||typeof settings!=="object"||Array.isArray(settings))throw new Error("لم يتم العثور على إعدادات المعرض (portfolioSettings).");
+  if(!Array.isArray(projects))throw new Error("قائمة المشاريع (projects) غير موجودة أو غير صالحة.");
+  if(projects.length>10000)throw new Error("الملف يحتوي على عدد غير متوقع من المشاريع.");
+  if(!confirm("سيتم استبدال معلومات الملف الشخصي وإعدادات المعرض وقائمة المشاريع الحالية بالبيانات المستوردة. لن تُستبدل التصميمات المحفوظة في الاستوديو أو نتائج التجارب. قبل المتابعة تأكد من أن لديك نسخة احتياطية من البيانات الحالية.\n\nعدد المشاريع في الملف: "+projects.length+"\nهل تريد المتابعة؟"))return;
+  const nextProfile=Object.assign({},initial.profile,profile);
+  const nextSettings=Object.assign({},initial.portfolioSettings,settings);
+  if(!Array.isArray(nextSettings.gallerySections))nextSettings.gallerySections=JSON.parse(JSON.stringify(initial.portfolioSettings.gallerySections));
+  if(!nextSettings.gallerySections.some(function(section){return section&&section.id==="general"}))nextSettings.gallerySections.unshift(JSON.parse(JSON.stringify(initial.portfolioSettings.gallerySections[0])));
+  nextSettings.gallerySections=nextSettings.gallerySections.filter(function(section){return section&&typeof section==="object"}).map(function(section,index){return Object.assign({id:"imported-section-"+index,name:"قسم",description:"",visible:true,locked:false},section,{id:String(section.id||("imported-section-"+index)),name:String(section.name||"قسم").slice(0,60),description:String(section.description||"").slice(0,180),visible:section.visible!==false})});
+  const nextProjects=projects.filter(function(project){return project&&typeof project==="object"&&!Array.isArray(project)}).map(function(project){return Object.assign({},project,{galleryVisible:typeof project.galleryVisible==="boolean"?project.galleryVisible:project.visibility!=="private"})});
+  state.profile=nextProfile;state.portfolioSettings=nextSettings;state.projects=nextProjects;
+  state.projects.forEach(function(project){
+   const raw=String(project.gallerySection||"").trim();if(!raw)return;
+   let section=state.portfolioSettings.gallerySections.find(function(item){return item.id===raw||item.name.toLocaleLowerCase()===raw.toLocaleLowerCase()});
+   if(!section){section={id:"imported-legacy-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),name:raw.slice(0,60),description:"",visible:true,locked:false};state.portfolioSettings.gallerySections.push(section)}
+   project.gallerySection=section.id;
+  });
+  save();syncPortfolioControls();renderAll();syncProfile();
+  setPortfolioJsonStatus("نجح الاستيراد: استُعيدت المعلومات الشخصية وإعدادات المعرض و"+state.projects.length+" مشروعًا. تم حفظها على هذا الجهاز ومزامنتها مع الحساب إذا كنت مسجلًا.");
+  toast("تم استيراد ملف إنجازك بنجاح");
+ }catch(error){setPortfolioJsonStatus("تعذّر الاستيراد: "+(error&&error.message?error.message:"ملف غير صالح."),true);toast("لم يتم استيراد ملف JSON")}
+ finally{event.target.value=""}
+});
 $("#exportData").addEventListener("click",function(){downloadText("mada-data.json",JSON.stringify(state,null,2),"application/json;charset=utf-8");toast("تم تصدير نسخة من بياناتك")});
 $("#resetData").addEventListener("click",function(){if(confirm("سيُحذف ملفك الشخصي والمشاريع والتصميمات والنتائج من هذا المتصفح، وستتم مزامنة الحذف مع الحساب المتصل إن كنت مسجلًا. لا يمكن التراجع. هل تريد المتابعة؟")){state=blankState();save();syncProfile();renderAll();syncAccountSettings();toast("تم مسح بيانات مَدى من هذا المتصفح")}});
 function setupSwitch(id,key){const b=$("#"+id);function draw(){b.classList.toggle("on",!!state.settings[key])}draw();b.addEventListener("click",function(){state.settings[key]=!state.settings[key];save();draw();if(key==="motion")document.documentElement.style.scrollBehavior=state.settings.motion?"auto":"smooth";toast("تم تحديث الإعداد")})}
