@@ -492,6 +492,38 @@
  #portfolioView.portfolio-template-sidebar .works-grid{grid-template-columns:1fr}
 }
 </style>
+<style id="portfolio-visibility-fix">
+/* Keep links and download actions readable regardless of the selected palette. */
+#portfolioView .media-links a,
+#portfolioView .project-detail-links .btn,
+#portfolioView [data-download-public-project],
+#portfolioView .public-project-link,
+#portfolioView .contact-action {
+  color:#fff !important;
+  background:#4934c7 !important;
+  border:1px solid #4934c7 !important;
+  text-decoration:none !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+  box-shadow:0 3px 10px #21145b22;
+}
+#portfolioView .media-links a:hover,
+#portfolioView .project-detail-links .btn:hover,
+#portfolioView [data-download-public-project]:hover,
+#portfolioView .public-project-link:hover,
+#portfolioView .contact-action:hover {
+  color:#fff !important;
+  background:#30218f !important;
+  border-color:#30218f !important;
+}
+#portfolioView .profile-avatar { flex-shrink:0; }
+#portfolioView .profile-avatar img { display:block !important; width:100% !important; height:100% !important; object-fit:cover !important; opacity:1 !important; visibility:visible !important; }
+#portfolioView .work-cover { overflow:hidden; }
+#portfolioView .work-cover img,
+#portfolioView .project-detail-media img,
+#portfolioView .media-gallery img { display:block; max-width:100%; opacity:1; visibility:visible; object-fit:cover; }
+#portfolioView .project-detail-media img { height:100%; width:100%; }
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -516,6 +548,6 @@
   <div class="mada-footer-bottom"><span>مَدى · مساحة تصنع مستقبلك</span><a href="/">الصفحة الرئيسية</a></div>
 </footer>
 </main>
-<script src="/masar-platform/portfolio-public.js?v=20261015c" defer></script>
+<script src="/masar-platform/portfolio-public.js?v=20261027a" defer></script>
 </body>
 </html>
