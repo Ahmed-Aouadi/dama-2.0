@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","mosaic","split","magazine","timeline","sidebar"].includes(display.template)?display.template:"classic";
+const template=["classic","mosaic","split","magazine","timeline","sidebar","cv"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -188,6 +188,15 @@ switch(template){
  case "sidebar":
   view.innerHTML='<div class="layout-sidebar"><main class="sidebar-main"><div class="sidebar-topbar"><span>SELECTED WORKS</span><span>'+String(projects.length).padStart(2,"0")+' PROJECTS</span></div>'+sectionHead+works+'</main><aside class="sidebar-profile">'+identity+'<div class="sidebar-navigation"><span class="sidebar-nav-label">NAVIGATION</span><a href="#portfolioView" class="sidebar-nav-current">الأعمال المختارة <span>↙</span></a><span class="sidebar-nav-note">معرض أعمال شخصي</span></div><div class="sidebar-bottom-mark">M / PORTFOLIO</div></aside></div>';
   break;
+ case "cv": {
+  const cvProjects=projects.map(function(project){const status=({done:"مكتمل",progress:"قيد العمل",idea:"فكرة"})[project.status]||"عمل";const category=({tech:"برمجة وتقنية",design:"تصميم وفنون",media:"إعلام وإنتاج محتوى",writing:"كتابة وتأليف",study:"دراسة وبحث",education:"تعليم وتدريب",business:"أعمال وريادة",engineering:"هندسة وصناعة",science:"علوم وتجارب",community:"مبادرات ومجتمع",event:"فعاليات وتنظيم",personal:"مشروع شخصي",other:"أخرى"})[project.category]||"مشروع";return '<article class="cv-project"><h3>'+esc(project.title||"عمل بدون عنوان")+'</h3><small>'+esc(category)+' · '+status+'</small>'+(project.description?'<p>'+esc(project.description)+'</p>':"")+(project.tools?'<p class="cv-meta"><b>الأدوات:</b> '+esc(project.tools)+'</p>':"")+(project.outcome?'<p class="cv-meta"><b>النتيجة:</b> '+esc(project.outcome)+'</p>':"")+(safeUrl(project.link,false)?'<p class="cv-link"><a href="'+esc(safeUrl(project.link,false))+'" target="_blank" rel="noopener noreferrer">عرض المشروع ↗</a></p>':"")+'</article>'}).join("");
+  const cvSkills=skills.map(function(skill){return '<span class="cv-skill">'+esc(skill)+'</span>'}).join("");
+  const cvContacts=[display.showContactEmail&&display.contactEmail?'<li><a href="mailto:'+esc(display.contactEmail)+'">'+esc(display.contactEmail)+'</a></li>':"",display.showContactPhone&&display.contactPhone?'<li><a href="tel:'+esc(String(display.contactPhone).replace(/[^+0-9().\\-\\s]/g,""))+'">'+esc(display.contactPhone)+'</a></li>':"",profile.link&&safeUrl(profile.link,false)?'<li><a href="'+esc(safeUrl(profile.link,false))+'" target="_blank" rel="noopener noreferrer">الرابط المهني ↗</a></li>':"",profile.city?'<li>'+esc(profile.city)+'</li>':""].filter(Boolean).join("");
+  const cvExperience=profile.experience?'<section class="cv-section"><h2>الخبرة والتطوع</h2><article class="cv-experience"><h3>الخبرة والقيادة</h3><p>'+esc(profile.experience)+'</p></article></section>':"";
+  const cvEducation=profile.education?'<li><b>'+esc(profile.education)+'</b></li>':"";
+  view.innerHTML='<div class="cv-layout"><button class="cv-print" type="button" onclick="window.print()">حفظ PDF / طباعة</button><header class="cv-header"><div><h1>'+esc(name)+'</h1>'+(display.showRole!==false&&profile.role?'<p class="cv-role">'+esc(profile.role)+'</p>':"")+(display.showBio!==false&&profile.bio?'<p class="cv-bio">'+esc(profile.bio)+'</p>':"")+'</div><ul class="cv-contact">'+cvContacts+'</ul></header><div class="cv-columns"><main><section class="cv-section"><h2>المشاريع</h2>'+(cvProjects||'<p class="cv-empty">أضف مشاريعك لتظهر هنا.</p>')+'</section>'+cvExperience+'</main><aside><section class="cv-section"><h2>المهارات</h2><div class="cv-skills">'+(cvSkills||'<p class="cv-empty">أضف مهاراتك من الملف الشخصي.</p>')+'</div></section><section class="cv-section"><h2>التعليم</h2><ul class="cv-education">'+(cvEducation||'<li>أضف مؤهلاتك التعليمية إلى ملفك الشخصي.</li>')+'</ul></section>'+(profile.interests?'<section class="cv-section"><h2>الاهتمامات</h2><p>'+esc(profile.interests)+'</p></section>':"")+'</aside></div><footer class="cv-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
+  break;
+ }
  default:
   view.innerHTML=mainContent.indexOf(sectionHead)===0?identity+mainContent:mainContent+identity;
 }
