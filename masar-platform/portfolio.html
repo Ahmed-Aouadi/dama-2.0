@@ -787,6 +787,41 @@
 @media(max-width:760px){#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-content{grid-template-columns:1fr;padding:14px;gap:14px}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-rail{padding:17px}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-heading h2{font-size:20px}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .works-grid{grid-template-columns:1fr}}
 @media print{#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-header{print-color-adjust:exact;-webkit-print-color-adjust:exact}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-content{padding:12px;gap:12px;grid-template-columns:30% minmax(0,1fr)}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-rail{box-shadow:none}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work{break-inside:avoid;box-shadow:none}}
 </style>
+
+<style id="portfolio-link-skill-contrast-fix">
+/* Ensure profile skills and project links remain readable on light resume templates. */
+#portfolioView .skills .skill {
+  color: var(--gallery-accent, #4934c7) !important;
+  background: color-mix(in srgb, var(--gallery-accent, #4934c7) 10%, #fff) !important;
+  border: 1px solid color-mix(in srgb, var(--gallery-accent, #4934c7) 28%, #fff) !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+#portfolioView.portfolio-template-resume-minimal .resume-minimal-skill {
+  color: #222 !important;
+  background: #fafafa !important;
+  border-color: #d4d4d4 !important;
+}
+#portfolioView .work-body a[href],
+#portfolioView .cv-contact a,
+#portfolioView .cv-project a,
+#portfolioView .resume-minimal-layout a[href] {
+  color: #4934c7 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+#portfolioView.portfolio-template-resume-minimal .resume-minimal-header a[href] {
+  color: #fff !important;
+}
+#portfolioView.portfolio-template-resume-minimal .resume-minimal-projects .work-body a[href] {
+  color: #b91c1c !important;
+}
+</style>
+
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
