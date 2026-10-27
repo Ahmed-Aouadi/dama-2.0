@@ -524,6 +524,36 @@
 #portfolioView .media-gallery img { display:block; max-width:100%; opacity:1; visibility:visible; object-fit:cover; }
 #portfolioView .project-detail-media img { height:100%; width:100%; }
 </style>
+<style id="cv-template-styles">
+#portfolioView.portfolio-template-cv{--cv-ink:#0f172a;--cv-muted:#64748b;--cv-line:#dbe3ee;--cv-accent:var(--gallery-accent,#2563eb);background:#f6f8fb!important;color:var(--cv-ink);font-family:"IBM Plex Sans Arabic","Tajawal",Tahoma,Arial,sans-serif;font-size:15px;line-height:1.85;padding:0;max-width:none}
+#portfolioView.portfolio-template-cv .cv-layout{max-width:1120px;margin:auto;padding:22px 20px 0}
+#portfolioView.portfolio-template-cv .cv-print{position:sticky;top:10px;float:left;z-index:3;border:0;border-radius:999px;background:#111;color:#fff;padding:7px 15px;font:inherit;font-size:12px;cursor:pointer}
+#portfolioView.portfolio-template-cv .cv-header{clear:both;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:28px 0 24px;border-bottom:1px solid var(--cv-line)}
+#portfolioView.portfolio-template-cv .cv-header h1{font-size:clamp(28px,4vw,40px);line-height:1.25;margin:0 0 8px;color:var(--cv-ink);overflow-wrap:anywhere}
+#portfolioView.portfolio-template-cv .cv-role{font-size:17px;font-weight:700;color:var(--cv-accent);margin:0 0 8px}
+#portfolioView.portfolio-template-cv .cv-bio{max-width:720px;color:#334155;margin:0;white-space:pre-line}
+#portfolioView.portfolio-template-cv .cv-contact{list-style:none;margin:0;padding:0;min-width:190px;font-size:12px;color:#475569;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-cv .cv-contact li{margin:3px 0}
+#portfolioView.portfolio-template-cv .cv-contact a{font-weight:600;text-decoration:none}
+#portfolioView.portfolio-template-cv .cv-columns{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:28px;padding:26px 0}
+#portfolioView.portfolio-template-cv .cv-section{margin:0 0 26px;min-width:0}
+#portfolioView.portfolio-template-cv .cv-section>h2{font-size:13px;color:var(--cv-muted);margin:0 0 12px;padding-bottom:7px;border-bottom:1px solid var(--cv-line);font-weight:800}
+#portfolioView.portfolio-template-cv .cv-project{background:#fff;border:1px solid var(--cv-line);border-radius:8px;padding:17px 19px;margin:0 0 12px;break-inside:avoid}
+#portfolioView.portfolio-template-cv .cv-project h3,#portfolioView.portfolio-template-cv .cv-experience h3{font-size:17px;margin:0 0 3px;color:var(--cv-ink)}
+#portfolioView.portfolio-template-cv .cv-project>small{display:block;color:var(--cv-accent);font-size:12px;font-weight:700;margin-bottom:8px}
+#portfolioView.portfolio-template-cv .cv-project p,#portfolioView.portfolio-template-cv .cv-experience p,#portfolioView.portfolio-template-cv .cv-section>p{margin:7px 0;color:#334155;font-size:13px;white-space:pre-line;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-cv .cv-project .cv-meta{font-size:12px;color:var(--cv-muted)}
+#portfolioView.portfolio-template-cv .cv-link a{color:#fff;background:#4934c7;padding:5px 10px;border-radius:5px;display:inline-block;font-size:12px;text-decoration:none}
+#portfolioView.portfolio-template-cv .cv-skills{display:flex;flex-wrap:wrap;gap:6px}
+#portfolioView.portfolio-template-cv .cv-skill{display:inline-block;border:1px solid #cdd7e5;background:#fff;border-radius:5px;padding:2px 9px;font-size:12px;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-cv .cv-education{padding:0;margin:0;list-style:none}
+#portfolioView.portfolio-template-cv .cv-education li{font-size:13px;margin:0 0 10px;break-inside:avoid}
+#portfolioView.portfolio-template-cv .cv-experience{background:#fff;border:1px solid var(--cv-line);border-radius:8px;padding:16px}
+#portfolioView.portfolio-template-cv .cv-empty{font-size:12px;color:var(--cv-muted)}
+#portfolioView.portfolio-template-cv .cv-footer{text-align:center;border-top:1px solid var(--cv-line);padding:18px 0 22px;font-size:11px;color:var(--cv-muted)}
+@media(max-width:760px){#portfolioView.portfolio-template-cv .cv-header{display:block}#portfolioView.portfolio-template-cv .cv-contact{margin-top:16px}#portfolioView.portfolio-template-cv .cv-columns{grid-template-columns:1fr;gap:0}#portfolioView.portfolio-template-cv .cv-layout{padding:18px 14px 0}#portfolioView.portfolio-template-cv .cv-print{position:relative;top:auto}}
+@media print{@page{size:A4;margin:10mm}#portfolioView.portfolio-template-cv{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}#portfolioView.portfolio-template-cv .cv-layout{max-width:none;padding:0}#portfolioView.portfolio-template-cv .cv-print{display:none}#portfolioView.portfolio-template-cv .cv-project,#portfolioView.portfolio-template-cv .cv-experience,#portfolioView.portfolio-template-cv .cv-education li{break-inside:avoid}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
