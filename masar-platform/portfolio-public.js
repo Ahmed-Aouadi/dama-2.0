@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","cv","engineering"].includes(display.template)?display.template:"classic";
+const template=["classic","cv","engineering","marketing"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -188,6 +188,15 @@ switch(template){
  case "sidebar":
   view.innerHTML='<div class="layout-sidebar"><main class="sidebar-main"><div class="sidebar-topbar"><span>SELECTED WORKS</span><span>'+String(projects.length).padStart(2,"0")+' PROJECTS</span></div>'+sectionHead+works+'</main><aside class="sidebar-profile">'+identity+'<div class="sidebar-navigation"><span class="sidebar-nav-label">NAVIGATION</span><a href="#portfolioView" class="sidebar-nav-current">الأعمال المختارة <span>↙</span></a><span class="sidebar-nav-note">معرض أعمال شخصي</span></div><div class="sidebar-bottom-mark">M / PORTFOLIO</div></aside></div>';
   break;
+ case "marketing": {
+  const metricCard=function(value,label){return '<div class="marketing-stat"><b>'+esc(value)+'</b><span>'+esc(label)+'</span></div>'};
+  const statMarkup=metricCard(String(projects.length).padStart(2,"0"),"مشاريع منشورة")+metricCard(String(skills.length).padStart(2,"0"),"مهارات")+metricCard(profile.experience?"✓":"—","الخبرة المهنية");
+  const marketingSkills=skills.map(function(skill){return '<span class="marketing-skill">'+esc(skill)+'</span>'}).join("");
+  const marketingExperience=profile.experience?'<p>'+esc(profile.experience)+'</p>':'<p class="marketing-muted">أضف خبرتك العملية إلى ملفك الشخصي.</p>';
+  const marketingEducation=profile.education?'<p>'+esc(profile.education)+'</p>':'<p class="marketing-muted">أضف مؤهلك التعليمي إلى ملفك الشخصي.</p>';
+  view.innerHTML='<div class="marketing-layout"><header class="marketing-header">'+identity+'</header><div class="marketing-stats">'+statMarkup+'</div><main class="marketing-body"><section class="marketing-projects"><div class="marketing-section-title"><h2>الأعمال المختارة</h2><span>'+String(projects.length).padStart(2,"0")+' / WORKS</span></div>'+works+'</section><div class="marketing-details"><section class="marketing-section"><h2>الخبرة</h2>'+marketingExperience+'</section><section class="marketing-section"><h2>المهارات</h2><div class="marketing-skills">'+(marketingSkills||'<p class="marketing-muted">أضف مهاراتك إلى ملفك الشخصي.</p>')+'</div></section><section class="marketing-section"><h2>التعليم</h2>'+marketingEducation+'</section>'+(profile.interests?'<section class="marketing-section"><h2>الاهتمامات</h2><p>'+esc(profile.interests)+'</p></section>':'')+'</div></main><footer class="marketing-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
+  break;
+ }
  case "engineering": {
   const engineeringSkills=skills.map(function(skill){return '<span class="engineering-skill">'+esc(skill)+'</span>'}).join("");
   const engineeringEducation=profile.education?'<p>'+esc(profile.education)+'</p>':'<p class="engineering-muted">أضف مؤهلك التعليمي إلى ملفك الشخصي.</p>';
