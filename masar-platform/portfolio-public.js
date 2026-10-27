@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative"].includes(display.template)?display.template:"classic";
+const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -200,6 +200,22 @@ switch(template){
     profileBlock("التعليم",profile.education)+profileBlock("الخبرة",profile.experience)+profileBlock("الاهتمامات",profile.interests)+profileBlock("الهدف الحالي",profile.goal)+
     '</aside><main class="resume-sidebar-main"><div class="resume-sidebar-heading"><div><span>PORTFOLIO / CV</span><h2>المشاريع وملف الإنجاز</h2></div><b>'+String(projects.length).padStart(2,"0")+'</b></div>'+
     (works||'<p class="resume-sidebar-muted">أضف مشاريعك إلى ملفك الشخصي لتظهر هنا.</p>')+'</main></div><footer class="resume-sidebar-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
+  break;
+ }
+ case "resume-minimal": {
+  const minimalSkills=skills.map(function(skill){return '<span class="resume-minimal-skill">'+esc(skill)+'</span>'}).join("");
+  const minimalLanguages=String(profile.languages||"").split(/[,،]/).map(function(language){return language.trim()}).filter(Boolean);
+  const minimalLanguageList=minimalLanguages.map(function(language){return '<li>'+esc(language)+'</li>'}).join("");
+  const minimalSection=function(title,value){return value?'<section class="resume-minimal-panel"><h2>'+esc(title)+'</h2><p>'+esc(value)+'</p></section>':""};
+  view.innerHTML='<div class="resume-minimal-layout"><header class="resume-minimal-header">'+identity+'</header><main class="resume-minimal-main">'+
+   (profile.bio?'<section class="resume-minimal-intro"><h2>نبذة مهنية</h2><p>'+esc(profile.bio)+'</p></section>':'')+
+   '<section class="resume-minimal-panel"><h2>المهارات</h2><div class="resume-minimal-skills">'+(minimalSkills||'<p class="resume-minimal-muted">أضف مهاراتك من الملف الشخصي.</p>')+'</div></section>'+
+   '<div class="resume-minimal-columns">'+
+   minimalSection("التعليم",profile.education)+minimalSection("الخبرة",profile.experience)+
+   (minimalLanguageList?'<section class="resume-minimal-panel"><h2>اللغات</h2><ul class="resume-minimal-list">'+minimalLanguageList+'</ul></section>':'')+
+   minimalSection("التطوع والقيادة",profile.volunteering)+minimalSection("الاهتمامات",profile.interests)+minimalSection("الهدف الحالي",profile.goal)+
+   '</div><section class="resume-minimal-projects"><div class="resume-minimal-projects-title"><h2>المشاريع وملف الإنجاز</h2><span>'+String(projects.length).padStart(2,"0")+'</span></div>'+
+   (works||'<p class="resume-minimal-muted">أضف مشاريعك إلى ملفك الشخصي لتظهر هنا.</p>')+'</section></main><footer class="resume-minimal-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
   break;
  }
  case "resume-creative": {
