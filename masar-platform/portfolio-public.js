@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","cv","engineering","marketing","rose"].includes(display.template)?display.template:"classic";
+const template=["classic","cv","engineering","marketing","rose","resume-sidebar"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -188,6 +188,20 @@ switch(template){
  case "sidebar":
   view.innerHTML='<div class="layout-sidebar"><main class="sidebar-main"><div class="sidebar-topbar"><span>SELECTED WORKS</span><span>'+String(projects.length).padStart(2,"0")+' PROJECTS</span></div>'+sectionHead+works+'</main><aside class="sidebar-profile">'+identity+'<div class="sidebar-navigation"><span class="sidebar-nav-label">NAVIGATION</span><a href="#portfolioView" class="sidebar-nav-current">الأعمال المختارة <span>↙</span></a><span class="sidebar-nav-note">معرض أعمال شخصي</span></div><div class="sidebar-bottom-mark">M / PORTFOLIO</div></aside></div>';
   break;
+ case "resume-sidebar": {
+  const resumeSkills=skills.map(function(skill){return '<span class="resume-sidebar-skill">'+esc(skill)+'</span>'}).join("");
+  const resumeLanguages=String(profile.languages||"").split(/[,،]/).map(function(language){return language.trim()}).filter(Boolean);
+  const resumeLanguageList=resumeLanguages.map(function(language){return '<li>'+esc(language)+'</li>'}).join("");
+  const profileBlock=function(title,value){return value?'<section class="resume-sidebar-block"><h2>'+esc(title)+'</h2><p>'+esc(value)+'</p></section>':""};
+  view.innerHTML='<div class="resume-sidebar-layout"><header class="resume-sidebar-header"><div class="resume-sidebar-hero">'+identity+'</div></header><div class="resume-sidebar-content"><aside class="resume-sidebar-rail">'+
+    (profile.bio?'<section class="resume-sidebar-block"><h2>نبذة</h2><p>'+esc(profile.bio)+'</p></section>':'')+
+    '<section class="resume-sidebar-block"><h2>المهارات</h2><div class="resume-sidebar-skills">'+(resumeSkills||'<p class="resume-sidebar-muted">أضف مهاراتك من الملف الشخصي.</p>')+'</div></section>'+
+    '<section class="resume-sidebar-block"><h2>اللغات</h2>'+(resumeLanguageList?'<ul class="resume-sidebar-languages">'+resumeLanguageList+'</ul>':'<p class="resume-sidebar-muted">أضف لغاتك من الملف الشخصي.</p>')+'</section>'+
+    profileBlock("التعليم",profile.education)+profileBlock("الخبرة",profile.experience)+profileBlock("الاهتمامات",profile.interests)+profileBlock("الهدف الحالي",profile.goal)+
+    '</aside><main class="resume-sidebar-main"><div class="resume-sidebar-heading"><div><span>PORTFOLIO / CV</span><h2>المشاريع وملف الإنجاز</h2></div><b>'+String(projects.length).padStart(2,"0")+'</b></div>'+
+    (works||'<p class="resume-sidebar-muted">أضف مشاريعك إلى ملفك الشخصي لتظهر هنا.</p>')+'</main></div><footer class="resume-sidebar-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
+  break;
+ }
  case "rose": {
   const roseSkills=skills.map(function(skill){return '<i class="rose-skill">'+esc(skill)+'</i>'}).join("");
   const languages=String(profile.languages||"").split(/[,،]/).map(function(language){return language.trim()}).filter(Boolean);
