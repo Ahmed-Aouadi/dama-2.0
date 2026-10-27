@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","cv","engineering","marketing"].includes(display.template)?display.template:"classic";
+const template=["classic","cv","engineering","marketing","rose"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -188,6 +188,14 @@ switch(template){
  case "sidebar":
   view.innerHTML='<div class="layout-sidebar"><main class="sidebar-main"><div class="sidebar-topbar"><span>SELECTED WORKS</span><span>'+String(projects.length).padStart(2,"0")+' PROJECTS</span></div>'+sectionHead+works+'</main><aside class="sidebar-profile">'+identity+'<div class="sidebar-navigation"><span class="sidebar-nav-label">NAVIGATION</span><a href="#portfolioView" class="sidebar-nav-current">الأعمال المختارة <span>↙</span></a><span class="sidebar-nav-note">معرض أعمال شخصي</span></div><div class="sidebar-bottom-mark">M / PORTFOLIO</div></aside></div>';
   break;
+ case "rose": {
+  const roseSkills=skills.map(function(skill){return '<i class="rose-skill">'+esc(skill)+'</i>'}).join("");
+  const languages=String(profile.languages||"").split(/[,،]/).map(function(language){return language.trim()}).filter(Boolean);
+  const roseLanguages=languages.map(function(language){return '<li>'+esc(language)+'</li>'}).join("");
+  const roseProjects=String(projects.length).padStart(2,"0");
+  view.innerHTML='<div class="rose-layout"><header class="rose-header"><div class="rose-identity">'+identity+'</div></header><div class="rose-stats"><div><b>'+roseProjects+'</b><span>المشاريع</span></div><div><b>'+String(skills.length).padStart(2,"0")+'</b><span>المهارات</span></div><div><b>'+(profile.experience?'✓':'—')+'</b><span>الخبرة</span></div></div><main class="rose-body"><section class="rose-panel rose-full"><h2>نبذة عني</h2><p>'+(profile.bio?esc(profile.bio):'أضف نبذتك من الملف الشخصي لتظهر هنا.')+'</p></section><section class="rose-panel rose-full"><h2>المشاريع وملف الإنجاز</h2>'+works+'</section><section class="rose-panel"><h2>المهارات</h2><div class="rose-skills">'+(roseSkills||'<p class="rose-muted">أضف مهاراتك من الملف الشخصي.</p>')+'</div></section><section class="rose-panel"><h2>التعليم والتكوين</h2><p>'+(profile.education?esc(profile.education):'<span class="rose-muted">أضف تعليمك من الملف الشخصي.</span>')+'</p></section><section class="rose-panel"><h2>الخبرة</h2><p>'+(profile.experience?esc(profile.experience):'<span class="rose-muted">أضف خبرتك من الملف الشخصي.</span>')+'</p></section><section class="rose-panel"><h2>اللغات</h2>'+(roseLanguages?'<ul class="rose-languages">'+roseLanguages+'</ul>':'<p class="rose-muted">أضف لغاتك من الملف الشخصي.</p>')+'</section>'+(profile.interests?'<section class="rose-panel"><h2>الاهتمامات</h2><p>'+esc(profile.interests)+'</p></section>':'')+(profile.goal?'<section class="rose-panel"><h2>الهدف الحالي</h2><p>'+esc(profile.goal)+'</p></section>':'')+'</main><footer class="rose-footer">تم إنشاء هذا الملف عبر مَدى</footer></div>';
+  break;
+ }
  case "marketing": {
   const metricCard=function(value,label){return '<div class="marketing-stat"><b>'+esc(value)+'</b><span>'+esc(label)+'</span></div>'};
   const statMarkup=metricCard(String(projects.length).padStart(2,"0"),"مشاريع منشورة")+metricCard(String(skills.length).padStart(2,"0"),"مهارات")+metricCard(profile.experience?"✓":"—","الخبرة المهنية");
