@@ -670,6 +670,47 @@
 #portfolioView.portfolio-template-rose .rose-footer{text-align:center;padding:20px;color:#7a4b55;font-size:12px}
 @media(max-width:760px){#portfolioView.portfolio-template-rose .rose-identity .profile-hero{flex-direction:column-reverse;align-items:flex-start}#portfolioView.portfolio-template-rose .rose-body{grid-template-columns:1fr;padding:18px 12px;gap:12px}#portfolioView.portfolio-template-rose .rose-panel.rose-full{grid-column:auto}#portfolioView.portfolio-template-rose .rose-panel{padding:17px;border-radius:15px}#portfolioView.portfolio-template-rose .rose-stats>div{padding:12px 10px}#portfolioView.portfolio-template-rose .rose-stats b{font-size:26px}#portfolioView.portfolio-template-rose .rose-stats span{font-size:11px}}
 @media print{#portfolioView.portfolio-template-rose .rose-header,#portfolioView.portfolio-template-rose .rose-stats{print-color-adjust:exact;-webkit-print-color-adjust:exact}#portfolioView.portfolio-template-rose .rose-body{padding:15px 0;gap:10px}#portfolioView.portfolio-template-rose .rose-panel{box-shadow:none;break-inside:avoid}}
+#portfolioView.portfolio-template-resume-sidebar{max-width:none;padding:0;margin:0;background:#f5f6fa;color:#1d2433;font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;line-height:1.85}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-layout{--rs-ac:#4f46e5;--rs-teal:#0ea5a4;--rs-muted:#5b6478;--rs-border:#e2e6f0;max-width:1180px;margin:auto;background:#f5f6fa}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-header{padding:32px 24px 25px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .profile-hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;margin:0;padding:12px;background:transparent;border:0;border-radius:0;box-shadow:none;color:#fff}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .profile-copy{width:100%;min-width:0}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .profile-copy h1{font-size:clamp(32px,5vw,52px);line-height:1.2;color:#fff;margin:5px 0 8px;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .kicker{color:#e0e7ff;font-size:12px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .role{font-size:18px;color:#e0e7ff}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .bio{color:#fff}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .profile-meta{justify-content:center;color:#fff}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .meta-chip{color:#fff;border-color:#ffffff55}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .profile-avatar{order:-1;width:var(--gallery-profile-avatar-size,96px);height:var(--gallery-profile-avatar-size,96px);flex:0 0 var(--gallery-profile-avatar-size,96px);border:5px solid #ffffff50;border-radius:50%;overflow:hidden;background:#3730a3}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .profile-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-hero .contact-action{color:#fff;border-color:#ffffff66}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-content{display:grid;grid-template-columns:minmax(245px,310px) minmax(0,1fr);gap:24px;align-items:start;padding:26px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-rail{min-width:0;background:#fff;border:1px solid var(--rs-border);border-radius:18px;padding:22px;box-shadow:0 10px 30px #1d24330b}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-block{margin-bottom:23px;break-inside:avoid}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-block:last-child{margin-bottom:0}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-block h2{font-size:17px;color:#4f46e5;border-bottom:2px solid #e0e7ff;padding-bottom:5px;margin:0 0 10px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-block p{white-space:pre-line;overflow-wrap:anywhere;color:#5b6478;font-size:14px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-skills{display:flex;flex-wrap:wrap;gap:7px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-skill{display:inline-block;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;border-radius:7px;padding:3px 9px;font-size:12px;font-style:normal;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-languages{list-style:none;padding:0;margin:0}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-languages li{font-size:14px;padding:5px 0;border-bottom:1px dashed #e2e6f0;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main{min-width:0}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 18px;padding:4px 2px 13px;border-bottom:2px solid #4f46e5}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-heading span{display:block;color:#0ea5a4;font-size:10px;letter-spacing:1px;font-weight:700}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-heading h2{margin:3px 0 0;color:#1d2433;font-size:24px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-heading>b{font-size:35px;color:#4f46e5;line-height:1}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .section-head{margin-bottom:14px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .works-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work{min-width:0;background:#fff;border:1px solid #e2e6f0;border-radius:14px;box-shadow:0 8px 22px #1d24330b;overflow:hidden}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work-cover{height:auto;aspect-ratio:16/9;border-radius:0}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work-body{padding:15px}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work-body h3{color:#1d2433;overflow-wrap:anywhere}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work-body p{color:#5b6478}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work .work-tag{color:#0f766e}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-muted{font-size:13px;color:#7b8498}
+#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-footer{text-align:center;padding:18px;color:#7b8498;font-size:12px}
+@media(max-width:760px){#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-content{grid-template-columns:1fr;padding:14px;gap:14px}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-rail{padding:17px}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-heading h2{font-size:20px}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .works-grid{grid-template-columns:1fr}}
+@media print{#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-header{print-color-adjust:exact;-webkit-print-color-adjust:exact}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-content{padding:12px;gap:12px;grid-template-columns:30% minmax(0,1fr)}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-rail{box-shadow:none}#portfolioView.portfolio-template-resume-sidebar .resume-sidebar-main .work{break-inside:avoid;box-shadow:none}}
 </style>
 </head>
 <body>
@@ -695,6 +736,6 @@
   <div class="mada-footer-bottom"><span>مَدى · مساحة تصنع مستقبلك</span><a href="/">الصفحة الرئيسية</a></div>
 </footer>
 </main>
-<script src="/masar-platform/portfolio-public.js?v=20261027d" defer></script>
+<script src="/masar-platform/portfolio-public.js?v=20261027e" defer></script>
 </body>
 </html>
