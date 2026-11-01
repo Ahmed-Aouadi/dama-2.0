@@ -142,8 +142,8 @@ function assert(condition, message) {
     assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
     assert(await page.locator("#portfolioSettingsIntro").count() === 0, "Redundant public-gallery introduction is still visible");
     assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
-    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 8, "Gallery designer must offer exactly eight templates");
-    for (const template of ["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal"]) {
+    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 12, "Gallery designer must offer exactly twelve templates");
+    for (const template of ["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery"]) {
       await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').click();
       assert(await page.evaluate(t => window.MadaApp.getState().portfolioSettings.template === t, template), "Selecting portfolio template did not save: " + template);
       assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected") && el.getAttribute("aria-pressed") === "true"), "Selected portfolio template was not visually highlighted: " + template);
