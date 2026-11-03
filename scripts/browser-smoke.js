@@ -279,6 +279,12 @@ function assert(condition, message) {
     await galleryPage.setViewportSize({ width: 360, height: 800 });
     await galleryPage.goto("http://127.0.0.1:4173/masar-platform/portfolio.html?id=galleryRegression", { waitUntil: "domcontentloaded" });
     await galleryPage.waitForSelector("#portfolioView:not([hidden]) .project-tile", { timeout: 5000 });
+
+    await galleryPage.goto("http://127.0.0.1:4173/masar-platform/portfolio.html?username=gallery-regression", { waitUntil: "domcontentloaded" });
+    await galleryPage.waitForSelector("#portfolioView:not([hidden]) .project-tile", { timeout: 5000 });
+    await galleryPage.waitForFunction(() => location.pathname === "/@gallery-regression", undefined, { timeout: 3000 });
+    assert(await galleryPage.locator('link[rel="canonical"]').getAttribute("href") === "http://127.0.0.1:4173/@gallery-regression", "Username gallery lookup did not canonicalize to its public profile URL");
+
     assert(await galleryPage.locator("#portfolioView .project-tile").count() === 1, "Hidden gallery section leaked into the public portfolio");
     const galleryLayout = await galleryPage.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
     assert(galleryLayout.scroll <= galleryLayout.client + 1, "Public portfolio overflows at 360px: " + JSON.stringify(galleryLayout));
