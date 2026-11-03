@@ -52,14 +52,14 @@ return '<div class="project-detail">'+(cover?'<img class="project-detail-cover" 
 function ensureProjectDialog(){
 if($("projectDetailsModal"))return;
 const modal=document.createElement("div");modal.className="modal-backdrop project-details-backdrop";modal.id="projectDetailsModal";
-modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-labelledby","projectDetailsTitle");
+modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-hidden","true");modal.setAttribute("aria-labelledby","projectDetailsTitle");
 modal.innerHTML='<section class="dialog-card project-details-dialog"><div class="dialog-head"><div><small>مَدى · معرض الأعمال</small><h2 id="projectDetailsTitle">تفاصيل العمل</h2></div><button class="dialog-close" type="button" data-modal-close="projectDetailsModal" aria-label="إغلاق">×</button></div><div id="projectDetailsContent"></div><div class="dialog-actions"><button class="btn" type="button" data-modal-close="projectDetailsModal">إغلاق التفاصيل</button></div></section>';
 document.body.appendChild(modal);modal.addEventListener("click",e=>{if(e.target===modal)closeDialog("projectDetailsModal")});
 }
 /* Custom work sections only appear when the owner assigns at least one section. */
 function render(data){
 portfolioData=data;
-const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},projects=(Array.isArray(p.projects)?p.projects:[]).filter(function(x){const id=String(x.gallerySection||"general"),sections=Array.isArray(display.gallerySections)?display.gallerySections:[];const section=sections.find(function(item){return String(item.id)===id});return (id==="general"||!section||section.visible!==false)&&(!display.featuredOnly||x.featured)});
+const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},allProjects=Array.isArray(p.projects)?p.projects:[],projects=allProjects.filter(function(x){const id=String(x.gallerySection||"general"),sections=Array.isArray(display.gallerySections)?display.gallerySections:[];const section=sections.find(function(item){return String(item.id)===id});return (id==="general"||!section||section.visible!==false)&&(!display.featuredOnly||x.featured)});
 ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
@@ -167,7 +167,7 @@ const works=groupedProjects.length?(function(){
  visibleSections.forEach(function(section){groups.set(String(section.id),{section:section,projects:[]})});
  if(!groups.has("general"))groups.set("general",{section:generalSection,projects:[]});
  groupedProjects.forEach(function(project){const id=String(project.gallerySection||"general"),key=groups.has(id)?id:"general";groups.get(key).projects.push(project)});
- return Array.from(groups.values()).filter(function(group){return group.projects.length>0}).map(function(group){const section=group.section;return '<section class="gallery-work-group" data-gallery-section="'+esc(section.id)+'"><div class="section-head gallery-group-heading"><div><h2>'+esc(section.name)+'</h2>'+(section.description?'<p>'+esc(section.description)+'</p>':"")+'</div><span class="count">'+group.projects.length+' أعمال</span></div><div class="works-grid">'+group.projects.map(function(project){return projectCard(project,projects.indexOf(project))}).join("")+'</div></section>'}).join("");
+ return Array.from(groups.values()).filter(function(group){return group.projects.length>0}).map(function(group){const section=group.section;return '<section class="gallery-work-group" data-gallery-section="'+esc(section.id)+'"><div class="section-head gallery-group-heading"><div><h2>'+esc(section.name)+'</h2>'+(section.description?'<p>'+esc(section.description)+'</p>':"")+'</div><span class="count">'+group.projects.length+' أعمال</span></div><div class="works-grid">'+group.projects.map(function(project){return projectCard(project,allProjects.indexOf(project))}).join("")+'</div></section>'}).join("");
 })():'<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>هذا المعرض لا يحتوي على أعمال متاحة للعرض حاليًا.</div>';
 const profileFirst=display.sectionOrder!=="works-first";
 const mainContent=(profileFirst?sectionHead+works:works+sectionHead);
@@ -290,8 +290,27 @@ function showPublicImage(index){
  if(prev)prev.onclick=()=>showPublicImage(publicImageIndex-1);
  if(next)next.onclick=()=>showPublicImage(publicImageIndex+1);
 }
-function openDialog(id){const el=$(id);if(el)el.classList.add("open")}
-function closeDialog(id){const el=$(id);if(el)el.classList.remove("open")}
+const dialogReturnFocus=new Map();
+function openDialog(id){
+ const el=$(id);if(!el)return;
+ dialogReturnFocus.set(id,document.activeElement);
+ el.setAttribute("aria-hidden","false");
+ el.classList.add("open");
+ document.body.classList.add("has-open-dialog");
+ const focusTarget=el.querySelector("[data-modal-close],.dialog-close,button,a[href],[tabindex]:not([tabindex='-1'])");
+ if(focusTarget)focusTarget.focus({preventScroll:true});
+}
+function closeDialog(id){
+ const el=$(id);if(!el)return;
+ el.classList.remove("open");
+ el.setAttribute("aria-hidden","true");
+ if(!document.querySelector(".modal-backdrop.open"))document.body.classList.remove("has-open-dialog");
+ const previous=dialogReturnFocus.get(id);
+ if(previous&&previous.isConnected&&typeof previous.focus==="function")previous.focus({preventScroll:true});
+ dialogReturnFocus.delete(id);
+ const media=el.querySelector("video,iframe");
+ if(media){if(media.tagName==="VIDEO")media.pause();else media.src="about:blank"}
+}
 
 document.addEventListener("click",function(e){
  const close=e.target.closest("[data-modal-close]");
@@ -324,7 +343,15 @@ document.addEventListener("click",function(e){
  openDialog("publicMediaModal");
 });
 ["publicMediaModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target.id===id)closeDialog(id)}));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDialog("projectDetailsModal");closeDialog("publicMediaModal")}else if($("publicMediaModal")?.classList.contains("open")&&publicImageList.length>1){if(e.key==="ArrowLeft")showPublicImage(publicImageIndex+1);else if(e.key==="ArrowRight")showPublicImage(publicImageIndex-1)}});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){closeDialog("projectDetailsModal");closeDialog("publicMediaModal");return}
+ const active=document.querySelector(".modal-backdrop.open");
+ if(e.key==="Tab"&&active){
+  const focusable=Array.from(active.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(el=>el.offsetParent!==null);
+  if(focusable.length){const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
+ }
+ if($("publicMediaModal")?.classList.contains("open")&&publicImageList.length>1){if(e.key==="ArrowLeft")showPublicImage(publicImageIndex+1);else if(e.key==="ArrowRight")showPublicImage(publicImageIndex-1)}
+});
 
 window.addEventListener("message",function(event){
  if(!isPreview||event.source!==window.parent||event.origin!==window.location.origin)return;
