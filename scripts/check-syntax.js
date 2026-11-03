@@ -105,7 +105,7 @@ if (!hasMeaningfulGrowth({ growth: { skills: [{ name: "HTML" }] } })) throw new 
 if (hasMeaningfulGrowth({ growth: { cv: { name: "", headline: "", languages: "العربية، الفرنسية" }, skills: [], paths: {}, history: [], requests: [], customTemplates: [], locale: "ar" } })) throw new Error("Default Growth Hub data must not be mistaken for user content");
 console.log("OK account restoration preserves custom templates, CV, skills, paths and history");
 
-const accountMergeDetector = auth.match(/function mergeAccountState\\(cloudValue, guestValue\\) \\{[\\s\\S]*?\\n  \\}/);
+const accountMergeDetector = auth.match(/function mergeAccountState\(cloudValue, guestValue\) \{[\s\S]*?\n  \}/);
 if (!accountMergeDetector) throw new Error("Account restoration must merge guest and cloud data without dropping guest-only records");
 const mergeAccountState = vm.runInNewContext("(" + accountMergeDetector[0] + ")");
 const mergedAccountState = mergeAccountState(
