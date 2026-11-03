@@ -70,9 +70,9 @@ function assert(condition, message) {
       };
       let body = { ok: true };
       if (action === "me") { sessionRefreshRequested = true; body = (route.request().headers().referer || "").includes("guest-smoke=1") ? { user: null } : { user }; }
-      else if (action === "data" && route.request().method() === "GET") body = { data };
+      else if (action === "data" && route.request().method() === "GET") body = { data, revision: 1 };
       else if (action === "publish-portfolio") { lastPublishedPayload = route.request().postDataJSON(); body = { shareUrl: "/portfolio.html?id=browserSmokeTest123" }; }
-      else if (action === "data") body = { ok: true };
+      else if (action === "data") body = { ok: true, revision: 2 };
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
     });
     await page.addInitScript(() => {
