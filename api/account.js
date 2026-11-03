@@ -500,7 +500,7 @@ module.exports = async function handler(req, res) {
       const username = normalizeUsername(req.query?.username || "");
       let result;
       if (username) {
-        if (!/^[\\p{L}\\p{N}_.-]{3,24}$/u.test(username)) return send(res, 400, { error: "اسم المستخدم غير صالح." });
+        if (!/^[\p{L}\p{N}_.-]{3,24}$/u.test(username)) return send(res, 400, { error: "اسم المستخدم غير صالح." });
         result = await db().query(
           "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE LOWER(u.username)=LOWER($1) AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
           [username]
