@@ -118,3 +118,13 @@
 #publicMediaModal .public-image-next{right:12px}
 #publicMediaModal .public-image-counter{text-align:center;padding:8px;color:var(--muted);font-size:12px}
 @media(max-width:600px){#projectDetailsModal .media-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#publicMediaModal .public-image-viewer{min-height:180px}#publicMediaModal .public-image-nav{width:36px;height:36px}}
+
+/* Gallery direction: a calm visual system instead of a template picker. */
+#page-portfolio .gallery-style-intro{display:flex;align-items:flex-start;gap:14px;margin:0 0 20px;padding:17px 18px;border:1px solid #ddd5ff;border-radius:18px;background:linear-gradient(135deg,#f7f4ff 0%,#fff 72%);box-shadow:0 10px 24px rgba(91,70,230,.06)}
+#page-portfolio .gallery-style-intro-icon{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:12px;background:#17152b;color:#65e8c9;font-size:20px;box-shadow:0 6px 14px rgba(23,21,43,.15)}
+#page-portfolio .gallery-style-intro strong{display:block;font-size:14px;line-height:1.6;color:#17152b}
+#page-portfolio .gallery-style-intro p{margin:3px 0 0;color:#6a6882;font-size:11px;line-height:1.8;max-width:680px}
+#page-portfolio .designer-pane[data-designer-pane="style"]>h4{margin-top:22px;font-size:15px;color:#17152b}
+#page-portfolio .designer-pane[data-designer-pane="style"] .designer-field,#page-portfolio .designer-pane[data-designer-pane="layout"] .designer-field{background:#fff;border-color:#e8e3f3;border-radius:13px}
+#page-portfolio .designer-pane[data-designer-pane="style"] .segmented{padding:4px;border:1px solid #e8e3f3;border-radius:13px;background:#faf9ff}
+@media(max-width:560px){#page-portfolio .gallery-style-intro{gap:10px;padding:14px}.gallery-style-intro-icon{width:34px;height:34px!important;font-size:17px!important}}
