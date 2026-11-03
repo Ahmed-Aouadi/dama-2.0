@@ -3,6 +3,7 @@
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 const slug=(params.get("id")||"").trim();
+const usernameFromPath=(()=>{const raw=location.pathname.startsWith("/@")?location.pathname.slice(2):(params.get("username")||"");try{return decodeURIComponent(raw)}catch(_){return raw}})();
 const isPreview=params.get("preview")==="1";
 let portfolioData=null;
 function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -306,8 +307,17 @@ const identity=hero;
 }
 async function load(){
 if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}
-if(!slug){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
-try{const r=await fetch("/api/account?action=public-portfolio&id="+encodeURIComponent(slug),{credentials:"same-origin",cache:"no-store"});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||"تعذّر تحميل المعرض.");render(data);document.title=(data.portfolio?.profile?.name||data.authorName||data.username)+" | معرض أعمال مَدى"}catch(error){$("loadStatus").textContent=error.message||"تعذّر تحميل المعرض.";const link=document.createElement("a");link.href="/";link.textContent="العودة إلى مَدى";link.style.color="var(--purple)";link.style.fontWeight="700";$("loadStatus").append(" ");$("loadStatus").appendChild(link)}}
+if(window.__MADA_PUBLIC_DATA__&&window.__MADA_PUBLIC_DATA__.portfolio){render(window.__MADA_PUBLIC_DATA__);return}
+if(!slug&&!usernameFromPath){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
+try{
+ const query=usernameFromPath?"username="+encodeURIComponent(usernameFromPath):"id="+encodeURIComponent(slug);
+ const r=await fetch("/api/account?action=public-portfolio&"+query,{credentials:"same-origin",cache:"no-store"});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(data.error||"تعذّر تحميل المعرض.");
+ if(data.username&&!location.pathname.startsWith("/@"))history.replaceState({},"","/@"+encodeURIComponent(data.username));
+ render(data);
+ document.title=(data.portfolio?.profile?.name||data.authorName||data.username)+" | معرض أعمال مَدى";
+}catch(error){$("loadStatus").textContent=error.message||"تعذّر تحميل المعرض.";const link=document.createElement("a");link.href="/";link.textContent="العودة إلى مَدى";link.style.color="var(--purple)";link.style.fontWeight="700";$("loadStatus").append(" ");$("loadStatus").appendChild(link)}}
 let publicImageList=[],publicImageIndex=0;
 function showPublicImage(index){
  if(!publicImageList.length)return;
