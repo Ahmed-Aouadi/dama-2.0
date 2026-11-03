@@ -5,6 +5,10 @@
       "destination": "/authority-console/index.html"
     },
     {
+      "source": "/@:username",
+      "destination": "/api/portfolio?username=:username"
+    },
+    {
       "source": "/portfolio.html",
       "destination": "/masar-platform/portfolio.html"
     },
@@ -17,6 +21,11 @@
       "destination": "/masar-platform/index.html"
     }
   ],
+  "functions": {
+    "api/portfolio.js": {
+      "includeFiles": "masar-platform/portfolio.html"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
