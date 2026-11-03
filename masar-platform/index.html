@@ -522,6 +522,25 @@ html,body{height:100%;overflow:hidden}
 <button type="button" role="tab" class="designer-tab" data-designer-tab="sharing" aria-selected="false">المشاركة والتواصل</button>
 </div>
 <section class="designer-pane is-active" data-designer-pane="style">
+<div class="portfolio-template-picker" aria-labelledby="galleryTemplateHeading">
+<h4 id="galleryTemplateHeading">اختر تصميم معرضك</h4>
+<p class="gallery-template-help">13 تصميمًا جاهزًا؛ اختر ما يناسب أعمالك، وستظهر النتيجة في المعاينة مباشرة.</p>
+<div class="portfolio-template-options" role="group" aria-label="قوالب معرض الأعمال">
+<button type="button" class="portfolio-template-choice" data-portfolio-template="classic" aria-pressed="false"><span class="template-thumb template-thumb-classic" aria-hidden="true"><i></i><b></b><em></em></span><strong>كلاسيكي</strong><small>تصميم متوازن وواضح</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="cv" aria-pressed="false"><span class="template-thumb template-thumb-cv" aria-hidden="true"><i></i><b></b><em></em></span><strong>سيرة ذاتية</strong><small>نبذة ومهارات بتقسيم احترافي</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="engineering" aria-pressed="false"><span class="template-thumb template-thumb-engineering" aria-hidden="true"><i></i><b></b><em></em></span><strong>تقني</strong><small>أسلوب هندسي منظم</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="marketing" aria-pressed="false"><span class="template-thumb template-thumb-marketing" aria-hidden="true"><i></i><b></b><em></em></span><strong>تسويقي</strong><small>عناوين بارزة ودعوات واضحة</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="rose" aria-pressed="false"><span class="template-thumb template-thumb-rose" aria-hidden="true"><i></i><b></b><em></em></span><strong>وردي</strong><small>هوية ناعمة ولمسات وردية</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="resume-sidebar" aria-pressed="false"><span class="template-thumb template-thumb-resume-sidebar" aria-hidden="true"><i></i><b></b><em></em></span><strong>سيرة جانبية</strong><small>معلومات جانبية ومحتوى رئيسي</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="resume-creative" aria-pressed="false"><span class="template-thumb template-thumb-resume-creative" aria-hidden="true"><i></i><b></b><em></em></span><strong>سيرة إبداعية</strong><small>مساحة لونية وشخصية</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="resume-minimal" aria-pressed="false"><span class="template-thumb template-thumb-resume-minimal" aria-hidden="true"><i></i><b></b><em></em></span><strong>سيرة بسيطة</strong><small>مظهر مختصر وهادئ</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="split" aria-pressed="false"><span class="template-thumb template-thumb-split" aria-hidden="true"><i></i><b></b><em></em></span><strong>منقسم</strong><small>توزيع بصري بعمودين</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="bold" aria-pressed="false"><span class="template-thumb template-thumb-bold" aria-hidden="true"><i></i><b></b><em></em></span><strong>جريء</strong><small>تباين قوي وعناوين كبيرة</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="studio" aria-pressed="false"><span class="template-thumb template-thumb-studio" aria-hidden="true"><i></i><b></b><em></em></span><strong>استوديو</strong><small>طابع إبداعي دافئ</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="gallery" aria-pressed="false"><span class="template-thumb template-thumb-gallery" aria-hidden="true"><i></i><b></b><em></em></span><strong>معرض</strong><small>عرض بصري للأعمال</small></button>
+<button type="button" class="portfolio-template-choice" data-portfolio-template="aurora" aria-pressed="false"><span class="template-thumb template-thumb-aurora" aria-hidden="true"><i></i><b></b><em></em></span><strong>أورورا</strong><small>ألوان متدرجة ولمسة عصرية</small></button>
+</div>
+</div>
 <div class="gallery-style-intro"><div class="gallery-style-intro-icon" aria-hidden="true">✦</div><div><strong>هوية واحدة، معرض أكثر وضوحًا</strong><p>أزلنا القوالب الجاهزة حتى يبقى معرضك متناسقًا. عدّل الألوان، الخط، البطاقات والتخطيط من هنا وشاهد النتيجة مباشرة.</p></div></div>
 <h4>نقش الخلفية</h4>
 <div class="segmented" role="group" aria-label="نقش الخلفية" id="galleryPatternGroup">
@@ -995,7 +1014,7 @@ function syncPortfolioControls(){const settings=Object.assign({},initial.portfol
   frame.referrerPolicy="same-origin";
   host.appendChild(frame);
  }
- host.dataset.template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal"].includes(s.template)?s.template:"classic";
+ host.dataset.template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery","aurora"].includes(s.template)?s.template:"classic";
  host.dataset.contactButtonPosition=["right","center","left"].includes(s.contactButtonPosition)?s.contactButtonPosition:"right";
  loadPortfolioPreviewFrame(frame);
  applyPortfolioPreviewDevice();
