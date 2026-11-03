@@ -1,12 +1,31 @@
 {
   "rewrites": [
     {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
       "source": "/mada-ops-7f3c9a",
       "destination": "/authority-console/index.html"
     },
     {
+      "source": "/@:username",
+      "destination": "/api/portfolio?username=:username"
+    },
+    {
       "source": "/portfolio.html",
+      "has": [
+        { "type": "query", "key": "preview", "value": "1" }
+      ],
       "destination": "/masar-platform/portfolio.html"
+    },
+    {
+      "source": "/portfolio.html",
+      "destination": "/api/portfolio"
     },
     {
       "source": "/share.html",
@@ -17,6 +36,11 @@
       "destination": "/masar-platform/index.html"
     }
   ],
+  "functions": {
+    "api/portfolio.js": {
+      "includeFiles": "masar-platform/portfolio.html"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

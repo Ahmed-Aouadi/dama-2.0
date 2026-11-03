@@ -489,7 +489,7 @@ module.exports = async function handler(req, res) {
         "INSERT INTO mada_public_portfolios(user_id,username,slug,portfolio,is_public,updated_at) VALUES($1,$2,$3,$4::jsonb,$5,NOW()) ON CONFLICT(user_id) DO UPDATE SET username=EXCLUDED.username,portfolio=EXCLUDED.portfolio,is_public=EXCLUDED.is_public,updated_at=NOW() RETURNING username,slug,is_public,updated_at",
         [user.id, user.username, slug, encoded, isPublic]
       );
-      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, isPublic: result.rows[0].is_public, updatedAt: result.rows[0].updated_at, shareUrl: "/portfolio.html?id=" + encodeURIComponent(result.rows[0].slug) });
+      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, isPublic: result.rows[0].is_public, updatedAt: result.rows[0].updated_at, shareUrl: "/@" + encodeURIComponent(result.rows[0].username) });
     }
 
     if (action === "public-portfolio" && req.method === "GET") {
@@ -497,11 +497,21 @@ module.exports = async function handler(req, res) {
       const siteFlagMap = Object.fromEntries(siteFlags.rows.map(row => [row.key, row.value]));
       if (siteFlagMap.publicGalleryEnabled === false || siteFlagMap.maintenanceMode === true) return send(res, 404, { error: "المعارض العامة متوقفة مؤقتًا." });
       const slug = String(req.query?.id || "").trim();
-      if (!/^[A-Za-z0-9_-]{12,80}$/.test(slug)) return send(res, 400, { error: "رابط المعرض غير صالح." });
-      const result = await db().query(
-        "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE p.slug=$1 AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
-        [slug]
-      );
+      const username = normalizeUsername(req.query?.username || "");
+      let result;
+      if (username) {
+        if (!/^[\p{L}\p{N}_.-]{3,24}$/u.test(username)) return send(res, 400, { error: "اسم المستخدم غير صالح." });
+        result = await db().query(
+          "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE LOWER(u.username)=LOWER($1) AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+          [username]
+        );
+      } else {
+        if (!/^[A-Za-z0-9_-]{12,80}$/.test(slug)) return send(res, 400, { error: "رابط المعرض غير صالح." });
+        result = await db().query(
+          "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE p.slug=$1 AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+          [slug]
+        );
+      }
       if (!result.rows[0]) return send(res, 404, { error: "هذا المعرض غير منشور أو أصبح خاصًا." });
       return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, authorName: result.rows[0].display_name, portfolio: result.rows[0].portfolio });
     }

@@ -66,6 +66,9 @@ for (const file of htmlFiles) {
 }
 
 const account = fs.readFileSync("api/account.js", "utf8");
+const ssrPortfolio = fs.readFileSync("api/portfolio.js", "utf8");
+const sitemapApi = fs.readFileSync("api/sitemap.js", "utf8");
+const robotsApi = fs.readFileSync("api/robots.js", "utf8");
 const auth = fs.readFileSync("masar-platform/auth.js", "utf8");
 const profile = fs.readFileSync("masar-platform/index.html", "utf8");
 const invalidCollectionSelectors = [...profile.matchAll(/(?<!\$)\$\([^)]{0,180}\)\.(?:forEach|map|filter|some|every|reduce)\s*\(/g)];
@@ -179,6 +182,22 @@ if (!profile.includes("state.portfolioSettings") || !profile.includes("settings.
 console.log("OK project editing, downloads, per-project gallery visibility, and gallery content settings");
 console.log("OK modal-first work gallery actions and media previews");
 console.log("OK public portfolio publishing, media, routing, and copy integration");
+
+if (!ssrPortfolio.includes('fs.readFileSync(path.join(__dirname, "../masar-platform/portfolio.html")') || !ssrPortfolio.includes('window.__MADA_PUBLIC_DATA__=') || !ssrPortfolio.includes('application/ld+json') || !ssrPortfolio.includes('og:image') || !ssrPortfolio.includes('rel="canonical"')) throw new Error("Username portfolio route must server-render public content, canonical metadata, Open Graph, and Person JSON-LD");
+if (!ssrPortfolio.includes('p.is_public=TRUE') || !ssrPortfolio.includes('mada_admin_user_flags') || !ssrPortfolio.includes('disabled_until>NOW()')) throw new Error("Server-rendered portfolios must respect public visibility and account suspension flags");
+if (!ssrPortfolio.includes("res.statusCode = 308") || !ssrPortfolio.includes('res.setHeader("Location", canonical)')) throw new Error("Legacy portfolio IDs must permanently redirect to username URLs");
+if (!portfolioRoute.includes('"source": "/@:username"') || !portfolioRoute.includes('"destination": "/api/portfolio?username=:username"') || !portfolioRoute.includes('"includeFiles": "masar-platform/portfolio.html"')) throw new Error("Public username routes must be rewritten to the SSR endpoint with the portfolio shell bundled");
+if (!portfolioApi.includes('shareUrl: "/@" + encodeURIComponent(result.rows[0].username)') || !portfolioApi.includes('LOWER(u.username)=LOWER($1)')) throw new Error("New portfolio shares and public API must resolve human-readable usernames");
+if (!portfolioViewer.includes('window.__MADA_PUBLIC_DATA__') || !portfolioViewer.includes('history.replaceState({},"","/@"+encodeURIComponent(data.username))')) throw new Error("Public portfolio viewer must hydrate SSR data and upgrade legacy IDs to username URLs");
+console.log("OK SSR public portfolios, username routes, canonical SEO, and legacy link upgrade");
+
+if (!sitemapApi.includes("p.is_public=TRUE") || !sitemapApi.includes("mada_admin_user_flags") || !sitemapApi.includes("publicGalleryEnabled") || !sitemapApi.includes("/@")) throw new Error("Sitemap must include only active public username portfolios and respect gallery settings");
+if (!robotsApi.includes("Disallow: /api/") || !robotsApi.includes("/sitemap.xml")) throw new Error("Robots endpoint must block private API paths and advertise the dynamic sitemap");
+if (!portfolioRoute.includes('"source": "/sitemap.xml"') || !portfolioRoute.includes('"destination": "/api/sitemap"') || !portfolioRoute.includes('"source": "/robots.txt"') || !portfolioRoute.includes('"destination": "/api/robots"')) throw new Error("Crawler routes must expose robots.txt and sitemap.xml");
+if (!portfolioRoute.includes('"key": "preview", "value": "1"') || !portfolioRoute.includes('"destination": "/masar-platform/portfolio.html"')) throw new Error("Live portfolio preview must continue using the static preview shell");
+console.log("OK robots.txt and dynamic public sitemap respect publication and preview routing");
+
+
 if (!portfolioPage.includes('id="publishPortfolioBtn"') || !portfolioPage.includes('event.target.closest("#publishPortfolioBtn")') || !portfolioPage.includes('Promise.resolve(publishPortfolio())')) throw new Error("Gallery publish button must be bound to the delegated publish workflow");
 if (!portfolioPage.includes('event.target.closest("#newBlankDesign")') || !portfolioPage.includes('event.target.closest("[data-delete-design]")')) throw new Error("Studio create/delete buttons must use resilient delegated click handlers");
 if (!portfolioPage.includes('typeof result.shareUrl!=="string"') || !portfolioPage.includes('Mada portfolio publish failed:')) throw new Error("Gallery publishing must validate the returned share URL and report runtime failures");
