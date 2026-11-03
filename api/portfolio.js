@@ -47,13 +47,19 @@ function renderSsr(portfolio, authorName, username) {
     '<div class="profile-meta">' + (display.showCity !== false && profile.city ? '<span class="meta-chip">' + esc(profile.city) + '</span>' : "") + '<span class="meta-chip">' + visibleProjects.length + ' أعمال معروضة</span></div>' +
     (skills.length ? '<div class="skills">' + skills.map(skill => '<span class="skill">' + esc(skill) + '</span>').join("") + '</div>' : "") +
     '</div>' + (avatar ? '<div class="profile-avatar"><img src="' + esc(avatar) + '" alt="الصورة الشخصية"></div>' : "") + '</header>';
+  const records = Array.isArray(portfolio.records) ? portfolio.records.slice(0, 100) : [];
   const cards = visibleProjects.map(project => {
     const cover = safeUrl(project.cover || (Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "") || (Array.isArray(project.mediaImages) ? project.mediaImages[0] : ""), true);
     const link = safeUrl(project.link, false);
     return '<article class="work"><div class="work-cover">' + (cover ? '<img src="' + esc(cover) + '" alt="' + esc(project.title || "صورة العمل") + '" loading="lazy">' : '<span class="cover-mark" aria-hidden="true">مَدى</span>') + '</div><div class="work-body"><span class="work-category">' + esc(project.category || "عمل") + '</span><h3>' + esc(project.title || "عمل بدون عنوان") + '</h3>' + (project.description ? '<p>' + esc(String(project.description).slice(0, 300)) + '</p>' : "") + (link ? '<a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">فتح العمل ↗</a>' : "") + '</div></article>';
   }).join("");
   return hero + '<main class="portfolio-ssr-content"><div class="section-head"><div><h2>' + esc(display.title || "الأعمال المختارة") + '</h2>' + (display.subtitle ? '<p>' + esc(display.subtitle) + '</p>' : "") + '</div><span class="count">' + visibleProjects.length + ' أعمال</span></div>' +
-    (cards ? '<div class="works-grid">' + cards + '</div>' : '<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>سيضيف صاحب المعرض أعماله هنا لاحقًا.</div>') + '</main>';
+    (cards ? '<div class="works-grid">' + cards + '</div>' : '<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>سيضيف صاحب المعرض أعماله هنا لاحقًا.</div>') +
+    (records.length ? '<section class="portfolio-records"><div class="portfolio-records-heading"><h2>الشهادات والخبرات والإنجازات</h2><span class="count">' + records.length + ' عناصر</span></div><div class="portfolio-records-grid">' + records.map(record => {
+      const type = ({education:"تعليم ومؤهل",experience:"خبرة",certificate:"شهادة",participation:"مشاركة",document:"وثيقة",link:"رابط"})[record.type] || "إنجاز";
+      const url = safeUrl(record.url, false);
+      return '<article class="portfolio-record-card"><span class="portfolio-record-type">' + esc(type) + '</span><h3>' + esc(record.title || "عنصر في ملف الإنجاز") + '</h3>' + (record.organization ? '<p class="portfolio-record-meta">' + esc(record.organization) + '</p>' : '') + (record.date ? '<p class="portfolio-record-meta">' + esc(record.date) + '</p>' : '') + (record.description ? '<p>' + esc(String(record.description).slice(0, 500)) + '</p>' : '') + (url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">عرض الإثبات أو الرابط ↗</a>' : '') + '</article>';
+    }).join("") + '</div></section>' : '') + '</main>';
 }
 module.exports = async function handler(req, res) {
   if (req.method !== "GET") {
