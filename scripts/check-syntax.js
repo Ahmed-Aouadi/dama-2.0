@@ -201,7 +201,13 @@ if (!account.includes("disabled_until>NOW()") || !account.includes("disabled_unt
 if (!adminApi.includes("disabled_until TIMESTAMPTZ") || !adminApi.includes('"delete-user":["POST"]') || !adminApi.includes("account_suspended_permanently") || !adminApi.includes("account_suspended_temporarily") || !adminApi.includes('"account_deleted"')) throw new Error("Admin API must support permanent/temporary suspension and audited account deletion");
 if (!adminConsole.includes("data-suspension-duration") || !adminConsole.includes("data-delete-user") || !adminConsole.includes('confirmation:typed')) throw new Error("Admin console must expose timed suspensions and guarded account deletion");
 console.log("OK timed account suspension, expiry restoration, and audited deletion");
-console.log("OK local guest workspace, sync status/retry, and protected cloud APIs");
+console.log("OK local guest workspace, sync status/retry, and protected cloud APIs");\n
+if (!account.includes("revision BIGINT NOT NULL DEFAULT 1") || !account.includes("ADD COLUMN IF NOT EXISTS revision BIGINT NOT NULL DEFAULT 1") || !account.includes("expectedRevision") || !account.includes("RETURNING data,revision") && !account.includes("revision: Number(latest.rows[0]?.revision || 0)")) throw new Error("Account data sync must use a backward-compatible revision column and optimistic concurrency checks");
+if (!account.includes("return send(res, 409") || !auth.includes("error.status === 409") || !auth.includes("mada-sync-conflict-backup:") || !auth.includes("mergeAccountState(remoteState, snapshot)")) throw new Error("Concurrent account edits must be detected, locally backed up, and merged before retrying");
+if (!auth.includes("expectedRevision: cloudRevision") || !auth.includes("cloudRevision = Number(saved.revision || cloudRevision)")) throw new Error("Client cloud sync must send and track account data revisions");
+if (!auth.includes('authButton.id = "madaAuthButton"') || !auth.includes('authButton.onclick = () => open("login")')) throw new Error("Guest users must retain an accessible account sign-in entry point");
+console.log("OK revision-based multi-device conflict detection, backup, and merge");
+
 console.log("OK account settings integration and security checks");
 
 
