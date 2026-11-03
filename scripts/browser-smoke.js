@@ -232,6 +232,50 @@ function assert(condition, message) {
     assert(!errors.length, "Uncaught browser exceptions after interaction tests: " + errors.join(" | "));
     console.log("PASS Growth Hub language toggle responds");
 
+    const galleryPage = await context.newPage();
+    await galleryPage.route("**/api/account?action=public-portfolio**", route => route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        username: "gallery-regression",
+        authorName: "اختبار المعرض",
+        portfolio: {
+          profile: { name: "اختبار المعرض", role: "مصمم ومطور", bio: "نبذة قصيرة لاختبار التخطيط." },
+          display: {
+            template: "classic",
+            gallerySections: [{ id: "hidden-section", name: "قسم مخفي", visible: false }]
+          },
+          projects: [
+            { id: "hidden-project", title: "عمل مخفي", gallerySection: "hidden-section", cover: "", description: "لا يجب عرضه." },
+            { id: "visible-project", title: "المشروع الصحيح", gallerySection: "general", cover: "", description: "تفاصيل المشروع الصحيح." }
+          ]
+        }
+      })
+    }));
+    await galleryPage.setViewportSize({ width: 360, height: 800 });
+    await galleryPage.goto("http://127.0.0.1:4173/masar-platform/portfolio.html?id=galleryRegression", { waitUntil: "domcontentloaded" });
+    await galleryPage.waitForSelector("#portfolioView:not([hidden]) .project-tile", { timeout: 5000 });
+    assert(await galleryPage.locator("#portfolioView .project-tile").count() === 1, "Hidden gallery section leaked into the public portfolio");
+    const galleryLayout = await galleryPage.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+    assert(galleryLayout.scroll <= galleryLayout.client + 1, "Public portfolio overflows at 360px: " + JSON.stringify(galleryLayout));
+    const detailModal = galleryPage.locator("#projectDetailsModal");
+    assert(!(await detailModal.isVisible()), "Project details modal should not appear until a work is selected");
+    await galleryPage.locator("#portfolioView .project-tile").click();
+    await detailModal.waitFor({ state: "visible", timeout: 3000 });
+    assert(await galleryPage.locator("#projectDetailsTitle").textContent() === "المشروع الصحيح", "Filtered gallery card opened the wrong project details");
+    assert(await galleryPage.locator("#projectDetailsContent").getByText("تفاصيل المشروع الصحيح.").count() === 1, "Correct project description was not shown in the details dialog");
+    await galleryPage.keyboard.press("Escape");
+    assert(!(await detailModal.isVisible()), "Escape did not close the project details dialog");
+    await galleryPage.locator("#portfolioView .project-tile").click();
+    await detailModal.click({ position: { x: 2, y: 2 } });
+    assert(!(await detailModal.isVisible()), "Clicking outside the project details dialog did not close it");
+    await galleryPage.setViewportSize({ width: 1440, height: 900 });
+    const desktopGalleryLayout = await galleryPage.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+    assert(desktopGalleryLayout.scroll <= desktopGalleryLayout.client + 1, "Public portfolio overflows at 1440px: " + JSON.stringify(desktopGalleryLayout));
+    assert(!errors.length, "Uncaught browser exceptions on the public portfolio: " + errors.join(" | "));
+    console.log("PASS public portfolio: correct filtered-project details, click-only dialog, Escape/outside close, and 360px/1440px layouts");
+    await galleryPage.close();
+
     console.log("PASS browser smoke suite: no uncaught JavaScript exceptions");
     await context.close();
   } catch (error) {

@@ -1,0 +1,60 @@
+/* DAMA public portfolio refinement — Swiss editorial layout and robust responsive details. */
+#portfolioView[data-swiss-gallery="on"]{width:100%;max-width:1320px;margin-inline:auto;padding:clamp(14px,3.2vw,44px);background:#f5f4ef;color:#191919;overflow:visible}
+#portfolioView[data-swiss-gallery="on"] .profile-hero{min-height:clamp(250px,34vw,430px);margin:0 0 clamp(34px,6vw,70px);padding:clamp(26px,5vw,68px) 0;align-items:end}
+#portfolioView[data-swiss-gallery="on"] .profile-copy h1{max-width:14ch;font-size:clamp(40px,7.8vw,92px);line-height:1.04;letter-spacing:-.055em;overflow-wrap:anywhere}
+#portfolioView[data-swiss-gallery="on"] .profile-copy .bio{max-width:58ch;color:#68675f;font-size:clamp(14px,1.35vw,17px);line-height:2}
+#portfolioView[data-swiss-gallery="on"] .profile-avatar{width:clamp(76px,10vw,128px);height:clamp(76px,10vw,128px);border-radius:50%;background:#e6e4dc;box-shadow:none}
+#portfolioView[data-swiss-gallery="on"] .section-head{margin:0 0 22px;padding:0 0 14px;border-bottom:1px solid #cbc9c0;align-items:end}
+#portfolioView[data-swiss-gallery="on"] .section-head h2{font-size:clamp(25px,3.4vw,43px);letter-spacing:-.04em;color:#191919}
+#portfolioView[data-swiss-gallery="on"] .works-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(12px,1.8vw,24px)}
+#portfolioView[data-swiss-gallery="on"] .project-tile{grid-column:span 4;display:flex;flex-direction:column;align-self:stretch;min-width:0;padding:0;text-align:start;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:hidden}
+#portfolioView[data-swiss-gallery="on"] .project-tile:nth-child(7n+1){grid-column:span 8}
+#portfolioView[data-swiss-gallery="on"] .project-tile .work-cover{width:100%;height:auto;aspect-ratio:4/3;background:#e9e8e1;border-radius:2px;overflow:hidden}
+#portfolioView[data-swiss-gallery="on"] .project-tile:nth-child(7n+1) .work-cover{aspect-ratio:16/9}
+#portfolioView[data-swiss-gallery="on"] .project-tile .work-cover img{width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+#portfolioView[data-swiss-gallery="on"] .project-tile:hover .work-cover img{transform:scale(1.035)}
+#portfolioView[data-swiss-gallery="on"] .project-tile-title{display:flex;align-items:flex-start;gap:10px;padding:12px 0 18px;color:#191919;font-size:clamp(13px,1.1vw,16px);font-weight:700;line-height:1.65}
+#portfolioView[data-swiss-gallery="on"] .project-tile-title:before{content:"↗";color:#8b897f;font-size:12px;font-weight:500}
+#portfolioView[data-swiss-gallery="on"] .project-tile:focus-visible{outline:2px solid #191919;outline-offset:5px}
+#portfolioView[data-swiss-gallery="on"] .empty{background:transparent;border:1px dashed #c9c7be;border-radius:3px;color:#666;padding:clamp(36px,7vw,80px) 20px}
+#portfolioView[data-swiss-gallery="on"] .gallery-work-group{margin-top:clamp(28px,5vw,58px)}
+#portfolioView[data-swiss-gallery="on"] .gallery-group-heading{margin:0 0 18px!important}
+body.has-open-dialog{overflow:hidden}
+#projectDetailsModal,#publicMediaModal{position:fixed;inset:0;z-index:1001;display:none;align-items:center;justify-content:center;padding:clamp(10px,3vw,28px);background:rgba(15,15,14,.72);backdrop-filter:blur(9px);overscroll-behavior:contain}
+#projectDetailsModal.open,#publicMediaModal.open{display:flex}
+#projectDetailsModal .project-details-dialog{width:min(820px,100%);max-height:min(90dvh,920px);padding:0;overflow:hidden;border:1px solid #ffffff80;border-radius:18px;background:#fbfaf6;box-shadow:0 30px 100px #0005;display:flex;flex-direction:column}
+#projectDetailsModal .dialog-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 22px;background:#fbfaf6;border-bottom:1px solid #e5e2d9}
+#projectDetailsModal .dialog-head h2{margin:3px 0 0;font-size:clamp(19px,3vw,27px);line-height:1.4;color:#191919}
+#projectDetailsModal #projectDetailsContent{overflow:auto;padding:clamp(14px,3vw,26px);overscroll-behavior:contain}
+#projectDetailsModal .project-detail-cover{max-height:360px;object-fit:contain;background:#eeece5;border-radius:8px}
+#projectDetailsModal .project-detail-heading h2{font-size:clamp(21px,3vw,30px);color:#191919}
+#projectDetailsModal .project-detail-description{font-size:14px;color:#55534d;line-height:2}
+#projectDetailsModal .fact{background:#f2f0e9;border-color:#e7e4dc}
+#projectDetailsModal .work-outcome{background:#edf5ef;border-color:#52836b;color:#234a35}
+#projectDetailsModal .dialog-actions{padding:12px 20px;border-top:1px solid #e5e2d9;background:#fbfaf6}
+#projectDetailsModal .dialog-actions .btn{background:#191919;color:#fff;border-color:#191919}
+#projectDetailsModal .dialog-close{width:40px;height:40px;border:1px solid #dedbd2;border-radius:50%;background:transparent;color:#191919;font-size:24px}
+@media(max-width:760px){
+ #portfolioView[data-swiss-gallery="on"]{padding:16px}
+ #portfolioView[data-swiss-gallery="on"] .profile-hero{min-height:0;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:26px 0 30px;margin-bottom:32px}
+ #portfolioView[data-swiss-gallery="on"] .profile-copy h1{font-size:clamp(34px,8vw,58px)}
+ #portfolioView[data-swiss-gallery="on"] .works-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+ #portfolioView[data-swiss-gallery="on"] .project-tile{grid-column:span 3}
+ #portfolioView[data-swiss-gallery="on"] .project-tile:nth-child(7n+1){grid-column:span 6}
+}
+@media(max-width:480px){
+ #portfolioView[data-swiss-gallery="on"]{padding:12px}
+ #portfolioView[data-swiss-gallery="on"] .profile-hero{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:22px 0 26px}
+ #portfolioView[data-swiss-gallery="on"] .profile-avatar{order:-1;width:68px;height:68px}
+ #portfolioView[data-swiss-gallery="on"] .profile-copy h1{font-size:clamp(32px,10vw,46px);margin:10px 0 6px}
+ #portfolioView[data-swiss-gallery="on"] .profile-copy .bio{font-size:13px;line-height:1.8}
+ #portfolioView[data-swiss-gallery="on"] .works-grid{grid-template-columns:1fr;gap:18px}
+ #portfolioView[data-swiss-gallery="on"] .project-tile,#portfolioView[data-swiss-gallery="on"] .project-tile:nth-child(7n+1){grid-column:1/-1}
+ #portfolioView[data-swiss-gallery="on"] .project-tile .work-cover,#portfolioView[data-swiss-gallery="on"] .project-tile:nth-child(7n+1) .work-cover{aspect-ratio:16/10}
+ #portfolioView[data-swiss-gallery="on"] .project-tile-title{padding:10px 0 4px;font-size:14px}
+ #projectDetailsModal{padding:8px}
+ #projectDetailsModal .project-details-dialog{max-height:94dvh;border-radius:13px}
+ #projectDetailsModal .dialog-head{padding:13px 15px}
+ #projectDetailsModal #projectDetailsContent{padding:13px}
+}
+@media(prefers-reduced-motion:reduce){#portfolioView[data-swiss-gallery="on"] .project-tile .work-cover img{transition:none}#portfolioView[data-swiss-gallery="on"] .project-tile:hover .work-cover img{transform:none}}
