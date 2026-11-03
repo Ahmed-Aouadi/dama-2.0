@@ -1137,8 +1137,8 @@ $("#customPageTabs").addEventListener("click",function(e){const b=e.target.close
 function openCustomEditor(id,templateKey){
  const old=id?state.designs.find(x=>x.id===id):null;
  if(old)customDoc=JSON.parse(JSON.stringify(old));
- else if(templateKey&&templates[templateKey]){const base=templates[templateKey];customDoc=buildCustomDocFromDesign({id:"custom_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),kind:templateKey,name:base.name,title:base.title,subtitle:base.subtitle,author:base.author,color:"#5b46e6",image:"",fields:{},visibility:"private",priceDzd:0,pageSize:"A4",pageBackground:"#ffffff"})}
- else customDoc={id:"custom_"+Date.now(),kind:"custom",name:"تصميم حر",title:"تصميم جديد",subtitle:"",author:"",color:"#1d1a36",image:"",fields:{},visibility:"private",priceDzd:0,pageSize:"A4",pageBackground:"#ffffff",layout:[customTextElement("العنوان الرئيسي",18,18,174,22,24,"#1d1a36",true),customTextElement("انقر هنا لتعديل النص",18,45,174,30,12,"#444444",false)]};
+ else if(templateKey&&templates[templateKey]){const base=templates[templateKey];customDoc=buildCustomDocFromDesign({id:"custom_"+Date.now()+"_"+Math.random().toString(36).slice(2,6),kind:templateKey,name:base.name,title:base.title,subtitle:base.subtitle,author:base.author,color:"#5b46e6",image:"",fields:{},visibility:"private",pageSize:"A4",pageBackground:"#ffffff"})}
+ else customDoc={id:"custom_"+Date.now(),kind:"custom",name:"تصميم حر",title:"تصميم جديد",subtitle:"",author:"",color:"#1d1a36",image:"",fields:{},visibility:"private",pageSize:"A4",pageBackground:"#ffffff",layout:[customTextElement("العنوان الرئيسي",18,18,174,22,24,"#1d1a36",true),customTextElement("انقر هنا لتعديل النص",18,45,174,30,12,"#444444",false)]};
  if(!Array.isArray(customDoc.layout))customDoc=buildCustomDocFromDesign(customDoc);
  customDoc.layout=Array.isArray(customDoc.layout)?customDoc.layout:[];
  customDoc.pageSize=customDoc.pageSize||"A4";customDoc.pageBackground=customDoc.pageBackground||"#ffffff";
