@@ -1651,15 +1651,19 @@ $("#importPortfolioJsonFile").addEventListener("change",async function(event){
   }
   const collectionKeys=["projects","designs","quizzes"];
   for(const key of collectionKeys)if(importedState[key]!=null&&!Array.isArray(importedState[key]))throw new Error("قائمة "+key+" غير صالحة.");
+  for(const key of ["profile","settings","portfolioSettings","growth"])if(importedState[key]!=null&&(typeof importedState[key]!=="object"||Array.isArray(importedState[key])))throw new Error("قسم "+key+" غير صالح.");
+  if(importedState.growth&&importedState.growth.cv!=null&&(typeof importedState.growth.cv!=="object"||Array.isArray(importedState.growth.cv)))throw new Error("بيانات السيرة الذاتية غير صالحة.");
   if((importedState.projects||[]).length>10000||(importedState.designs||[]).length>10000||(importedState.quizzes||[]).length>10000)throw new Error("الملف يحتوي على عدد غير متوقع من العناصر.");
+  function safeRecords(value,fallback){return Array.isArray(value)?value.filter(function(item){return item&&typeof item==="object"&&!Array.isArray(item)}):fallback}
+  const importedGrowth=importedState.growth||{};
   const nextState=Object.assign({},state,importedState,{
    profile:Object.assign({},initial.profile,importedState.profile||{}),
    settings:Object.assign({},initial.settings,importedState.settings||{}),
    portfolioSettings:Object.assign({},initial.portfolioSettings,importedState.portfolioSettings||{}),
-   growth:Object.assign({},initial.growth,importedState.growth||{},{cv:Object.assign({},initial.growth.cv,(importedState.growth||{}).cv||{})}),
-   projects:Array.isArray(importedState.projects)?importedState.projects:state.projects,
-   designs:Array.isArray(importedState.designs)?importedState.designs:state.designs,
-   quizzes:Array.isArray(importedState.quizzes)?importedState.quizzes:state.quizzes
+   growth:Object.assign({},initial.growth,importedGrowth,{cv:Object.assign({},initial.growth.cv,importedGrowth.cv||{})}),
+   projects:safeRecords(importedState.projects,state.projects),
+   designs:safeRecords(importedState.designs,state.designs),
+   quizzes:safeRecords(importedState.quizzes,state.quizzes)
   });
   if(!confirm("سيتم استبدال البيانات التي تشملها النسخة المستوردة. "+(legacyPortfolioOnly?"هذه نسخة قديمة وستستبدل الملف الشخصي وإعدادات المعرض والمشاريع فقط، مع الاحتفاظ بالتصميمات والتجارب والإعدادات الأخرى.":"هذه نسخة كاملة وستستبدل الملف الشخصي والمشاريع والتصميمات والتجارب والإعدادات والتقدم. احفظ نسخة من بياناتك الحالية قبل المتابعة.")+"\n\nهل تريد المتابعة؟"))return;
   state=nextState;
