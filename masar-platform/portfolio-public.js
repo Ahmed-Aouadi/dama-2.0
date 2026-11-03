@@ -307,7 +307,7 @@ const identity=hero;
 }
 async function load(){
 if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}
-if(window.__MADA_PUBLIC_DATA__&&window.__MADA_PUBLIC_DATA__.portfolio){render(window.__MADA_PUBLIC_DATA__);return}
+if(window.__MADA_PUBLIC_DATA__&&window.__MADA_PUBLIC_DATA__.portfolio){const data=window.__MADA_PUBLIC_DATA__;if(data.username&&!location.pathname.startsWith("/@"))history.replaceState({},"","/@"+encodeURIComponent(data.username));render(data);return}
 if(!slug&&!usernameFromPath){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
 try{
  const query=usernameFromPath?"username="+encodeURIComponent(usernameFromPath):"id="+encodeURIComponent(slug);
