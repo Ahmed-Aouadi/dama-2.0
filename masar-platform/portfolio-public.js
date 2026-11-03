@@ -56,12 +56,43 @@ modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");moda
 modal.innerHTML='<section class="dialog-card project-details-dialog"><div class="dialog-head"><div><small>مَدى · معرض الأعمال</small><h2 id="projectDetailsTitle">تفاصيل العمل</h2></div><button class="dialog-close" type="button" data-modal-close="projectDetailsModal" aria-label="إغلاق">×</button></div><div id="projectDetailsContent"></div><div class="dialog-actions"><button class="btn" type="button" data-modal-close="projectDetailsModal">إغلاق التفاصيل</button></div></section>';
 document.body.appendChild(modal);modal.addEventListener("click",e=>{if(e.target===modal)closeDialog("projectDetailsModal")});
 }
+function updatePortfolioMeta(data){
+ const portfolio=data.portfolio||{},profile=portfolio.profile||{},display=portfolio.display||{};
+ const name=String(profile.name||data.authorName||data.username||"معرض أعمال").trim();
+ const bio=String(profile.bio||"").replace(/\\s+/g," ").trim();
+ const projects=Array.isArray(portfolio.projects)?portfolio.projects:[];
+ const description=(bio||("معرض أعمال "+name+" على منصة مَدى." )).slice(0,300);
+ const canonical=new URL(location.href);canonical.searchParams.delete("preview");
+ document.title=name+" | معرض أعمال مَدى";
+ const upsert=(selector,key,value)=>{
+  let node=document.head.querySelector(selector);
+  if(!node){node=document.createElement("meta");node.setAttribute(key,selector.includes("property=")?selector.match(/property="([^"]+)"/)[1]:selector.match(/name="([^"]+)"/)[1]);document.head.appendChild(node)}
+  node.setAttribute("content",value);
+ };
+ upsert('meta[name="description"]',"name",description);
+ upsert('meta[property="og:type"]',"property","profile");
+ upsert('meta[property="og:title"]',"property",name+" | معرض أعمال مَدى");
+ upsert('meta[property="og:description"]',"property",description);
+ upsert('meta[property="og:url"]',"property",canonical.href);
+ upsert('meta[property="og:locale"]',"property","ar_AR");
+ upsert('meta[name="twitter:card"]',"name","summary_large_image");
+ upsert('meta[name="twitter:title"]',"name",name+" | معرض أعمال مَدى");
+ upsert('meta[name="twitter:description"]',"name",description);
+ const first=projects.find(project=>safeUrl(project.cover,true));
+ let image=first?safeUrl(first.cover,true):"";
+ if(!/^https?:\\/\\//i.test(image))image=new URL("/icons/og-image.png",location.origin).href;
+ upsert('meta[property="og:image"]',"property",image);
+ let canonicalNode=document.head.querySelector('link[rel="canonical"]');
+ if(!canonicalNode){canonicalNode=document.createElement("link");canonicalNode.rel="canonical";document.head.appendChild(canonicalNode)}
+ canonicalNode.href=canonical.href;
+}
 /* Custom work sections only appear when the owner assigns at least one section. */
 function render(data){
 portfolioData=data;
 const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},allProjects=Array.isArray(p.projects)?p.projects:[],projects=allProjects.filter(function(x){const id=String(x.gallerySection||"general"),sections=Array.isArray(display.gallerySections)?display.gallerySections:[];const section=sections.find(function(item){return String(item.id)===id});return (id==="general"||!section||section.visible!==false)&&(!display.featuredOnly||x.featured)});
 ensureProjectDialog();
 $("loadStatus").hidden=true;
+updatePortfolioMeta(data);
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
 const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery","aurora"].includes(display.template)?display.template:"classic";
