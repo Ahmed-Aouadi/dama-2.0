@@ -225,11 +225,39 @@
 #portfolioView.portfolio-template-resume-minimal .resume-minimal-footer{text-align:center;color:#666;border-top:1px solid #ddd;padding:18px;font-size:12px}
 @media(max-width:700px){#portfolioView.portfolio-template-resume-minimal .resume-minimal-header{padding:28px 18px}#portfolioView.portfolio-template-resume-minimal .resume-minimal-header .profile-hero{align-items:flex-start;flex-direction:column}#portfolioView.portfolio-template-resume-minimal .resume-minimal-main{padding:22px 15px}#portfolioView.portfolio-template-resume-minimal .resume-minimal-columns{grid-template-columns:1fr}#portfolioView.portfolio-template-resume-minimal .resume-minimal-projects .works-grid{grid-template-columns:1fr}}
 @media print{#portfolioView.portfolio-template-resume-minimal .resume-minimal-header{print-color-adjust:exact;-webkit-print-color-adjust:exact;padding:25px}#portfolioView.portfolio-template-resume-minimal .resume-minimal-main{padding:20px}#portfolioView.portfolio-template-resume-minimal .resume-minimal-panel,#portfolioView.portfolio-template-resume-minimal .resume-minimal-projects .work{break-inside:avoid;box-shadow:none}}
-</style>
-<style>
-.modal-backdrop{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:#151225b8;backdrop-filter:blur(6px)}.modal-backdrop.open{display:flex}.dialog-card{width:min(520px,100%);max-height:86vh;overflow:auto;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 25px 90px #0c092b40}.dialog-head{display:flex;align-items:start;justify-content:space-between;gap:14px;margin-bottom:12px}.dialog-head small{font-size:10px;color:var(--purple);font-weight:700}.dialog-head h2{font-size:20px;margin:5px 0 0}.dialog-close{border:0;width:36px;height:36px;border-radius:10px;background:#f0edf6;color:var(--ink);font-size:22px}.dialog-hint{font-size:12px;color:var(--muted);line-height:1.9}.dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.dialog-actions>*{flex:1;min-width:130px;text-align:center;justify-content:center}.media-dialog{width:min(940px,100%)}.public-media-image,.public-media-video{display:block;max-width:100%;max-height:64vh;margin:auto;border-radius:13px;object-fit:contain;background:#17152b}.public-media-frame{display:block;width:100%;height:min(62vh,620px);border:1px solid var(--line);border-radius:12px;background:white}.sign-in-dialog{width:min(850px,100%)}.sign-in-dialog iframe{display:block;width:100%;height:min(62vh,650px);border:1px solid var(--line);border-radius:12px;background:white}.media-gallery a{cursor:zoom-in}@media(max-width:700px){.dialog-card{padding:16px;border-radius:18px;max-height:84vh}.dialog-actions>*{flex-basis:100%}.public-media-frame{height:54vh}.sign-in-dialog iframe{height:55vh}.media-gallery a{height:82px}}
-</style>
-<style>
+  /* Aurora — a lighter editorial gallery with a strong featured-work rhythm. */
+  #portfolioView.portfolio-template-aurora{max-width:none;margin:0;padding:0;background:#f4f0e8;color:#1d2927;font-family:"Tajawal","IBM Plex Sans Arabic",sans-serif}
+  #portfolioView.portfolio-template-aurora .aurora-layout{max-width:1240px;margin:0 auto;padding:clamp(18px,4vw,48px)}
+  #portfolioView.portfolio-template-aurora .aurora-topline{display:flex;justify-content:space-between;gap:18px;align-items:center;color:#71817a;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid #cfd8cf;padding-bottom:14px}
+  #portfolioView.portfolio-template-aurora .aurora-topline strong{color:#c46f4e;font-size:14px;letter-spacing:.02em}
+  #portfolioView.portfolio-template-aurora .aurora-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr);gap:clamp(24px,6vw,90px);align-items:end;padding:clamp(44px,8vw,100px) 0 48px}
+  #portfolioView.portfolio-template-aurora .aurora-hero .profile-hero{display:block;background:none;color:#1d2927;border:0;border-radius:0;padding:0;margin:0;box-shadow:none}
+  #portfolioView.portfolio-template-aurora .aurora-hero .profile-hero:before{display:none}
+  #portfolioView.portfolio-template-aurora .aurora-hero .profile-avatar{display:none}
+  #portfolioView.portfolio-template-aurora .profile-copy h1{font-size:clamp(42px,8vw,92px)!important;line-height:1.08!important;letter-spacing:-.06em;color:#1d2927!important;margin:12px 0 18px}
+  #portfolioView.portfolio-template-aurora .profile-copy .role{color:#c46f4e;font-size:16px}
+  #portfolioView.portfolio-template-aurora .profile-copy .bio-preview{max-width:42ch;color:#52625c;font-size:15px;line-height:2}
+  #portfolioView.portfolio-template-aurora .profile-meta{color:#52625c}
+  #portfolioView.portfolio-template-aurora .aurora-note{border-right:3px solid #c46f4e;padding:14px 18px;color:#52625c;line-height:2;font-size:13px}
+  #portfolioView.portfolio-template-aurora .section-head{margin:0 0 18px;padding-bottom:16px;border-bottom:1px solid #cfd8cf}
+  #portfolioView.portfolio-template-aurora .section-head h2{font-size:clamp(24px,4vw,42px)!important;color:#1d2927!important}
+  #portfolioView.portfolio-template-aurora .section-head p{color:#71817a}
+  #portfolioView.portfolio-template-aurora .count{background:#dfe9df;color:#39705e;border-radius:999px}
+  #portfolioView.portfolio-template-aurora .works-grid{grid-template-columns:repeat(12,minmax(0,1fr));gap:18px}
+  #portfolioView.portfolio-template-aurora .work{grid-column:span 4;border:0;border-radius:2px;background:#fff;box-shadow:0 12px 30px #32433a12;overflow:hidden}
+  #portfolioView.portfolio-template-aurora .work:nth-child(1){grid-column:span 8;grid-row:span 2}
+  #portfolioView.portfolio-template-aurora .work:nth-child(1) .work-cover{height:390px}
+  #portfolioView.portfolio-template-aurora .work-cover{height:180px;border-radius:0;background:#dfe9df}
+  #portfolioView.portfolio-template-aurora .work-body{padding:15px 17px 18px}
+  #portfolioView.portfolio-template-aurora .work-body h3{color:#1d2927;font-size:17px}
+  #portfolioView.portfolio-template-aurora .work-body p{color:#71817a}
+  #portfolioView.portfolio-template-aurora .work-tag{color:#c46f4e}
+  #portfolioView.portfolio-template-aurora .aurora-footer{margin-top:56px;padding-top:16px;border-top:1px solid #cfd8cf;color:#71817a;font-size:11px;display:flex;justify-content:space-between;gap:12px}
+  .template-thumb-aurora{background:#f4f0e8}.template-thumb-aurora:before{background:#1d2927;height:13px}.template-thumb-aurora i{background:#c46f4e;right:8px;top:28px;width:42%;height:40px}.template-thumb-aurora b{background:#dfe9df;right:calc(42% + 14px);left:8px;top:28px;height:13px}.template-thumb-aurora em{background:#71817a;right:calc(42% + 14px);left:8px;top:47px;height:7px}
+  @media(max-width:760px){#portfolioView.portfolio-template-aurora .aurora-hero{grid-template-columns:1fr;padding:42px 0 32px;gap:24px}#portfolioView.portfolio-template-aurora .works-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#portfolioView.portfolio-template-aurora .work,#portfolioView.portfolio-template-aurora .work:nth-child(1){grid-column:span 1}#portfolioView.portfolio-template-aurora .work:nth-child(1) .work-cover,#portfolioView.portfolio-template-aurora .work-cover{height:170px}#portfolioView.portfolio-template-aurora .aurora-topline{font-size:9px}}
+  </style>
+  <style>
+
 /* Public gallery: image-and-title tiles, with full project details in an accessible modal. */
 .works-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .project-tile{display:block;width:100%;min-width:0;padding:0;text-align:right;font-family:inherit;cursor:pointer;appearance:none;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 7px 22px #211e3508;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
