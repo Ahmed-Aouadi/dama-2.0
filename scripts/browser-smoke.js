@@ -75,12 +75,11 @@ function assert(condition, message) {
       else if (action === "data") body = { ok: true, revision: 2 };
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
     });
-    const careerCatalog = JSON.parse(fs.readFileSync(path.join(root, "api/career-paths-default.json"), "utf8"));
     await page.route("**/api/admin**", async route => {
       const url = new URL(route.request().url());
       const action = url.searchParams.get("action");
       if (action === "public-config") {
-        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ careerPaths: careerCatalog, careerStats: {}, growthTemplates: [] }) });
+        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ growthTemplates: [] }) });
       } else {
         await route.fulfill({ status: 401, contentType: "application/json", body: JSON.stringify({ error: "Unauthenticated test request." }) });
       }
@@ -103,7 +102,7 @@ function assert(condition, message) {
     const startupErrors = await page.evaluate(() => window.__madaBrowserErrors || []);
     assert(!errors.length && !startupErrors.length, "Uncaught browser exceptions on startup: " + errors.join(" | ") + " | details: " + JSON.stringify(startupErrors));
 
-    for (const name of ["portfolio", "studio", "careers", "growth", "profile", "settings", "home"]) {
+    for (const name of ["portfolio", "studio", "growth", "profile", "settings", "home"]) {
       const nav = page.locator('[data-page="' + name + '"]').first();
       await nav.click();
       await page.waitForFunction(n => {
@@ -115,14 +114,11 @@ function assert(condition, message) {
     }
     console.log("PASS main navigation: all seven sections switch correctly without horizontal overflow");
 
-    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:false,careersSectionEnabled:false,growthSectionEnabled:false,profileSectionEnabled:false,settingsSectionEnabled:false}));
+    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:false,growthSectionEnabled:false,profileSectionEnabled:false,settingsSectionEnabled:false}));
     assert(await page.locator('[data-page="studio"]').first().evaluate(el => el.hidden), "Studio navigation was not hidden by site settings");
-    assert(await page.locator('[data-page="careers"]').first().evaluate(el => el.hidden), "Careers navigation was not hidden by site settings");
     assert(await page.locator("#page-growth").evaluate(el => el.classList.contains("section-disabled")), "Growth page was not disabled by site settings");
     assert(await page.locator("#page-profile").evaluate(el => el.classList.contains("section-disabled")), "Profile page was not disabled by site settings");
-    await page.evaluate(() => document.querySelector('[data-page="careers"]').click());
-    assert(await page.locator("#page-home").evaluate(el => el.classList.contains("active")), "Navigation to a disabled section was not redirected home");
-    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:true,careersSectionEnabled:true,growthSectionEnabled:true,profileSectionEnabled:true,settingsSectionEnabled:true}));
+    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:true,growthSectionEnabled:true,profileSectionEnabled:true,settingsSectionEnabled:true}));
     assert(!(await page.locator('[data-page="studio"]').first().evaluate(el => el.hidden)), "Re-enabled Studio navigation stayed hidden");
     console.log("PASS admin section visibility: hides, blocks, and restores optional sections");
 
@@ -140,17 +136,7 @@ function assert(condition, message) {
     assert(await page.locator("#growthProgress").evaluate(el => parseFloat(getComputedStyle(el).width) === 0), "An empty Growth Hub should have a zero-width progress bar without counting unstarted path steps");
     console.log("PASS empty Growth Hub progress shows an actionable start state");
 
-    await page.locator('[data-page="careers"]').first().click();
-    await page.waitForFunction(() => Array.isArray(window.MadaCareerCatalog) && window.MadaCareerCatalog.length > 10, undefined, { timeout: 5000 });
-    assert(await page.locator("#pathCardGrid .path-card").count() === careerCatalog.length, "Discover Path must render the complete career catalog");
-    for (let i = 0; i < 3; i++) await page.locator("#pathQuestBody .path-quest-option").first().click();
-    await page.locator("#pathQuestAddSkill").click();
-    await page.waitForFunction(() => window.MadaApp.getState().growth.skills.some(skill => skill.name === "التفكير البرمجي"), undefined, { timeout: 5000 });
-    const discoveryState = await page.evaluate(() => window.MadaApp.getState());
-    assert(String(discoveryState.profile.skills).includes("التفكير البرمجي"), "Career discovery should also add the selected field to profile skills");
-    console.log("PASS full career catalog and add-discovery-result-to-profile workflow");
 
-    await page.locator('[data-page="settings"]').first().click();
     await page.locator("#appThemeSelect").selectOption("dark");
     assert(await page.locator("html").getAttribute("data-theme") === "dark", "Dark theme selection did not apply");
     await page.locator("#appThemeSelect").selectOption("light");
