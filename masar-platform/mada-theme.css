@@ -1,5 +1,5 @@
 /* Mada theme — aligned with the logo: navy ground, violet / pink arcs, teal dot. Loaded after all other styles. */
-:root{--navy:#17152b;--navy-2:#1d1a36;--violet:#8b7bff;--violet-deep:#5b46e6;--pink:#ff6fa5;--teal:#34d6b0;--paper:#f6f4ff;--ink:#17152b;--muted:#6a6882;--line:#e6e2f4;--display:"Reem Kufi","IBM Plex Sans Arabic",sans-serif;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:26px;--shadow-card:0 12px 35px #211e3508;--shadow-dialog:0 25px 80px #0e0b2350;--motion-fast:140ms;--motion-normal:220ms}
+:root{--navy:#17152b;--navy-2:#1d1a36;--violet:#8b7bff;--violet-deep:#5b46e6;--pink:#ff6fa5;--teal:#34d6b0;--paper:#f6f4ff;--ink:#17152b;--muted:#6a6882;--line:#e6e2f4;--display:"Reem Kufi","IBM Plex Sans Arabic",sans-serif}
 body{background:var(--paper);color:var(--ink)}
 :focus-visible{outline:3px solid var(--violet);outline-offset:2px;border-radius:6px}
 .skip-link{position:fixed;top:-60px;right:12px;z-index:10001;background:var(--teal);color:var(--navy);padding:10px 16px;border-radius:10px;font-weight:700;transition:top .15s}
@@ -49,12 +49,13 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 .mobile-nav{background:var(--navy);border-top:1px solid #ffffff14}
 .mobile-nav button{color:#b9b4e0}
 .mobile-nav button.active{color:var(--teal)}
-/* account dialog and guest-first workspace */
-.mada-auth-mark{background:none!important;width:64px!important;height:44px!important;border-radius:0!important}
-.mada-auth-mark svg{width:100%;height:100%;display:block}
+/* auth + gate */
+.mada-auth-mark,.mada-access-mark{background:none!important;width:64px!important;height:44px!important;border-radius:0!important}
+.mada-auth-mark svg,.mada-access-mark svg{width:100%;height:100%;display:block}
+#madaAccessGate{background:rgba(23,21,43,.96)!important}
+#madaAccessGate .mada-access-card{border:0;box-shadow:0 30px 90px #05040f66}
+#madaAccessGate h1{font-family:var(--display)}
 .mada-auth-submit{background:var(--violet-deep)!important}
-.mada-sync-status{border-color:#ffffff1f!important;background:#ffffff0b!important;color:#d4d0e5!important}
-.mada-sync-status[data-status="synced"]:before{background:var(--teal)!important}
 /* modals */
 .modal-backdrop{background:#17152bb3}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.hero-arcs path{stroke-dashoffset:0}}
@@ -70,93 +71,3 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 /* public portfolio: readable name/kicker on the dark default hero */
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .profile-copy h1{color:var(--gallery-heading,#f5f3ff)}
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .kicker{color:var(--teal)}
-
-/* User-selected appearance: keep the visual system readable in light, dark and system modes. */
-:root[data-theme="dark"]{
-  color-scheme:dark;
-  --paper:#11101c;--ink:#f3f1fb;--muted:#b4afc8;--line:#39354d;--card:#1d1a2b;
-  --shadow-card:0 12px 35px #00000030;
-}
-@media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]):not([data-theme="dark"]){
-    color-scheme:dark;
-    --paper:#11101c;--ink:#f3f1fb;--muted:#b4afc8;--line:#39354d;--card:#1d1a2b;
-    --shadow-card:0 12px 35px #00000030;
-  }
-}
-:root[data-theme="dark"] body,
-:root[data-theme="dark"] main{background:var(--paper);color:var(--ink)}
-:root[data-theme="dark"] .panel,
-:root[data-theme="dark"] .stat,
-:root[data-theme="dark"] .work-card,
-:root[data-theme="dark"] .home-showcase-panel,
-:root[data-theme="dark"] .home-gallery-project,
-:root[data-theme="dark"] .account-settings-card,
-:root[data-theme="dark"] .portfolio-designer,
-:root[data-theme="dark"] .portfolio-designer-card,
-:root[data-theme="dark"] .project-row,
-:root[data-theme="dark"] .modal,
-:root[data-theme="dark"] .settings-row,
-:root[data-theme="dark"] .designer-field input,
-:root[data-theme="dark"] .designer-field select,
-:root[data-theme="dark"] .designer-field textarea,
-:root[data-theme="dark"] .search input,
-:root[data-theme="dark"] .filter,
-:root[data-theme="dark"] .icon-btn{
-  background:var(--card);color:var(--ink);border-color:var(--line);
-}
-:root[data-theme="dark"] .modal-head,
-:root[data-theme="dark"] .panel-title,
-:root[data-theme="dark"] .section-head,
-:root[data-theme="dark"] .project-info small,
-:root[data-theme="dark"] .tiny-note,
-:root[data-theme="dark"] .muted{color:var(--muted)}
-:root[data-theme="dark"] .project-row,
-:root[data-theme="dark"] .work-card,
-:root[data-theme="dark"] .stat,
-:root[data-theme="dark"] .panel{box-shadow:var(--shadow-card)}
-:root[data-theme="dark"] .settings-row{border-color:var(--line)}
-:root[data-theme="dark"] .secondary{background:#30294f;color:#ded8ff}
-:root[data-theme="dark"] .ghost{background:#211e31;color:var(--ink);border-color:var(--line)}
-:root[data-theme="dark"] .help-faq details{background:#211e31;border-color:var(--line)}
-:root[data-theme="dark"] .help-faq summary{color:var(--ink)}
-:root[data-theme="dark"] .help-faq p{color:var(--muted)}
-@media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]):not([data-theme="dark"]) body,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) main{background:var(--paper);color:var(--ink)}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .panel,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .stat,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .work-card,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .home-showcase-panel,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .home-gallery-project,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .account-settings-card,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .portfolio-designer,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .portfolio-designer-card,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .project-row,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .modal,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .settings-row,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .designer-field input,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .designer-field select,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .designer-field textarea,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .search input,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .filter,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .icon-btn{background:var(--card);color:var(--ink);border-color:var(--line)}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .modal-head,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .panel-title,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .section-head,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .project-info small,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .tiny-note,
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .muted{color:var(--muted)}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .secondary{background:#30294f;color:#ded8ff}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .ghost{background:#211e31;color:var(--ink);border-color:var(--line)}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .help-faq details{background:#211e31;border-color:var(--line)}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .help-faq summary{color:var(--ink)}
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .help-faq p{color:var(--muted)}
-}
-.help-faq{display:grid;gap:9px;margin-top:22px}
-.help-faq h4{margin:0 0 3px;font-size:14px}
-.help-faq details{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#faf9ff}
-.help-faq summary{font-size:12px;font-weight:800;cursor:pointer}
-.help-faq p{margin:9px 0 0;font-size:12px;line-height:1.9;color:var(--muted)}
-#appThemeSelect{min-width:145px;min-height:42px;padding:8px 12px;border-radius:11px}
-@media(max-width:600px){#appThemeSelect{min-width:130px}}
