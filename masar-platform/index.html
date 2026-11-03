@@ -328,7 +328,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select{b
 }
 @media (max-width:760px) {
   .shell>.side {display:none!important}
-  .mobile-nav {display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important}
+  .mobile-nav {display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}
 }
 </style>
   <link rel="stylesheet" href="/masar-platform/discover-path.css?v=20261012-quest">
@@ -462,12 +462,12 @@ html,body{height:100%;overflow:hidden}
   </nav></div>
   <div class="side-bottom">
 
-    <div class="user-mini"><div class="avatar" id="sideAvatar">م</div><div><strong id="sideName">مبدع جديد</strong><small>حساب مجاني</small></div></div>
+    <div class="user-mini"><div class="avatar" id="sideAvatar">م</div><div><strong id="sideName">مبدع جديد</strong><small id="sideAccountMode">حفظ محلي</small></div></div>
   </div>
 </aside>
 <main>
 <header class="topbar">
-  <div class="mobile-brand"><svg class="brand-mark" viewBox="0 0 104 72" aria-hidden="true"><use href="#mada-mark"/></svg><strong>��َدى</strong></div>
+  <div class="mobile-brand"><svg class="brand-mark" viewBox="0 0 104 72" aria-hidden="true"><use href="#mada-mark"/></svg><strong>مَدى</strong></div>
   <div class="crumb">مساحتك / <b id="crumbTitle">الرئيسية</b></div>
   <div class="top-actions"><button class="icon-btn" id="helpBtn" aria-label="مساعدة">؟</button><button class="primary" data-page="portfolio">＋ أضف إنجازًا</button></div>
 </header>
@@ -630,7 +630,7 @@ html,body{height:100%;overflow:hidden}
 <label class="designer-field">محاذاة النص<select id="galleryProfileTextAlign"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
 <label class="designer-field">موضع الصورة<select id="galleryProfileLayout"><option value="side">بجانب المعلومات</option><option value="stacked">فوق المعلومات</option><option value="centered">تخطيط مركزي</option></select></label>
 <label class="designer-field">شكل الصورة<select id="galleryAvatarShape"><option value="circle">دائرية</option><option value="rounded" selected>مستديرة</option><option value="square">مربعة</option></select></label>
-<label class="designer-field">��حاذاة البطاقة<select id="galleryHeroAlign"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
+<label class="designer-field">محاذاة البطاقة<select id="galleryHeroAlign"><option value="right">يمين</option><option value="center">وسط</option><option value="left">يسار</option></select></label>
 <label class="designer-field">ظل البطاقة<select id="galleryProfileCardShadow"><option value="none">بدون ظل</option><option value="soft" selected>ناعم</option><option value="strong">بارز</option></select></label>
 <label class="designer-field">سُمك الاسم<select id="galleryProfileNameWeight"><option value="600">متوسط</option><option value="700" selected>عريض</option><option value="800">عريض جدًا</option><option value="900">ثقيل</option></select></label>
 </div>
@@ -718,7 +718,7 @@ html,body{height:100%;overflow:hidden}
         <form id="growthCvForm"><div class="growth-form-grid">
           <div class="growth-field"><label for="growthCvName">الاسم الكامل</label><input id="growthCvName" maxlength="90" autocomplete="name" placeholder="اسمك"></div>
           <div class="growth-field"><label for="growthCvHeadline">التخصص أو المسمى</label><input id="growthCvHeadline" maxlength="120" placeholder="طالب، مصمم، مطور..."></div>
-          <div class="growth-field"><label for="growthCvEmail">��لبريد الإلكتروني</label><input id="growthCvEmail" maxlength="160" type="email" autocomplete="email"></div>
+          <div class="growth-field"><label for="growthCvEmail">البريد الإلكتروني</label><input id="growthCvEmail" maxlength="160" type="email" autocomplete="email"></div>
           <div class="growth-field"><label for="growthCvPhone">الهاتف (اختياري)</label><input id="growthCvPhone" maxlength="50" autocomplete="tel"></div>
           <div class="growth-field wide"><label for="growthCvCity">المدينة</label><input id="growthCvCity" maxlength="100"></div>
           <div class="growth-field wide"><label for="growthCvSummary">نبذة مهنية</label><textarea id="growthCvSummary" maxlength="1200"></textarea></div>
@@ -754,8 +754,8 @@ html,body{height:100%;overflow:hidden}
 </section>
 
 <section class="page" id="page-profile">
-  <div class="section-intro"><h1>ملفي الشخصي</h1><p>عرّف الناس بك وبالأشياء التي تستطيع إنجازها.</p></div>
-  <div class="profile-layout"><div class="form-panel"><div class="panel-title"><div><h3>معلوماتك</h3><small>تُحفظ محليًا وتُزامن مع حسابك عند تسجيل الدخول</small></div><span class="pill">مسودة</span></div><form id="profileForm"><div class="profile-photo-tools"><div class="avatar" id="profilePhotoSample">م</div><div class="profile-photo-copy"><strong>الصورة الشخصية</strong><small>اختر صورة مربعة؛ ستُضغط تلقائيًا لتناسب حسابك وتُ��فظ مع بياناتك.</small><div class="profile-photo-actions"><label for="profilePhotoInput">＋ اختيار صورة</label><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><button type="button" id="removeProfilePhoto">إزالة الصورة</button></div></div></div><div class="form-grid">
+  <div class="section-intro" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h1>ملفي الشخصي</h1><p>عرّف الناس بك وبالأشياء التي تستطيع إنجازها.</p></div><button class="secondary" type="button" data-page="settings">الإعدادات</button></div>
+  <div class="profile-layout"><div class="form-panel"><div class="panel-title"><div><h3>معلوماتك</h3><small>تُحفظ محليًا وتُزامن مع حسابك عند تسجيل الدخول</small></div><span class="pill">مسودة</span></div><form id="profileForm"><div class="profile-photo-tools"><div class="avatar" id="profilePhotoSample">م</div><div class="profile-photo-copy"><strong>الصورة الشخصية</strong><small>اختر صورة مربعة؛ ستُضغط تلقائيًا لتناسب حسابك وتُحفظ مع بياناتك.</small><div class="profile-photo-actions"><label for="profilePhotoInput">＋ اختيار صورة</label><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><button type="button" id="removeProfilePhoto">إزالة الصورة</button></div></div></div><div class="form-grid">
     <div class="field"><label for="profileName">الاسم الذي تريد عرضه</label><input id="profileName" maxlength="70" placeholder="مثال: أمين بن صالح" /></div>
     <div class="field"><label for="profileRole">تخصصك أو دورك</label><input id="profileRole" maxlength="90" placeholder="طالب، مصمم، مطوّر..." /></div>
     <div class="field full"><label for="profileBio">نبذة قصيرة</label><textarea id="profileBio" maxlength="500" placeholder="ما الذي تحب صنعه؟ وما الذي تريد تعلمه؟"></textarea></div>
@@ -794,7 +794,7 @@ html,body{height:100%;overflow:hidden}
   <div class="panel"><div class="panel-title"><div><h3>تفضيلات الاستخدام</h3><small>تُحفظ على هذا الجهاز وتُزامَن مع حسابك عند تسجيل الدخول.</small></div></div>
     <div class="settings-row"><div><strong>تقليل الحركة</strong><small>تعطيل التمرير السلس عند التنقل بين الأقسام.</small></div><button class="switch" id="motionSwitch" aria-label="تقليل الحركة"></button></div>
     <div class="settings-row"><div><strong>إشعارات داخل الموقع</strong><small>رسائل توضيحية عند الحفظ والإجراءات.</small></div><button class="switch on" id="noticeSwitch" aria-label="الإشعارات"></button></div>
-    <div class="settings-row"><div><strong>تصدير بياناتك</strong><small>نزّل نسخة JSON من مشاريعك وتصميماتك ونتائجك.</small></div><button class="secondary" id="exportData">تصدير البيانات ↗</button></div>
+    <div class="settings-row"><div><strong>تصدير بياناتك</strong><small>نزّل نسخة كاملة من ملفك ومشاريعك وتصميماتك وتجاربك وإعداداتك وتقدمك.</small></div><button class="secondary" id="exportData">تصدير البيانات ↗</button></div>
     <div class="settings-row"><div><strong>مسح بيانات مَدى</strong><small>يحذف الملف الشخصي والمشاريع والتصميمات والنتائج من هذا المتصفح ومن الحساب المتصل عند المزامنة.</small></div><button class="ghost" id="resetData" style="color:#b63b5c">مسح البيانات</button></div>
   </div>
   <div class="panel" style="margin-top:17px"><div class="panel-title"><div><h3>حول مَدى</h3><small>نسخة أولية تفاعلية</small></div><span class="pill">نسخة تجريبية</span></div><p class="tiny-note">مَدى مساحة لمساعدة الشباب على اكتشاف اهتماماتهم، إنشاء أعمال رقمية بسيطة، وبناء ملف إنجاز قابل للمشاركة. يمكنك استخدامها دون تسجيل الدخول، وتُحفظ بياناتك على هذا المتصفح. عند تسجيل الدخول، تتم مزامنة الملف والمشاريع والتصميمات والنتائج مع حسابك لتتابعها على أجهزتك. لا يستخدم توليد المحتوى خدمة ذكاء اصطناعي خارجية في النسخة الحالية.</p></div>
@@ -807,7 +807,6 @@ html,body{height:100%;overflow:hidden}
 <button class="active" data-page="home"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 9-9 9-9-9 9-9Z"/><circle cx="12" cy="12" r="3"/></svg></span>الرئيسية</button>
 <button data-page="portfolio"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></span>إنجازاتي</button>
 <button data-page="studio"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M3 12h18M5.64 5.64l12.72 12.72M18.36 5.64 5.64 18.36"/></svg></span>الاستوديو</button>
-<button data-page="careers"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>المسار</button>
 <button data-page="growth"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 2 2.7 6.8L22 12l-7.3 3.2L12 22l-2.7-6.8L2 12l7.3-3.2L12 2Z"/></svg></span>تطوري</button>
 <button data-page="profile"><span>◉</span>ملفي</button>
 </nav>
@@ -970,11 +969,12 @@ $("#cancelGallerySectionEdit")?.addEventListener("click",resetGallerySectionForm
 $("#gallerySectionsList")?.addEventListener("click",function(e){const edit=e.target.closest("[data-sec-edit]"),toggle=e.target.closest("[data-sec-toggle]"),del=e.target.closest("[data-sec-delete]"),sections=state.portfolioSettings.gallerySections;if(edit){const x=sections.find(y=>y.id===edit.dataset.secEdit);if(!x)return;editingGallerySectionId=x.id;$("#gallerySectionName").value=x.name;$("#gallerySectionDescription").value=x.description||"";$("#gallerySectionVisible").checked=x.visible!==false;$("#gallerySectionDefault").checked=state.portfolioSettings.defaultGallerySection===x.id;$("#saveGallerySection").textContent="حفظ التعديلات";$("#cancelGallerySectionEdit").hidden=false;return}if(toggle){const x=sections.find(y=>y.id===toggle.dataset.secToggle);if(!x||x.locked){toast("قسم أعمال عامة لا يمكن إخفاؤه");return}x.visible=x.visible===false;save();renderGallerySectionsManager();renderPortfolioLivePreview();toast(x.visible?"تم إظهار القسم":"تم إخفاء القسم وأعماله");return}if(del){const x=sections.find(y=>y.id===del.dataset.secDelete);if(!x||x.locked)return;if(!confirm("حذف القسم؟ ستُنقل أعماله إلى أعمال عامة."))return;state.projects.forEach(p=>{if(p.gallerySection===x.id)p.gallerySection=""});state.portfolioSettings.gallerySections=sections.filter(y=>y.id!==x.id);if(state.portfolioSettings.defaultGallerySection===x.id)state.portfolioSettings.defaultGallerySection="general";save();renderGallerySectionsManager();renderAll();renderPortfolioLivePreview()}});
 function syncAccountSettings(){
  const user=window.MadaAuth&&window.MadaAuth.getUser?window.MadaAuth.getUser():null;
- const username=$("#accountUsername"),display=$("#accountDisplayName"),pill=$("#accountStatePill"),submit=$("#saveAccountSettings");
+ const username=$("#accountUsername"),display=$("#accountDisplayName"),pill=$("#accountStatePill"),submit=$("#saveAccountSettings"),mode=$("#sideAccountMode");
  if(username)username.value=user?user.username:"";
  if(display)display.value=(state.profile&&state.profile.name)||(user&&user.name)||"";
- if(pill){pill.textContent=user?"الحساب متصل":"يتطلب تسجيل الدخول";pill.classList.toggle("green",!!user);pill.classList.toggle("gray",!user)}
+ if(pill){pill.textContent=user?"الحساب متصل":"وضع الزائر — محلي";pill.classList.toggle("green",!!user);pill.classList.toggle("gray",!user)}
  if(submit)submit.disabled=!user;
+ if(mode)mode.textContent=user?"حساب متصل":"حفظ محلي";
 }
 document.addEventListener("mada:authchange",syncAccountSettings);
  function syncDesignerChoices(s){$$("#portfolioDesigner [data-hero-style]").forEach(function(b){b.classList.toggle("is-active",b.dataset.heroStyle===(s.heroStyle||"dark"))});$$("#portfolioDesigner [data-pattern]").forEach(function(b){b.classList.toggle("is-active",b.dataset.pattern===(s.pattern||"none"))});$$("#portfolioDesigner [data-density]").forEach(function(b){b.classList.toggle("is-active",b.dataset.density===(s.density||"comfortable"))});$$("#portfolioDesigner [data-font]").forEach(function(b){b.classList.toggle("is-active",b.dataset.font===(s.fontFamily||"tajawal"))});$$("#portfolioDesigner [data-palette]").forEach(function(b){b.classList.toggle("is-active",b.dataset.palette===(s.palette||""))})}
@@ -1095,7 +1095,7 @@ $("#clearProfile").addEventListener("click",function(){if(confirm("مسح جمي
 
 const templates={
  cv:{name:"سيرة ذاتية عصرية",title:"اسمك الكامل",subtitle:"تخصصك أو هدفك المهني",author:"ملفي المهني",fields:[["contact","الهاتف والبريد والمدينة"],["education","التعليم والتكوين"],["experience","الخبرات والتدريب"],["skills","المهارات"],["languages","اللغات"],["links","روابط الأعمال"]]},
- cvpro:{name:"سيرة ذاتية احترافية",title:"الاسم الكامل",subtitle:"المسمى المهني والملخص الشخصي",author:"السيرة الذاتية",fields:[["contact","الهاتف والبريد والمدينة"],["education","التعليم والشهادات"],["experience","الخبرات المهنية"],["skills","المهارات التقنية والشخصية"],["languages","اللغات ومستوى الإتقان"],["certificates","ا��دورات والشهادات"],["links","رابط الأعمال أو LinkedIn"]]},
+ cvpro:{name:"سيرة ذاتية احترافية",title:"الاسم الكامل",subtitle:"المسمى المهني والملخص الشخصي",author:"السيرة الذاتية",fields:[["contact","الهاتف والبريد والمدينة"],["education","التعليم والشهادات"],["experience","الخبرات المهنية"],["skills","المهارات التقنية والشخصية"],["languages","اللغات ومستوى الإتقان"],["certificates","الدورات والشهادات"],["links","رابط الأعمال أو LinkedIn"]]},
  coverletter:{name:"رسالة طلب عمل",title:"رسالة طلب توظيف",subtitle:"اكتب هنا رسالة مختصرة ومقنعة تشرح سبب اهتمامك بالمنصب وما الذي ستضيفه للفريق.",author:"مقدم الطلب",fields:[["recipient","المؤسسة واسم المسؤول"],["position","المنصب المطلوب"],["contact","معلومات التواصل"],["strengths","أبرز الخبرات والإنجازات"],["closing","عبارة ختامية"]]},
  invoice:{name:"فاتورة / عرض سعر",title:"فاتورة أو عرض سعر",subtitle:"تفاصيل السلع أو الخدمات المقدمة",author:"اسم النشاط التجاري",fields:[["invoiceNumber","رقم الفاتورة / عرض السعر"],["date","التاريخ"],["seller","بيانات البائع أو النشاط"],["client","بيانات العميل"],["items","تفاصيل البنود والكميات والأسعار"],["total","المجموع بالدينار الجزائري"],["payment","شروط الدفع أو الملاحظات"]]},
  social:{name:"منشور إطلاق فكرة",title:"فكرتي تستحق أن تُرى",subtitle:"اكتب وصفًا قصيرًا لفكرتك أو مشروعك، وما الذي يجعله مختلفًا.",author:"اسمك"},
@@ -1321,7 +1321,7 @@ $("#customPage").addEventListener("pointermove",e=>{if(!customBrushMode||!custom
 document.addEventListener("pointerup",()=>{if(!customBrushPoints||!customDoc)return;const pts=customBrushPoints;customBrushPoints=null;if(pts.length<2)return;pushCustomHistory();const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),x=Math.min(...xs),y=Math.min(...ys),w=Math.max(1,Math.max(...xs)-x),h=Math.max(1,Math.max(...ys)-y);const el={id:"brush"+Date.now(),type:"brush",x,y,w,h,points:pts.map(p=>[p[0]-x,p[1]-y]),color:$("#customBrushColor")?.value||"#5b46e6",stroke:Number($("#customBrushWidth")?.value)||2};customDoc.layout.push(el);customSelected=el.id;customMultiSelected=[];drawCustomPage();drawCustomProperties()});
 $("#customCopyStyle").addEventListener("click",()=>{const el=customDoc&&customDoc.layout.find(x=>x.id===customSelected);if(!el)return toast("حدد عنصرًا لنسخ تنسيقه.");customCopiedStyle={};["color","fill","headerFill","fontSize","fontFamily","align","bold","italic","underline","opacity","rotation","radius","stroke","strokeColor","strokeWidth"].forEach(k=>{if(el[k]!==undefined)customCopiedStyle[k]=el[k]});toast("تم نسخ التنسيق. حدد عنصرًا آخر للصق.")});
 $("#customPasteStyle").addEventListener("click",()=>{if(!customCopiedStyle)return toast("انسخ تنسيق عنصر أولًا.");const targets=customSelectedItems();if(!targets.length)return toast("حدد عنصرًا لاستقبال التنسيق.");pushCustomHistory();targets.forEach(el=>Object.assign(el,JSON.parse(JSON.stringify(customCopiedStyle))));drawCustomPage();drawCustomProperties();toast("تم لصق التنسيق.")});
-$("#customMirrorElement").addEventListener("click",()=>{const el=customDoc&&customDoc.layout.find(x=>x.id===customSelected);if(!el)return toast("حدد عنصر��ا أولًا.");pushCustomHistory();el.mirrorX=!el.mirrorX;drawCustomPage()});
+$("#customMirrorElement").addEventListener("click",()=>{const el=customDoc&&customDoc.layout.find(x=>x.id===customSelected);if(!el)return toast("حدد عنصرًا أولًا.");pushCustomHistory();el.mirrorX=!el.mirrorX;drawCustomPage()});
 $("#customRotate90").addEventListener("click",()=>{const items=customSelectedItems();if(!items.length)return toast("حدد عنصرًا أو أكثر.");pushCustomHistory();items.forEach(el=>{el.rotation=((Number(el.rotation)||0)+90)%360;[el.w,el.h]=[el.h,el.w]});drawCustomPage();drawCustomProperties()});
 $("#customSafeCheck").addEventListener("click",()=>{const el=customDoc&&customDoc.layout.find(x=>x.id===customSelected);if(!el)return toast("حدد عنصرًا لفحصه.");toast("لون العنصر "+(el.color||"#222")+" — لون الخلفية "+(customDoc.pageBackground||"#fff")+". راجع التباين بصريًا.")});
 $("#customPaletteHarmony").addEventListener("click",()=>{const p=[["#5b46e6","#22c7a9","#f4b942","#f5f1ff"],["#12355b","#d7263d","#f4f1de","#420039"],["#264653","#2a9d8f","#e9c46a","#f4a261"]][Math.floor(Math.random()*3)];if(!customDoc)return;pushCustomHistory();customDoc.pageBackground=p[3];$("#customPageBackground").value=p[3];customSelectedItems().forEach((el,i)=>{el.color=p[i%p.length];if(el.type==="rect")el.fill=p[(i+1)%p.length]});drawCustomPage();drawCustomProperties();toast("تم تطبيق لوحة ألوان متناسقة.")});
@@ -1509,7 +1509,7 @@ const quizzes={
   {"q":"المنافس يخفض السعر. ماذا تفعل قبل تقليده؟","a":["أراجع تكاليفي وقيمة المنتج وخياراتي","أخفض السعر إلى أقل رقم فورًا","أتجاهل الأرقام"],"correct":0,"why":"القرار يحتاج فهم التكاليف والميزة التي تقدمها."},
   {"q":"كيف تختبر اسمًا أو فكرة مشروع؟","a":["أعرض خيارات على الجمهور المستهدف وأجمع ملاحظات","أقرر وحدي دون أي اختبار","أغير الاسم يوميًا"],"correct":0,"why":"ملاحظات الجمهور المستهدف تقدم أدلة أفضل من التخمين."},
   {"q":"إذا زادت الطلبات ولم تستطع تجهيزها كلها، ما الأولوية؟","a":["أراجع القدرة والمخزون وأحدد موعدًا واقعيًا","أقبل كل الطلبات دون خطة","أتوقف عن الرد على العملاء"],"correct":0,"why":"إدارة القدرة والوعود الواقعية تحافظ على ثقة العملاء."}]},
- data:{title:"ف��ّر كمحلل بيانات",desc:"قراءة الأرقام",questions:[
+ data:{title:"فكّر كمحلل بيانات",desc:"قراءة الأرقام",questions:[
  {q:"متجر باع 10 قطع يوم السبت و20 يوم الأحد. ما الاستنتاج الآمن؟",a:["المبيعات تضاعفت بين اليومين","سيضاعف المبيعات كل يوم","المنتج سينجح للأبد"],correct:0,why:"البيانات تدعم مقارنة هذين اليومين فقط ولا تكفي للتنبؤ بالمستقبل."},
  {q:"استبيان شمل 5 أصدقاء فقط. هل يمثل كل الطلاب؟",a:["نعم دائمًا","لا، العينة صغيرة وقد لا تمثل الجميع","العينة لا تهم"],correct:1,why:"حجم العينة وطريقة اختيار المشاركين يؤثران على الاستنتاج."},
  {q:"أي رسم يساعد غالبًا على مقارنة مبيعات فئات مختلفة؟",a:["رسم أعمدة","صورة زخرفية","لا نحتاج إلى عرض البيانات"],correct:0,why:"الأعمدة تسهل مقارنة قيم فئات منفصلة."},
@@ -1687,7 +1687,7 @@ $("#resetData").addEventListener("click",function(){if(confirm("سيُحذف م�
 function setupSwitch(id,key){const b=$("#"+id);function draw(){b.classList.toggle("on",!!state.settings[key])}draw();b.addEventListener("click",function(){state.settings[key]=!state.settings[key];save();draw();if(key==="motion")document.documentElement.style.scrollBehavior=state.settings.motion?"auto":"smooth";toast("تم تحديث الإعداد")})}
 setupSwitch("motionSwitch","motion");setupSwitch("noticeSwitch","notices");
 $("#year").textContent=new Date().getFullYear();
-window.MadaApp={setKey:function(key){KEY=key},navigate:go,getState:function(){return JSON.parse(JSON.stringify(state))},applyCloudState:function(data,defaultName){const d=data&&typeof data==="object"?data:blankState();state={profile:Object.assign({},initial.profile,d.profile||{}),projects:Array.isArray(d.projects)?d.projects.map(function(p){return Object.assign({},p,{galleryVisible:typeof p.galleryVisible==="boolean"?p.galleryVisible:p.visibility!=="private"})}):[],designs:Array.isArray(d.designs)?d.designs:[],quizzes:Array.isArray(d.quizzes)?d.quizzes:[],settings:Object.assign({},initial.settings,d.settings||{}),portfolioSettings:Object.assign({},initial.portfolioSettings,d.portfolioSettings||{}),growth:Object.assign({},initial.growth,d.growth||{},{cv:Object.assign({},initial.growth.cv,(d.growth||{}).cv||{})})};syncPortfolioControls();if(!state.profile.name&&defaultName)state.profile.name=defaultName;save(false);syncProfile();renderAll()},toast:toast};
+window.MadaApp={setKey:function(key){KEY=key},navigate:go,getState:function(){return JSON.parse(JSON.stringify(state))},applyCloudState:function(data,defaultName){const d=data&&typeof data==="object"?data:blankState();state={profile:Object.assign({},initial.profile,d.profile||{}),projects:Array.isArray(d.projects)?d.projects.map(function(p){return Object.assign({},p,{galleryVisible:typeof p.galleryVisible==="boolean"?p.galleryVisible:p.visibility!=="private"})}):[],designs:Array.isArray(d.designs)?d.designs:[],quizzes:Array.isArray(d.quizzes)?d.quizzes:[],settings:Object.assign({},initial.settings,d.settings||{}),portfolioSettings:Object.assign({},initial.portfolioSettings,d.portfolioSettings||{}),growth:Object.assign({},initial.growth,d.growth||{},{cv:Object.assign({},initial.growth.cv,(d.growth||{}).cv||{})})};syncPortfolioControls();if(!state.profile.name&&defaultName)state.profile.name=defaultName;save(false);syncProfile();renderAll()},getStoredState:function(key){try{const value=localStorage.getItem(String(key||"mada-platform-v1"));return value?JSON.parse(value):blankState()}catch(_){return blankState()}},toast:toast};
 syncProfile();renderAll();
 })();
 </script>

@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const API = "/api/account";
-  let user = null, syncing = false, pending = null, syncTimer = null, activeMode = "login", avatarUrl = "";
+  let user = null, syncing = false, pending = null, syncTimer = null, retryDelay = 1500, cloudRevision = 0, activeMode = "login", avatarUrl = "";
   const style = document.createElement("style");
   style.textContent = `
     .mada-auth-button{border:1px solid #e9e6f1;background:#fff;color:#5b46e6;border-radius:12px;padding:10px 14px;font:700 13px Arial,sans-serif;cursor:pointer;white-space:nowrap}
@@ -47,18 +47,18 @@
   authButton.type = "button"; authButton.className = "mada-auth-button"; authButton.id = "madaAuthButton"; authButton.textContent = "تسجيل الدخول";
   const actions = document.querySelector(".top-actions");
   if (actions) actions.insertBefore(authButton, actions.firstChild);
-  // Keep the private workspace inaccessible until a server-verified session exists.
-  const accessGate = document.createElement("div");
-  accessGate.id = "madaAccessGate";
-  accessGate.setAttribute("role", "dialog");
-  accessGate.setAttribute("aria-modal", "true");
-  accessGate.setAttribute("aria-labelledby", "madaAccessGateTitle");
-  accessGate.innerHTML = '<section class="mada-access-card"><span class="mada-access-mark"><svg viewBox="0 0 104 72" aria-hidden="true"><use href="#mada-mark"/></svg></span><p class="mada-access-kicker">مساحة خاصة بحسابك</p><h1 id="madaAccessGateTitle">سجّل الدخول للمتابعة</h1><p>إنشاء المشاريع وتعديلها وحفظها ونشرها وإدارة معرض أعمالك متاح بعد تسجيل الدخول إلى حسابك. أعمالك الخاصة لا تُفتح للزوار.</p><button type="button" id="madaAccessLogin" class="mada-auth-submit">تسجيل الدخول أو إنشاء حساب</button><small>يمكنك تصفح معارض الأعمال العامة عبر روابطها المباشرة.</small></section>';
-  document.body.appendChild(accessGate);
-  const gateStyle = document.createElement("style");
-  gateStyle.textContent = '#madaAccessGate{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(247,246,251,.97);backdrop-filter:blur(12px);direction:rtl}#madaAccessGate.show{display:flex}#madaAccessGate .mada-access-card{width:min(460px,100%);padding:34px 28px;border:1px solid #e9e6f1;border-radius:26px;background:#fff;box-shadow:0 24px 80px #211e3512;text-align:center;color:#17152b}#madaAccessGate .mada-access-mark{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 17px;border-radius:19px;background:#5b46e6;color:#fff;font-size:30px;font-weight:800}#madaAccessGate .mada-access-kicker{font-size:11px;font-weight:800;color:#5b46e6;margin:0 0 9px}#madaAccessGate h1{font-size:25px;line-height:1.5;margin:0 0 10px}#madaAccessGate .mada-access-card>p:not(.mada-access-kicker){font-size:13px;line-height:2;color:#6a6882;margin:0 0 20px}#madaAccessGate .mada-auth-submit{margin:0 0 13px}#madaAccessGate small{display:block;font-size:10px;line-height:1.8;color:#8a879a}';
-  document.head.appendChild(gateStyle);
-  $("madaAccessLogin").addEventListener("click", () => open("login"));
+  const syncStatus = document.createElement("span");
+  syncStatus.className = "mada-sync-status";
+  syncStatus.id = "madaSyncStatus";
+  syncStatus.setAttribute("role", "status");
+  syncStatus.setAttribute("aria-live", "polite");
+  syncStatus.textContent = "محفوظ على هذا الجهاز";
+  if (actions) actions.insertBefore(syncStatus, authButton.nextSibling);
+  const syncStyle = document.createElement("style");
+  syncStyle.textContent = '.mada-sync-status{display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #e9e6f1;border-radius:10px;background:#fff;color:#6a6882;font-size:10px;font-weight:700;white-space:nowrap}.mada-sync-status:before{content:"";width:6px;height:6px;border-radius:50%;background:#34a879}.mada-sync-status[data-status="syncing"]:before,.mada-sync-status[data-status="pending"]:before{background:#d99b36}.mada-sync-status[data-status="error"]:before{background:#c54b62}@media(max-width:600px){.mada-sync-status{font-size:9px;padding:6px 7px}.top-actions{gap:6px}}';
+  document.head.appendChild(syncStyle);
+  function setSyncStatus(status, label) { syncStatus.dataset.status = status; syncStatus.textContent = label; syncStatus.title = label; }
+  // The workspace is available in local guest mode; an account only enables cloud sync and publishing.
   function showError(message) { const el = $("madaAuthError"); el.textContent = message || "تعذّر إكمال الطلب. حاول مرة أخرى."; el.classList.add("show"); }
   function hideError() { $("madaAuthError").classList.remove("show"); }
   function open(mode) { activeMode = mode || "login"; renderMode(); hideError(); backdrop.classList.add("open"); setTimeout(() => $(activeMode === "register" ? "madaAuthName" : "madaAuthUsername").focus(), 40); }
@@ -76,13 +76,12 @@
   async function request(action, method, body) {
     const response = await fetch(API + "?action=" + encodeURIComponent(action), { method: method || "GET", credentials: "same-origin", headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined, cache: "no-store" });
     const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.error || "تعذّر إكمال الطلب.");
+    if (!response.ok) { const error = new Error(result.error || "تعذّر إكمال الطلب."); error.status = response.status; error.data = result; throw error; }
     return result;
   }
   function setUser(nextUser) {
     user = nextUser || null;
-    accessGate.classList.toggle("show", !user);
-    document.body.classList.toggle("mada-auth-required", !user);
+    
     document.dispatchEvent(new CustomEvent("mada:authchange", { detail: { user: user ? { id: user.id, username: user.username, name: user.name } : null } }));
     if (user) {
       authButton.className = "mada-auth-user";
@@ -114,17 +113,46 @@
     const result = await request("publish-design", "POST", { design, designId, isPublic: !!isPublic });
     return { ...result, url: new URL("share.html?id=" + encodeURIComponent(result.designId), window.location.href).href };
   }
-  async function sync(data) {
-    if (!user || !data) return;
-    pending = data; if (syncTimer) clearTimeout(syncTimer);
-    syncTimer = setTimeout(async function flush() {
-      if (!user || !pending || syncing) return;
-      const snapshot = pending; pending = null; syncing = true;
-      try { await request("data", "POST", { data: snapshot }); }
-      catch (error) { if (error.message.includes("سجّل الدخول") || error.message.includes("انتهت الجلسة")) { setUser(null); showError("انتهت الجلسة. سجّل الدخول مجددًا لمزامنة بياناتك."); } else if (window.MadaApp && window.MadaApp.toast) { window.MadaApp.toast(error.message && error.message.includes("كبيرة") ? "بياناتك كبيرة جدًا للمزامنة. قلّل حجم الصور أو استخدم روابط مباشرة." : "تعذّرت المزامنة مع حسابك. بياناتك محفوظة على هذا الجهاز وسنحاول مجددًا عند التعديل التالي."); } }
-      finally { syncing = false; if (pending) sync(pending); }
-    }, 650);
+  function sync(data) {
+    if (!data) return;
+    if (!user) { setSyncStatus("local", "محفوظ على هذا الجهاز"); return; }
+    pending = data; setSyncStatus("pending", "بانتظار المزامنة");
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = setTimeout(flushSync, 650);
   }
+  async function flushSync() {
+    if (!user || !pending || syncing) return;
+    const snapshot = pending; pending = null; syncing = true;
+    setSyncStatus("syncing", "جارٍ الحفظ في حسابك…");
+    try {
+      const saved = await request("data", "POST", { data: snapshot, expectedRevision: cloudRevision });
+      cloudRevision = Number(saved.revision || cloudRevision);
+      retryDelay = 1500; setSyncStatus("synced", "تمت المزامنة");
+    } catch (error) {
+      if (error.status === 409 && error.data && user) {
+        const remoteState = error.data.data && typeof error.data.data === "object" ? error.data.data : {};
+        try { localStorage.setItem("mada-sync-conflict-backup:" + user.id, JSON.stringify({ version: 1, savedAt: new Date().toISOString(), local: snapshot, remote: remoteState })); } catch (_) {}
+        cloudRevision = Number(error.data.revision || 0);
+        pending = mergeAccountState(remoteState, snapshot);
+        if (window.MadaApp) window.MadaApp.applyCloudState(pending, user.name);
+        retryDelay = 500;
+        setSyncStatus("pending", "دمج تغييرات جهاز آخر…");
+        if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast("اكتشفنا تعديلات من جهاز آخر. احتفظنا بنسخة محلية ودمجنا العناصر المختلفة قبل إعادة المزامنة.");
+      } else {
+      pending = snapshot;
+      if (error.message.includes("سجّل الدخول") || error.message.includes("انتهت الجلسة")) {
+        setUser(null); setSyncStatus("error", "انتهت الجلسة — بياناتك محفوظة محليًا");
+      } else {
+        setSyncStatus("error", "تعذّرت المزامنة — محفوظ محليًا");
+        if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast(error.message && error.message.includes("كبيرة") ? "بياناتك كبيرة جدًا للمزامنة. قلّل حجم الصور أو استخدم روابط مباشرة." : "تعذّرت المزامنة الآن. بياناتك محفوظة على هذا الجهاز وستتم إعادة المحاولة تلقائيًا.");
+      }
+      }
+    } finally {
+      syncing = false;
+      if (pending && user) { if (syncTimer) clearTimeout(syncTimer); syncTimer = setTimeout(flushSync, retryDelay); retryDelay = Math.min(retryDelay * 2, 60000); }
+    }
+  }
+  window.addEventListener("online", function () { if (pending && user && !syncing) { if (syncTimer) clearTimeout(syncTimer); syncTimer = setTimeout(flushSync, 100); } });
   function hasMeaningfulProfile(data) {
     const profile = data && data.profile && typeof data.profile === "object" ? data.profile : {};
     return Object.values(profile).some(value => typeof value === "string" ? value.trim().length > 0 : !!value);
@@ -180,36 +208,59 @@
     if (!user || !window.MadaApp) return;
     // Capture the guest workspace before switching to the account-scoped key.
     const guestState = window.MadaApp.getState();
+    const accountLocalState = window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1:" + user.id) : null;
     window.MadaApp.setKey("mada-platform-v1:" + user.id);
-    const result = await request("data", "GET");
-    const latestState = window.MadaApp.getState();
+    let result;
+    try { result = await request("data", "GET"); cloudRevision = Number(result.revision || 0); }
+    catch (error) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); setSyncStatus("error", "تعذّر تحميل السحابة — تعمل الآن محليًا"); throw error; }
+    const latestState = accountLocalState || {};
     const guestHasContent = hasMeaningfulProfile(guestState) ||
       ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
       hasMeaningfulGrowth(guestState);
+    const accountLocalHasContent = hasMeaningfulProfile(latestState) ||
+      ["projects", "designs", "quizzes"].some(key => Array.isArray(latestState[key]) && latestState[key].length > 0) ||
+      hasMeaningfulGrowth(latestState);
     const cloudHasContent = result.data && (
       hasMeaningfulProfile(result.data) ||
       ["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) ||
       hasMeaningfulGrowth(result.data)
     );
     let restoredState;
-    if (migrateGuest && guestHasContent) {
-      // Merge by record ID: cloud records remain first, while guest-only records are retained.
-      // Non-empty cloud scalar values win; guest values fill missing cloud fields.
-      restoredState = mergeAccountState(result.data || {}, guestState);
-      restoredState = mergeAccountState(restoredState, latestState);
+    if (migrateGuest && (guestHasContent || accountLocalHasContent)) {
+      // Keep cloud records first, then retain unique guest and account-local records.
+      // Non-empty cloud fields win; local snapshots fill missing values and preserve offline-only work.
+      restoredState = mergeAccountState(result.data || {}, latestState);
+      restoredState = mergeAccountState(restoredState, guestState);
     } else {
       restoredState = result.data && cloudHasContent ? result.data : (result.data || latestState);
     }
     window.MadaApp.applyCloudState(restoredState, user.name);
     // Persist the merged result so both the device and the account have the same snapshot.
-    await request("data", "POST", { data: window.MadaApp.getState() });
+    try {
+      const saved = await request("data", "POST", { data: window.MadaApp.getState(), expectedRevision: cloudRevision });
+      cloudRevision = Number(saved.revision || cloudRevision);
+      setSyncStatus("synced", "تمت مزامنة بيانات الحساب");
+    } catch (error) {
+      if (error.status === 409 && error.data) {
+        cloudRevision = Number(error.data.revision || 0);
+        const merged = mergeAccountState(error.data.data || {}, window.MadaApp.getState());
+        try { localStorage.setItem("mada-sync-conflict-backup:" + user.id, JSON.stringify({ version: 1, savedAt: new Date().toISOString(), local: window.MadaApp.getState(), remote: error.data.data || {} })); } catch (_) {}
+        window.MadaApp.applyCloudState(merged, user.name);
+        sync(merged);
+      } else {
+        sync(window.MadaApp.getState());
+        setSyncStatus("error", "تم الحفظ محليًا — بانتظار المزامنة");
+      }
+    }
   }
   async function logout() {
     const confirmed = window.confirm("هل تريد تسجيل الخروج من حسابك في مَدى؟\n\nستبقى بيانات ملفك ومشاريعك محفوظة في حسابك، ويمكنك العودة إليها عند تسجيل الدخول مرة أخرى.");
     if (!confirmed) return;
     try { await request("logout", "POST", {}); } catch (_) {}
-    user = null; pending = null; if (syncTimer) clearTimeout(syncTimer); setUser(null);
-    if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(null); }
+    const guestState = window.MadaApp && window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1") : null;
+    user = null; pending = null; cloudRevision = 0; if (syncTimer) clearTimeout(syncTimer); setUser(null);
+    if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); }
+    setSyncStatus("local", "وضع الزائر — حفظ محلي");
   }
   $("madaAuthClose").addEventListener("click", close);
   backdrop.addEventListener("click", event => { if (event.target === backdrop) close(); });
@@ -235,17 +286,19 @@
   }
   async function deleteAccount(password) {
     const result = await request("delete-account", "POST", { password: String(password || "") });
-    user = null; pending = null;
+    const guestState = window.MadaApp && window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1") : null;
+    user = null; pending = null; cloudRevision = 0;
     if (syncTimer) clearTimeout(syncTimer);
     setUser(null);
-    if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(null); }
+    if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); }
+    setSyncStatus("local", "وضع الزائر — حفظ محلي");
     return result;
   }
-  window.MadaAuth = { sync, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount };
+  window.MadaAuth = { sync, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
   renderMode();
   request("me", "GET").then(async result => {
-    if (!result.user) { setUser(null); return; }
+    if (!result.user) { setUser(null); setSyncStatus("local", "وضع الزائر — حفظ محلي"); return; }
     setUser(result.user);
     try { await restoreAccountData(true); } catch (error) { console.error("Mada cloud restore failed:", error.message); }
-  }).catch(error => { setUser(null); console.warn("Mada account service unavailable:", error.message); var note = accessGate.querySelector("small"); if (note) note.textContent = "تعذّر الاتصال بخدمة الحساب الآن. تحقق من اتصالك بالإنترنت ثم أعد تحميل الصفحة."; });
+  }).catch(error => { setUser(null); console.warn("Mada account service unavailable:", error.message); setSyncStatus("local", "وضع محلي — خدمة الحساب غير متاحة الآن"); });
 })();
