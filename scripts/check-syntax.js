@@ -229,6 +229,18 @@ console.log("OK revision-based multi-device conflict detection, backup, and merg
 
 console.log("OK account settings integration and security checks");
 
+const discoverPath = fs.readFileSync("masar-platform/discover-path.js", "utf8");
+const careerCatalog = JSON.parse(fs.readFileSync("api/career-paths-default.json", "utf8"));
+if (careerCatalog.length < 20 || !discoverPath.includes("careerConfig.careerPaths.slice(0, 100)")) throw new Error("Discover Path must expose the full validated career catalog instead of truncating it to four paths");
+if (!discoverPath.includes("id=\"pathQuestAddSkill\"") || !discoverPath.includes("savedState.growth.skills.push") || !discoverPath.includes("savedState.profile.skills = currentSkills.join")) throw new Error("Career discovery results must be addable to the Growth Hub and profile skills");
+if (!growthHub.includes("startedPaths=pathsData.filter(path=>Array.isArray(growth.paths[path.id]))") || growthHub.includes("pathsData.reduce((sum,path)=>sum+path.steps.length,0)")) throw new Error("Growth progress must count only learning paths the user has started");
+if (!profile.includes('id="appThemeSelect"') || !profile.includes('theme:"system"') || !profile.includes("function applyAppTheme(theme)") || !profile.includes('appThemeSelect.addEventListener("change"')) throw new Error("App appearance must be selectable and persisted in settings");
+if (!profile.includes("مركز المساعدة") || !profile.includes('class="help-faq"') || !profile.includes("هل أحتاج إلى حساب؟")) throw new Error("Help dialog must contain practical FAQs, not only onboarding steps");
+const themeCss = fs.readFileSync("masar-platform/mada-theme.css", "utf8");
+if (!themeCss.includes(':root[data-theme="dark"]') || !themeCss.includes("prefers-color-scheme:dark") || !themeCss.includes("#appThemeSelect")) throw new Error("Dark and system theme styles are missing");
+console.log("OK full career catalog, add-to-skills, accurate growth progress, theme settings, and help FAQs");
+
+
 
 const growthPage = fs.readFileSync("masar-platform/index.html", "utf8");
 const growthScript = fs.readFileSync("masar-platform/growth-hub.js", "utf8");
