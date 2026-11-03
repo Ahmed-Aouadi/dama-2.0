@@ -71,3 +71,37 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 /* public portfolio: readable name/kicker on the dark default hero */
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .profile-copy h1{color:var(--gallery-heading,#f5f3ff)}
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .kicker{color:var(--teal)}
+
+
+/* Accessible dark mode, including the operating-system preference. */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#11101d;
+  --ink:#f6f4ff;
+  --muted:#aaa6c4;
+  --line:#37334f;
+  --navy:#0c0b16;
+  --navy-2:#17142a;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#11101d;
+    --ink:#f6f4ff;
+    --muted:#aaa6c4;
+    --line:#37334f;
+    --navy:#0c0b16;
+    --navy-2:#17142a;
+  }
+}
+:root[data-theme="dark"] body{background:var(--paper);color:var(--ink)}
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .modal,
+:root[data-theme="dark"] .settings-row,
+:root[data-theme="dark"] .project-card,
+:root[data-theme="dark"] .form-card{background:#1b1930;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] #appThemeSelect{background:#211e38;color:var(--ink);border-color:var(--line)}
