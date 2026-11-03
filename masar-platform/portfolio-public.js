@@ -59,7 +59,7 @@ document.body.appendChild(modal);modal.addEventListener("click",e=>{if(e.target=
 function updatePortfolioMeta(data){
  const portfolio=data.portfolio||{},profile=portfolio.profile||{},display=portfolio.display||{};
  const name=String(profile.name||data.authorName||data.username||"معرض أعمال").trim();
- const bio=String(profile.bio||"").replace(/\\s+/g," ").trim();
+ const bio=String(profile.bio||"").replace(/\s+/g," ").trim();
  const projects=Array.isArray(portfolio.projects)?portfolio.projects:[];
  const description=(bio||("معرض أعمال "+name+" على منصة مَدى." )).slice(0,300);
  const canonical=new URL(location.href);canonical.searchParams.delete("preview");
@@ -80,7 +80,7 @@ function updatePortfolioMeta(data){
  upsert('meta[name="twitter:description"]',"name",description);
  const first=projects.find(project=>safeUrl(project.cover,true));
  let image=first?safeUrl(first.cover,true):"";
- if(!/^https?:\\/\\//i.test(image))image=new URL("/icons/og-image.png",location.origin).href;
+ if(!/^https?:/i.test(image))image=new URL("/icons/og-image.png",location.origin).href;
  upsert('meta[property="og:image"]',"property",image);
  let canonicalNode=document.head.querySelector('link[rel="canonical"]');
  if(!canonicalNode){canonicalNode=document.createElement("link");canonicalNode.rel="canonical";document.head.appendChild(canonicalNode)}
