@@ -85,7 +85,6 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
     --navy:#0d0b18;--navy-2:#171329;
   }
 }
-:root[data-theme="dark] body,
 :root[data-theme="dark"] body,
 :root[data-theme="system"] body{background:var(--paper);color:var(--ink)}
 :root[data-theme="dark"] .panel,:root[data-theme="dark"] .card,
