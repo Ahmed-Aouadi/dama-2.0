@@ -35,8 +35,8 @@ function renderStats(){
  const metrics={"growthProjects":projects.length,"growthCompleted":projects.filter(p=>p.status==="done").length,"growthPublished":projects.filter(p=>p.galleryVisible===true&&p.visibility!=="private").length,"growthDesigns":designs.length,"growthQuizzes":quizzes.length,"growthSkillsTotal":growth.skills.length};
  Object.keys(metrics).forEach(id=>{const el=$("#"+id);if(el)el.textContent=new Intl.NumberFormat(growth.locale==="fr"?"fr-FR":"ar-DZ").format(metrics[id])});
  const pathTotal=pathsData.reduce((sum,path)=>sum+path.steps.length,0);const pathDone=Object.values(growth.paths).reduce((sum,steps)=>sum+(Array.isArray(steps)?steps.filter(Boolean).length:0),0);const total=projects.length+designs.length+quizzes.length+growth.skills.length+pathTotal;const completed=projects.filter(p=>p.status==="done").length+designs.length+quizzes.length+growth.skills.length+pathDone;
- const pct=total?Math.min(100,Math.round(completed/Math.max(total,1)*100)):0;
- const p=$("#growthProgress");if(p)p.style.width=pct+"%";const label=$("#growthProgressLabel");if(label)label.textContent=pct+"%";
+ const hasActivity=total>0;const pct=hasActivity?Math.min(100,Math.round(completed/Math.max(total,1)*100)):0;
+ const p=$("#growthProgress");if(p)p.style.width=pct+"%";const label=$("#growthProgressLabel");if(label)label.textContent=hasActivity?pct+"%":"ابدأ بتوثيق إنجاز";
  const skillCount=$("#growthSkillCount");if(skillCount)skillCount.textContent=growth.skills.length+" مهارة";renderCaseStudyOptions();renderSkillList();renderPaths();renderHistory();renderRequests();renderCV();
 }
 function renderCV(){
@@ -176,7 +176,7 @@ function printSkills(){
  printGrowthDocument(html);
 }
 
-function renderLocale(){const fr=growth.locale==="fr";const el=$("#growthLocaleLabel");if(el)el.textContent=fr?"Langue du CV : Français":"لغة السيرة الذاتية: العربية";const b=$("#growthLocaleToggle");if(b)b.textContent=fr?"العربية":"Français";const cvLocale=$("#growthCvLocale");if(cvLocale&&cvLocale.value!==(fr?"fr":"ar")){cvLocale.value=fr?"fr":"ar";renderCV()}}
+function renderLocale(){const fr=growth.locale==="fr";const el=$("#growthLocaleLabel");if(el)el.textContent=fr?"Langue du CV : Français":"لغة السيرة الذاتية: العربية";const b=$("#growthLocaleToggle");if(b){b.textContent=fr?"عرض السيرة بالعربية":"عرض السيرة بالفرنسية";b.setAttribute("aria-label",fr?"عرض السيرة الذاتية بالعربية":"عرض السيرة الذاتية بالفرنسية");}const cvLocale=$("#growthCvLocale");if(cvLocale&&cvLocale.value!==(fr?"fr":"ar")){cvLocale.value=fr?"fr":"ar";renderCV()}}
 function bindCV(){
  const map={growthCvName:"name",growthCvHeadline:"headline",growthCvEmail:"email",growthCvPhone:"phone",growthCvCity:"city",growthCvSummary:"summary",growthCvEducation:"education",growthCvExperience:"experience",growthCvProjects:"projects",growthCvSkills:"skills",growthCvLanguages:"languages"};
  Object.entries(map).forEach(([id,key])=>{const el=$("#"+id);if(!el)return;el.value=growth.cv[key]||"";el.addEventListener("input",()=>{growth.cv[key]=el.value;persist(false,false);renderCV()})});
