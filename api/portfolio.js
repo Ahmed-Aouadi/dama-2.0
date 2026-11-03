@@ -62,13 +62,18 @@ module.exports = async function handler(req, res) {
   }
   try {
     const username = String(req.query?.username || "").normalize("NFC").trim().toLocaleLowerCase("und");
-    if (!/^[\p{L}\p{N}_.-]{3,24}$/u.test(username)) return sendHtml(res, 404, publicError(404, "المعرض غير موجود", "تحقق من اسم المستخدم أو اطلب رابطًا صحيحًا من صاحب المعرض."), "no-store");
+    const slug = String(req.query?.id || "").trim();
+    if (username && !/^[\p{L}\p{N}_.-]{3,24}$/u.test(username)) return sendHtml(res, 404, publicError(404, "المعرض غير موجود", "تحقق من اسم المستخدم أو اطلب رابطًا صحيحًا من صاحب المعرض."), "no-store");
+    if (!username && !/^[A-Za-z0-9_-]{12,80}$/.test(slug)) return sendHtml(res, 404, publicError(404, "المعرض غير موجود", "تحقق من اسم المستخدم أو اطلب رابطًا صحيحًا من صاحب المعرض."), "no-store");
     const flags = await db().query("SELECT key,value FROM mada_site_settings WHERE key=$1 OR key=$2", ["publicGalleryEnabled", "maintenanceMode"]);
     const flagMap = Object.fromEntries(flags.rows.map(row => [row.key, row.value]));
     if (flagMap.publicGalleryEnabled === false || flagMap.maintenanceMode === true) return sendHtml(res, 404, publicError(404, "المعارض متوقفة مؤقتًا", "لا يمكن عرض المعارض العامة في الوقت الحالي."), "no-store");
-    const result = await db().query(
+    const result = username ? await db().query(
       "SELECT u.username,u.display_name,p.slug,p.portfolio,p.updated_at FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE LOWER(u.username)=LOWER($1) AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
       [username]
+    ) : await db().query(
+      "SELECT u.username,u.display_name,p.slug,p.portfolio,p.updated_at FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE p.slug=$1 AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+      [slug]
     );
     if (!result.rows[0]) return sendHtml(res, 404, publicError(404, "هذا المعرض غير متاح", "قد يكون المعرض خاصًا أو لم ينشر صاحبه ملفه بعد."), "no-store");
     const row = result.rows[0];
