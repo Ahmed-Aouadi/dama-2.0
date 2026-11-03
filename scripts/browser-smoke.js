@@ -248,7 +248,8 @@ function assert(condition, message) {
     await guestPage.waitForFunction(() => window.MadaAuth && window.MadaAuth.getUser() === null, undefined, { timeout: 5000 });
     assert(await guestPage.locator("#madaAccessGate").count() === 0, "Guest workspace must not render an authentication gate");
     assert((await guestPage.locator("#madaSyncStatus").textContent()).includes("وضع الزائر"), "Guest workspace must show local-only save status");
-    assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must load from localStorage without login");
+    const guestStateCheck = await guestPage.evaluate(() => ({ name: window.MadaApp.getState().profile.name, stored: localStorage.getItem("mada-platform-v1"), user: window.MadaAuth.getUser(), status: document.querySelector("#madaSyncStatus")?.textContent }));
+    assert(guestStateCheck.name === "ضيف الاختبار", "Guest profile must load from localStorage without login: " + JSON.stringify(guestStateCheck));
     await guestPage.reload({ waitUntil: "domcontentloaded" });
     assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must persist across reloads");
     assert(await guestPage.locator(".mobile-nav [data-page]").count() === 5, "Mobile navigation must expose exactly five primary items");
