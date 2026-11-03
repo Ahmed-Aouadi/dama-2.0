@@ -233,6 +233,12 @@ function assert(condition, message) {
     console.log("PASS Growth Hub language toggle responds");
 
     const guestPage = await context.newPage();
+    await guestPage.route("**/api/account**", async route => {
+      const url = new URL(route.request().url());
+      const action = url.searchParams.get("action");
+      const body = action === "me" ? { user: null } : { ok: true };
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    });
     await guestPage.addInitScript(() => {
       if (!localStorage.getItem("mada-platform-v1")) {
         localStorage.setItem("mada-platform-v1", JSON.stringify({ profile: { name: "ضيف الاختبار" }, projects: [], designs: [], quizzes: [], settings: {}, portfolioSettings: {}, growth: {} }));
