@@ -47,18 +47,7 @@
   authButton.type = "button"; authButton.className = "mada-auth-button"; authButton.id = "madaAuthButton"; authButton.textContent = "تسجيل الدخول";
   const actions = document.querySelector(".top-actions");
   if (actions) actions.insertBefore(authButton, actions.firstChild);
-  // Keep the private workspace inaccessible until a server-verified session exists.
-  const accessGate = document.createElement("div");
-  accessGate.id = "madaAccessGate";
-  accessGate.setAttribute("role", "dialog");
-  accessGate.setAttribute("aria-modal", "true");
-  accessGate.setAttribute("aria-labelledby", "madaAccessGateTitle");
-  accessGate.innerHTML = '<section class="mada-access-card"><span class="mada-access-mark"><svg viewBox="0 0 104 72" aria-hidden="true"><use href="#mada-mark"/></svg></span><p class="mada-access-kicker">مساحة خاصة بحسابك</p><h1 id="madaAccessGateTitle">سجّل الدخول للمتابعة</h1><p>إنشاء المشاريع وتعديلها وحفظها ونشرها وإدارة معرض أعمالك متاح بعد تسجيل الدخول إلى حسابك. أعمالك الخاصة لا تُفتح للزوار.</p><button type="button" id="madaAccessLogin" class="mada-auth-submit">تسجيل الدخول أو إنشاء حساب</button><small>يمكنك تصفح معارض الأعمال العامة عبر روابطها المباشرة.</small></section>';
-  document.body.appendChild(accessGate);
-  const gateStyle = document.createElement("style");
-  gateStyle.textContent = '#madaAccessGate{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(247,246,251,.97);backdrop-filter:blur(12px);direction:rtl}#madaAccessGate.show{display:flex}#madaAccessGate .mada-access-card{width:min(460px,100%);padding:34px 28px;border:1px solid #e9e6f1;border-radius:26px;background:#fff;box-shadow:0 24px 80px #211e3512;text-align:center;color:#17152b}#madaAccessGate .mada-access-mark{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 17px;border-radius:19px;background:#5b46e6;color:#fff;font-size:30px;font-weight:800}#madaAccessGate .mada-access-kicker{font-size:11px;font-weight:800;color:#5b46e6;margin:0 0 9px}#madaAccessGate h1{font-size:25px;line-height:1.5;margin:0 0 10px}#madaAccessGate .mada-access-card>p:not(.mada-access-kicker){font-size:13px;line-height:2;color:#6a6882;margin:0 0 20px}#madaAccessGate .mada-auth-submit{margin:0 0 13px}#madaAccessGate small{display:block;font-size:10px;line-height:1.8;color:#8a879a}';
-  document.head.appendChild(gateStyle);
-  $("madaAccessLogin").addEventListener("click", () => open("login"));
+  // The workspace is available in local guest mode; an account only enables cloud sync and publishing.
   function showError(message) { const el = $("madaAuthError"); el.textContent = message || "تعذّر إكمال الطلب. حاول مرة أخرى."; el.classList.add("show"); }
   function hideError() { $("madaAuthError").classList.remove("show"); }
   function open(mode) { activeMode = mode || "login"; renderMode(); hideError(); backdrop.classList.add("open"); setTimeout(() => $(activeMode === "register" ? "madaAuthName" : "madaAuthUsername").focus(), 40); }
@@ -81,8 +70,7 @@
   }
   function setUser(nextUser) {
     user = nextUser || null;
-    accessGate.classList.toggle("show", !user);
-    document.body.classList.toggle("mada-auth-required", !user);
+    document.body.classList.remove("mada-auth-required");
     document.dispatchEvent(new CustomEvent("mada:authchange", { detail: { user: user ? { id: user.id, username: user.username, name: user.name } : null } }));
     if (user) {
       authButton.className = "mada-auth-user";
@@ -247,5 +235,5 @@
     if (!result.user) { setUser(null); return; }
     setUser(result.user);
     try { await restoreAccountData(true); } catch (error) { console.error("Mada cloud restore failed:", error.message); }
-  }).catch(error => { setUser(null); console.warn("Mada account service unavailable:", error.message); var note = accessGate.querySelector("small"); if (note) note.textContent = "تعذّر الاتصال بخدمة الحساب الآن. تحقق من اتصالك بالإنترنت ثم أعد تحميل الصفحة."; });
+  }).catch(error => { setUser(null); console.warn("Mada account service unavailable:", error.message); setSyncStatus("local", "وضع محلي — خدمة الحساب غير متاحة الآن"); });
 })();
