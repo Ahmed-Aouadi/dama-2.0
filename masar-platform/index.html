@@ -882,6 +882,56 @@ $("#helpBtn").addEventListener("click",function(){openModal("helpModal")});
 
 const categoryLabels={design:"تصميم وفنون",tech:"برمجة وتقنية",media:"إعلام وإنتاج محتوى",writing:"كتابة وتأليف",study:"دراسة وبحث",education:"تعليم وتدريب",business:"أعمال وريادة",engineering:"هندسة وصناعة",science:"علوم وتجارب",community:"مبادرات ومجتمع",event:"فعاليات وتنظيم",personal:"مشروع شخصي",other:"أخرى"};
 const statusLabels={done:"مكتمل",progress:"قيد العمل",idea:"فكرة"};
+
+const portfolioRecordTypes={education:"تعليم ومؤهل",experience:"خبرة عملية أو تطوعية",certificate:"شهادة أو اعتماد",participation:"مشاركة أو فعالية",document:"وثيقة أو ملف",link:"رابط مهني أو مرجعي"};
+let editingPortfolioRecordId=null;
+function renderPortfolioRecords(){
+ const host=$("#portfolioRecordsList");if(!host)return;
+ state.records=Array.isArray(state.records)?state.records:[];
+ if(!state.records.length){host.innerHTML='<div class="empty"><b>أضف ما يثبت خبرتك</b>يمكنك تنظيم الشهادات والمؤهلات والخبرات والمشاركات والوثائق والروابط هنا.</div>';return}
+ host.innerHTML=state.records.slice().sort(function(a,b){return String(b.updated||b.date||"").localeCompare(String(a.updated||a.date||""))}).map(function(record){
+  const type=portfolioRecordTypes[record.type]||"عنصر في ملف الإنجاز";
+  const url=safeHttpUrl(record.url);
+  return '<article class="project-row portfolio-record-row"><span class="project-cover cover-lilac" aria-hidden="true">'+({education:"▤",experience:"✦",certificate:"▣",participation:"◈",document:"▤",link:"↗"}[record.type]||"◈")+'</span><div class="project-info"><strong>'+esc(record.title||"عنصر بدون عنوان")+'</strong><small>'+esc(type)+(record.organization?" · "+esc(record.organization):"")+(record.date?" · "+esc(record.date):"")+'</small>'+(record.description?'<small>'+esc(record.description)+'</small>':"")+(url?'<small><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">فتح الإثبات أو الرابط ↗</a></small>':"")+'</div><span class="pill '+(record.public===true?"green":"gray")+'">'+(record.public===true?"معدّ للنشر":"خاص")+'</span><button type="button" class="ghost" data-record-edit="'+esc(record.id)+'">تعديل</button><button type="button" class="ghost danger-text" data-record-delete="'+esc(record.id)+'">حذف</button></article>';
+ }).join("");
+}
+function resetPortfolioRecordForm(){
+ editingPortfolioRecordId=null;
+ const form=$("#portfolioRecordForm");if(form)form.reset();
+ $("#portfolioRecordPublic").checked=true;
+ $("#portfolioRecordModalTitle").textContent="إضافة عنصر جديد";
+}
+$("#addPortfolioRecord").addEventListener("click",function(){resetPortfolioRecordForm();openModal("portfolioRecordModal")});
+$("#portfolioRecordsList").addEventListener("click",function(event){
+ const edit=event.target.closest("[data-record-edit]"),del=event.target.closest("[data-record-delete]");
+ if(edit){
+  const record=state.records.find(function(item){return String(item.id)===String(edit.dataset.recordEdit)});if(!record)return;
+  editingPortfolioRecordId=record.id;
+  $("#portfolioRecordType").value=record.type||"certificate";$("#portfolioRecordTitle").value=record.title||"";
+  $("#portfolioRecordOrganization").value=record.organization||"";$("#portfolioRecordDate").value=record.date||"";
+  $("#portfolioRecordDescription").value=record.description||"";$("#portfolioRecordUrl").value=record.url||"";
+  $("#portfolioRecordPublic").checked=record.public===true;
+  $("#portfolioRecordModalTitle").textContent="تعديل عنصر ملف الإنجاز";openModal("portfolioRecordModal");return;
+ }
+ if(del){
+  if(!confirm("حذف هذا العنصر من ملف إنجازك؟"))return;
+  state.records=state.records.filter(function(item){return String(item.id)!==String(del.dataset.recordDelete)});
+  save();renderPortfolioRecords();renderPortfolioLivePreview();toast("تم حذف العنصر.");
+ }
+});
+$("#portfolioRecordForm").addEventListener("submit",function(event){
+ event.preventDefault();
+ const title=$("#portfolioRecordTitle").value.trim(),type=$("#portfolioRecordType").value;
+ if(!title){$("#portfolioRecordTitle").focus();return}
+ const rawUrl=$("#portfolioRecordUrl").value.trim(),url=rawUrl?safeHttpUrl(rawUrl):"";
+ if(rawUrl&&!url){$("#portfolioRecordUrl").setCustomValidity("أدخل رابطًا يبدأ بـ https:// أو http://");$("#portfolioRecordUrl").reportValidity();$("#portfolioRecordUrl").setCustomValidity("");return}
+ const record={id:editingPortfolioRecordId||("record-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8)),type:type,title:title,organization:$("#portfolioRecordOrganization").value.trim(),date:$("#portfolioRecordDate").value.trim(),description:$("#portfolioRecordDescription").value.trim(),url:url,public:$("#portfolioRecordPublic").checked,updated:new Date().toISOString()};
+ state.records=Array.isArray(state.records)?state.records:[];
+ const index=state.records.findIndex(function(item){return String(item.id)===String(record.id)});
+ if(index>=0)state.records[index]=record;else state.records.unshift(record);
+ save();renderPortfolioRecords();renderPortfolioLivePreview();closeModal("portfolioRecordModal");resetPortfolioRecordForm();toast("تم حفظ عنصر ملف الإنجاز.");
+});
+
 let editingProjectId=null, pendingProjectCover="",pendingProjectImages=[],pendingProjectVideo="",pendingProjectFile="";
 function collectProjectDownloadItems(p){
  const title=String(p.title||"work").replace(/[^a-zA-Z0-9._-]+/g,"-").slice(0,60)||"work",items=[];
