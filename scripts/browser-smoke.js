@@ -232,7 +232,8 @@ function assert(condition, message) {
     assert(!errors.length, "Uncaught browser exceptions after interaction tests: " + errors.join(" | "));
     console.log("PASS Growth Hub language toggle responds");
 
-    const guestPage = await context.newPage();
+    const guestContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const guestPage = await guestContext.newPage();
     await guestPage.route("**/api/account**", async route => {
       const url = new URL(route.request().url());
       const action = url.searchParams.get("action");
@@ -254,6 +255,7 @@ function assert(condition, message) {
     assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must persist across reloads");
     assert(await guestPage.locator(".mobile-nav [data-page]").count() === 5, "Mobile navigation must expose exactly five primary items");
     console.log("PASS guest workspace: local profile survives reload without login gate; five-item mobile nav and sync indicator");
+    await guestContext.close();
 
 
     const galleryPage = await context.newPage();
