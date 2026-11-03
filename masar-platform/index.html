@@ -754,7 +754,7 @@ html,body{height:100%;overflow:hidden}
 </section>
 
 <section class="page" id="page-profile">
-  <div class="section-intro"><h1>ملفي الشخصي</h1><p>عرّف الناس بك وبالأشياء التي تستطيع إنجازها.</p></div>
+  <div class="section-intro" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h1>ملفي الشخصي</h1><p>عرّف الناس بك وبالأشياء التي تستطيع إنجازها.</p></div><button class="secondary" type="button" data-page="settings">الإعدادات</button></div>
   <div class="profile-layout"><div class="form-panel"><div class="panel-title"><div><h3>معلوماتك</h3><small>تُحفظ محليًا وتُزامن مع حسابك عند تسجيل الدخول</small></div><span class="pill">مسودة</span></div><form id="profileForm"><div class="profile-photo-tools"><div class="avatar" id="profilePhotoSample">م</div><div class="profile-photo-copy"><strong>الصورة الشخصية</strong><small>اختر صورة مربعة؛ ستُضغط تلقائيًا لتناسب حسابك وتُحفظ مع بياناتك.</small><div class="profile-photo-actions"><label for="profilePhotoInput">＋ اختيار صورة</label><input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><button type="button" id="removeProfilePhoto">إزالة الصورة</button></div></div></div><div class="form-grid">
     <div class="field"><label for="profileName">الاسم الذي تريد عرضه</label><input id="profileName" maxlength="70" placeholder="مثال: أمين بن صالح" /></div>
     <div class="field"><label for="profileRole">تخصصك أو دورك</label><input id="profileRole" maxlength="90" placeholder="طالب، مصمم، مطوّر..." /></div>
@@ -794,7 +794,7 @@ html,body{height:100%;overflow:hidden}
   <div class="panel"><div class="panel-title"><div><h3>تفضيلات الاستخدام</h3><small>تُحفظ على هذا الجهاز وتُزامَن مع حسابك عند تسجيل الدخول.</small></div></div>
     <div class="settings-row"><div><strong>تقليل الحركة</strong><small>تعطيل التمرير السلس عند التنقل بين الأقسام.</small></div><button class="switch" id="motionSwitch" aria-label="تقليل الحركة"></button></div>
     <div class="settings-row"><div><strong>إشعارات داخل الموقع</strong><small>رسائل توضيحية عند الحفظ والإجراءات.</small></div><button class="switch on" id="noticeSwitch" aria-label="الإشعارات"></button></div>
-    <div class="settings-row"><div><strong>تصدير بياناتك</strong><small>نزّل نسخة JSON من مشاريعك وتصميماتك ونتائجك.</small></div><button class="secondary" id="exportData">تصدير البيانات ↗</button></div>
+    <div class="settings-row"><div><strong>تصدير بياناتك</strong><small>نزّل نسخة كاملة من ملفك ومشاريعك وتصميماتك وتجاربك وإعداداتك وتقدمك.</small></div><button class="secondary" id="exportData">تصدير البيانات ↗</button></div>
     <div class="settings-row"><div><strong>مسح بيانات مَدى</strong><small>يحذف الملف الشخصي والمشاريع والتصميمات والنتائج من هذا المتصفح ومن الحساب المتصل عند المزامنة.</small></div><button class="ghost" id="resetData" style="color:#b63b5c">مسح البيانات</button></div>
   </div>
   <div class="panel" style="margin-top:17px"><div class="panel-title"><div><h3>حول مَدى</h3><small>نسخة أولية تفاعلية</small></div><span class="pill">نسخة تجريبية</span></div><p class="tiny-note">مَدى مساحة لمساعدة الشباب على اكتشاف اهتماماتهم، إنشاء أعمال رقمية بسيطة، وبناء ملف إنجاز قابل للمشاركة. يمكنك استخدامها دون تسجيل الدخول، وتُحفظ بياناتك على هذا المتصفح. عند تسجيل الدخول، تتم مزامنة الملف والمشاريع والتصميمات والنتائج مع حسابك لتتابعها على أجهزتك. لا يستخدم توليد المحتوى خدمة ذكاء اصطناعي خارجية في النسخة الحالية.</p></div>
@@ -807,7 +807,6 @@ html,body{height:100%;overflow:hidden}
 <button class="active" data-page="home"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 9-9 9-9-9 9-9Z"/><circle cx="12" cy="12" r="3"/></svg></span>الرئيسية</button>
 <button data-page="portfolio"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></span>إنجازاتي</button>
 <button data-page="studio"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M3 12h18M5.64 5.64l12.72 12.72M18.36 5.64 5.64 18.36"/></svg></span>الاستوديو</button>
-<button data-page="careers"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>المسار</button>
 <button data-page="growth"><span aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 2 2.7 6.8L22 12l-7.3 3.2L12 22l-2.7-6.8L2 12l7.3-3.2L12 2Z"/></svg></span>تطوري</button>
 <button data-page="profile"><span>◉</span>ملفي</button>
 </nav>
@@ -973,7 +972,7 @@ function syncAccountSettings(){
  const username=$("#accountUsername"),display=$("#accountDisplayName"),pill=$("#accountStatePill"),submit=$("#saveAccountSettings");
  if(username)username.value=user?user.username:"";
  if(display)display.value=(state.profile&&state.profile.name)||(user&&user.name)||"";
- if(pill){pill.textContent=user?"الحساب متصل":"يتطلب تسجيل الدخول";pill.classList.toggle("green",!!user);pill.classList.toggle("gray",!user)}
+ if(pill){pill.textContent=user?"الحساب متصل":"وضع الزائر — محلي";pill.classList.toggle("green",!!user);pill.classList.toggle("gray",!user)}
  if(submit)submit.disabled=!user;
 }
 document.addEventListener("mada:authchange",syncAccountSettings);
@@ -1687,7 +1686,7 @@ $("#resetData").addEventListener("click",function(){if(confirm("سيُحذف م�
 function setupSwitch(id,key){const b=$("#"+id);function draw(){b.classList.toggle("on",!!state.settings[key])}draw();b.addEventListener("click",function(){state.settings[key]=!state.settings[key];save();draw();if(key==="motion")document.documentElement.style.scrollBehavior=state.settings.motion?"auto":"smooth";toast("تم تحديث الإعداد")})}
 setupSwitch("motionSwitch","motion");setupSwitch("noticeSwitch","notices");
 $("#year").textContent=new Date().getFullYear();
-window.MadaApp={setKey:function(key){KEY=key},navigate:go,getState:function(){return JSON.parse(JSON.stringify(state))},applyCloudState:function(data,defaultName){const d=data&&typeof data==="object"?data:blankState();state={profile:Object.assign({},initial.profile,d.profile||{}),projects:Array.isArray(d.projects)?d.projects.map(function(p){return Object.assign({},p,{galleryVisible:typeof p.galleryVisible==="boolean"?p.galleryVisible:p.visibility!=="private"})}):[],designs:Array.isArray(d.designs)?d.designs:[],quizzes:Array.isArray(d.quizzes)?d.quizzes:[],settings:Object.assign({},initial.settings,d.settings||{}),portfolioSettings:Object.assign({},initial.portfolioSettings,d.portfolioSettings||{}),growth:Object.assign({},initial.growth,d.growth||{},{cv:Object.assign({},initial.growth.cv,(d.growth||{}).cv||{})})};syncPortfolioControls();if(!state.profile.name&&defaultName)state.profile.name=defaultName;save(false);syncProfile();renderAll()},toast:toast};
+window.MadaApp={setKey:function(key){KEY=key},navigate:go,getState:function(){return JSON.parse(JSON.stringify(state))},applyCloudState:function(data,defaultName){const d=data&&typeof data==="object"?data:blankState();state={profile:Object.assign({},initial.profile,d.profile||{}),projects:Array.isArray(d.projects)?d.projects.map(function(p){return Object.assign({},p,{galleryVisible:typeof p.galleryVisible==="boolean"?p.galleryVisible:p.visibility!=="private"})}):[],designs:Array.isArray(d.designs)?d.designs:[],quizzes:Array.isArray(d.quizzes)?d.quizzes:[],settings:Object.assign({},initial.settings,d.settings||{}),portfolioSettings:Object.assign({},initial.portfolioSettings,d.portfolioSettings||{}),growth:Object.assign({},initial.growth,d.growth||{},{cv:Object.assign({},initial.growth.cv,(d.growth||{}).cv||{})})};syncPortfolioControls();if(!state.profile.name&&defaultName)state.profile.name=defaultName;save(false);syncProfile();renderAll()},getStoredState:function(key){try{const value=localStorage.getItem(String(key||"mada-platform-v1"));return value?JSON.parse(value):blankState()}catch(_){return blankState()}},toast:toast};
 syncProfile();renderAll();
 })();
 </script>
