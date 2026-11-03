@@ -189,7 +189,7 @@ if (auth.includes("madaAccessGate") || auth.includes("mada-auth-required")) thro
 if (!auth.includes('setSyncStatus("local", "وضع الزائر — حفظ محلي")') || !auth.includes('getSyncStatus: () => syncStatus.dataset.status')) throw new Error("Guest mode must expose local-save status and cloud sync state");
 if (!auth.includes('window.addEventListener("online"') || !auth.includes('setTimeout(flushSync, retryDelay)')) throw new Error("Cloud sync must retry after connectivity returns and preserve pending snapshots");
 if (!profile.includes('getStoredState:function(key)') || !auth.includes('getStoredState("mada-platform-v1")')) throw new Error("Logout and account deletion must restore the guest workspace instead of clearing it");
-if ((profile.match(/<nav class="mobile-nav">[\\s\\S]*?<\\/nav>/)||[""])[0].match(/data-page=/g).length > 5) throw new Error("Mobile navigation must contain no more than five primary items");
+if ((profile.match(/<nav class="mobile-nav">[\s\S]*?<\/nav>/)||[""])[0].match(/data-page=/g).length > 5) throw new Error("Mobile navigation must contain no more than five primary items");
 if (profile.includes("��") || profile.includes("�")) throw new Error("Replacement characters remain in the main application interface");
 for (const action of ['publish-design', 'publish-portfolio', 'data']) {
   const routeStart = account.indexOf('action === "' + action + '"');
