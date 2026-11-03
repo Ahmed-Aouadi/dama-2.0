@@ -6,7 +6,7 @@ module.exports=async function handler(req,res){
  if(req.method!=="GET"){res.setHeader("Allow","GET");res.statusCode=405;return res.end("Method Not Allowed");}
  try{
   const rawHost=String(req.headers.host||"dama-20.vercel.app").split(",")[0].trim();
-  const host=/^[a-z0-9.-]+(?::\\d{1,5})?$/i.test(rawHost)?rawHost:"dama-20.vercel.app";
+  const host=/^[a-z0-9.-]+(?::\d{1,5})?$/i.test(rawHost)?rawHost:"dama-20.vercel.app";
   const origin=(host.startsWith("localhost")?"http://":"https://")+host;
   const flags=await db().query("SELECT key,value FROM mada_site_settings WHERE key=$1 OR key=$2",["publicGalleryEnabled","maintenanceMode"]);
   const flagMap=Object.fromEntries(flags.rows.map(row=>[row.key,row.value]));
