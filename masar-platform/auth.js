@@ -215,14 +215,14 @@
     catch (error) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); setSyncStatus("error", "تعذّر تحميل السحابة — تعمل الآن محليًا"); throw error; }
     const latestState = accountLocalState || {};
     const guestHasContent = hasMeaningfulProfile(guestState) ||
-      ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
+      ["projects", "records", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
       hasMeaningfulGrowth(guestState);
     const accountLocalHasContent = hasMeaningfulProfile(latestState) ||
-      ["projects", "designs", "quizzes"].some(key => Array.isArray(latestState[key]) && latestState[key].length > 0) ||
+      ["projects", "records", "designs", "quizzes"].some(key => Array.isArray(latestState[key]) && latestState[key].length > 0) ||
       hasMeaningfulGrowth(latestState);
     const cloudHasContent = result.data && (
       hasMeaningfulProfile(result.data) ||
-      ["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) ||
+      ["projects", "records", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) ||
       hasMeaningfulGrowth(result.data)
     );
     let restoredState;
