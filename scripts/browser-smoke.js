@@ -69,7 +69,7 @@ function assert(condition, message) {
         growth: { cv: { name: "", headline: "", languages: "العربية، الفرنسية" }, skills: [], paths: {}, history: [], requests: [], customTemplates: [], locale: "ar" }
       };
       let body = { ok: true };
-      if (action === "me") { sessionRefreshRequested = true; body = { user }; }
+      if (action === "me") { sessionRefreshRequested = true; body = (route.request().headers().referer || "").includes("guest-smoke=1") ? { user: null } : { user }; }
       else if (action === "data" && route.request().method() === "GET") body = { data };
       else if (action === "publish-portfolio") { lastPublishedPayload = route.request().postDataJSON(); body = { shareUrl: "/portfolio.html?id=browserSmokeTest123" }; }
       else if (action === "data") body = { ok: true };
@@ -231,6 +231,23 @@ function assert(condition, message) {
     await page.waitForFunction(old => document.querySelector("#growthLocaleToggle")?.textContent !== old, before, { timeout: 5000 });
     assert(!errors.length, "Uncaught browser exceptions after interaction tests: " + errors.join(" | "));
     console.log("PASS Growth Hub language toggle responds");
+
+    const guestPage = await context.newPage();
+    await guestPage.addInitScript(() => {
+      if (!localStorage.getItem("mada-platform-v1")) {
+        localStorage.setItem("mada-platform-v1", JSON.stringify({ profile: { name: "ضيف الاختبار" }, projects: [], designs: [], quizzes: [], settings: {}, portfolioSettings: {}, growth: {} }));
+      }
+    });
+    await guestPage.goto("http://127.0.0.1:4173/?guest-smoke=1", { waitUntil: "domcontentloaded" });
+    await guestPage.waitForFunction(() => window.MadaAuth && window.MadaAuth.getUser() === null, undefined, { timeout: 5000 });
+    assert(await guestPage.locator("#madaAccessGate").count() === 0, "Guest workspace must not render an authentication gate");
+    assert((await guestPage.locator("#madaSyncStatus").textContent()).includes("وضع الزائر"), "Guest workspace must show local-only save status");
+    assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must load from localStorage without login");
+    await guestPage.reload({ waitUntil: "domcontentloaded" });
+    assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must persist across reloads");
+    assert(await guestPage.locator(".mobile-nav [data-page]").count() === 5, "Mobile navigation must expose exactly five primary items");
+    console.log("PASS guest workspace: local profile survives reload without login gate; five-item mobile nav and sync indicator");
+
 
     const galleryPage = await context.newPage();
     await galleryPage.route("**/api/account?action=public-portfolio**", route => route.fulfill({
