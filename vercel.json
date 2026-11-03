@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
       "source": "/mada-ops-7f3c9a",
       "destination": "/authority-console/index.html"
     },
