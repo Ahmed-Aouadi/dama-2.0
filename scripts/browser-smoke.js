@@ -75,6 +75,16 @@ function assert(condition, message) {
       else if (action === "data") body = { ok: true, revision: 2 };
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
     });
+    const careerCatalog = JSON.parse(fs.readFileSync(path.join(root, "api/career-paths-default.json"), "utf8"));
+    await page.route("**/api/admin**", async route => {
+      const url = new URL(route.request().url());
+      const action = url.searchParams.get("action");
+      if (action === "public-config") {
+        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ careerPaths: careerCatalog, careerStats: {}, growthTemplates: [] }) });
+      } else {
+        await route.fulfill({ status: 401, contentType: "application/json", body: JSON.stringify({ error: "Unauthenticated test request." }) });
+      }
+    });
     await page.addInitScript(() => {
       window.__madaBrowserErrors = [];
       window.addEventListener("error", event => window.__madaBrowserErrors.push({message:event.message,source:event.filename,line:event.lineno,column:event.colno,stack:event.error && event.error.stack}), true);
@@ -121,11 +131,56 @@ function assert(condition, message) {
     await page.locator('#helpModal [data-close="helpModal"]').click();
     console.log("PASS help button opens and closes its dialog");
 
+    assert(await page.locator("#helpModal .help-faq details").count() >= 4, "Help center must expose practical FAQ answers");
+    console.log("PASS help center includes onboarding and practical account/privacy/backup FAQs");
+
+    await page.locator('[data-page="growth"]').first().click();
+    await page.waitForSelector("#growthProgressLabel", { timeout: 5000 });
+    assert((await page.locator("#growthProgressLabel").textContent()).includes("ابدأ بتوثيق إنجاز"), "An empty Growth Hub should show a helpful start state instead of 0% progress");
+    assert(await page.locator("#growthProgress").evaluate(el => parseFloat(getComputedStyle(el).width) === 0), "An empty Growth Hub should have a zero-width progress bar without counting unstarted path steps");
+    console.log("PASS empty Growth Hub progress shows an actionable start state");
+
+    await page.locator('[data-page="careers"]').first().click();
+    await page.waitForFunction(() => Array.isArray(window.MadaCareerCatalog) && window.MadaCareerCatalog.length > 10, undefined, { timeout: 5000 });
+    assert(await page.locator("#pathCardGrid .path-card").count() === careerCatalog.length, "Discover Path must render the complete career catalog");
+    for (let i = 0; i < 3; i++) await page.locator("#pathQuestBody .path-quest-option").first().click();
+    await page.locator("#pathQuestAddSkill").click();
+    await page.waitForFunction(() => window.MadaApp.getState().growth.skills.some(skill => skill.name === "التفكير البرمجي"), undefined, { timeout: 5000 });
+    const discoveryState = await page.evaluate(() => window.MadaApp.getState());
+    assert(String(discoveryState.profile.skills).includes("التفكير البرمجي"), "Career discovery should also add the selected field to profile skills");
+    console.log("PASS full career catalog and add-discovery-result-to-profile workflow");
+
+    await page.locator('[data-page="settings"]').first().click();
+    await page.locator("#appThemeSelect").selectOption("dark");
+    assert(await page.locator("html").getAttribute("data-theme") === "dark", "Dark theme selection did not apply");
+    await page.locator("#appThemeSelect").selectOption("light");
+    assert(await page.locator("html").getAttribute("data-theme") === "light", "Light theme selection did not apply");
+    await page.locator("#appThemeSelect").selectOption("system");
+    assert(await page.locator("html").getAttribute("data-theme") === null, "System theme selection should defer to the operating system");
+    assert(await page.evaluate(() => window.MadaApp.getState().settings.theme) === "system", "Theme preference was not saved in app settings");
+    console.log("PASS persisted light/dark/system appearance settings");
+
+
     await page.locator('[data-page="portfolio"]').first().click();
     await page.locator("#addProjectBtn").click();
     assert(await page.locator("#projectModal").evaluate(el => el.classList.contains("open")), "Add project button did not open the project dialog");
     await page.locator('#projectModal [data-close="projectModal"]').click();
     console.log("PASS add-project button opens and closes its dialog");
+
+    await page.locator("#addPortfolioRecord").click();
+    await page.locator("#portfolioRecordModal").waitFor({ state: "visible", timeout: 3000 });
+    await page.locator("#portfolioRecordType").selectOption("certificate");
+    await page.locator("#portfolioRecordTitle").fill("شهادة اختبارية");
+    await page.locator("#portfolioRecordOrganization").fill("جهة الاختبار");
+    await page.locator("#portfolioRecordDate").fill("2026");
+    await page.locator("#portfolioRecordDescription").fill("وصف مختصر للشهادة.");
+    await page.locator("#portfolioRecordPublic").check();
+    await page.locator('#portfolioRecordForm button[type="submit"]').click();
+    assert(await page.locator("#portfolioRecordsList .portfolio-record-row").count() === 1, "New portfolio record was not saved and rendered");
+    assert((await page.locator("#portfolioRecordsList").textContent()).includes("شهادة اختبارية"), "Saved portfolio record title is missing");
+    assert(await page.evaluate(() => window.MadaApp.getState().records[0].public === true), "Public visibility choice was not persisted for the record");
+    console.log("PASS portfolio records: create, save, and per-record public visibility");
+
 
     await page.evaluate(() => {
       if (!window.MadaAuth || typeof window.MadaAuth.getUser !== "function") throw new Error("MadaAuth.getUser is unavailable for the stale-session regression test");
@@ -135,6 +190,7 @@ function assert(condition, message) {
     await page.waitForFunction(() => /تم نشر المعرض بنجاح/.test(document.querySelector("#portfolioShareStatus")?.textContent || ""), undefined, { timeout: 5000 });
     assert(sessionRefreshRequested, "Publishing did not refresh the server session when client auth state was empty");
     assert(!errors.length, "Uncaught browser exceptions after portfolio publishing click: " + errors.join(" | "));
+    assert(lastPublishedPayload && Array.isArray(lastPublishedPayload.portfolio.records) && lastPublishedPayload.portfolio.records.some(record => record.title === "شهادة اختبارية"), "Public portfolio publishing omitted the selected public certificate");
     console.log("PASS publish button publishes and exposes a validated share URL");
 
     await page.locator("#openPortfolioDesignerBtn").click();

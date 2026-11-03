@@ -304,6 +304,15 @@ const identity=hero;
  default:
   view.innerHTML=mainContent.indexOf(sectionHead)===0?identity+mainContent:mainContent+identity;
 }
+const publicRecords=Array.isArray(p.records)?p.records.slice(0,100):[];
+if(publicRecords.length){
+ const typeLabels={education:"تعليم ومؤهل",experience:"خبرة",certificate:"شهادة",participation:"مشاركة",document:"وثيقة",link:"رابط"};
+ const recordsHtml='<section class="portfolio-records"><div class="portfolio-records-heading"><h2>الشهادات والخبرات والإنجازات</h2><span class="count">'+publicRecords.length+' عناصر</span></div><div class="portfolio-records-grid">'+publicRecords.map(function(record){
+  const url=safeUrl(record.url,false);
+  return '<article class="portfolio-record-card"><span class="portfolio-record-type">'+esc(typeLabels[record.type]||"إنجاز")+'</span><h3>'+esc(record.title||"عنصر في ملف الإنجاز")+'</h3>'+(record.organization?'<p class="portfolio-record-meta">'+esc(record.organization)+'</p>':"")+(record.date?'<p class="portfolio-record-meta">'+esc(record.date)+'</p>':"")+(record.description?'<p>'+esc(String(record.description).slice(0,500))+'</p>':"")+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">عرض الإثبات أو الرابط ↗</a>':"")+'</article>';
+ }).join("")+'</div></section>';
+ view.insertAdjacentHTML("beforeend",recordsHtml);
+}
 }
 async function load(){
 if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}

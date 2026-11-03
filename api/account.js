@@ -375,6 +375,17 @@ module.exports = async function handler(req, res) {
         featured: Boolean(p.featured),
         visibility: "profile"
       }));
+      const recordTypes = new Set(["education","experience","certificate","participation","document","link"]);
+      const recordSource = Array.isArray(source.records) ? source.records : [];
+      const records = recordSource.filter(record => record && typeof record === "object" && !Array.isArray(record) && record.public === true && recordTypes.has(String(record.type || ""))).slice(0, 100).map(record => ({
+        id: String(record.id || crypto.randomUUID()).slice(0, 100),
+        type: String(record.type),
+        title: String(record.title || "").normalize("NFC").trim().slice(0, 120),
+        organization: String(record.organization || "").normalize("NFC").trim().slice(0, 120),
+        date: String(record.date || "").normalize("NFC").trim().slice(0, 60),
+        description: String(record.description || "").normalize("NFC").trim().slice(0, 700),
+        url: safeUrl(record.url)
+      })).filter(record => record.title);
       const displaySource = source.display && typeof source.display === "object" ? source.display : {};
       const validHex = (value, fallback) => /^#[0-9a-f]{6}$/i.test(String(value || "")) ? String(value) : fallback;
       const display = {
@@ -481,7 +492,7 @@ module.exports = async function handler(req, res) {
         profileLayout: ["side", "stacked", "centered"].includes(displaySource.profileLayout) ? displaySource.profileLayout : "side",
         backgroundImage: safeUrl(displaySource.backgroundImage)
       };
-      const portfolio = { profile, projects, display, publishedAt: new Date().toISOString() };
+      const portfolio = { profile, projects, records, display, publishedAt: new Date().toISOString() };
       const encoded = JSON.stringify(portfolio);
       if (encoded.length > 3500000) return send(res, 413, { error: "المعرض كبير جدًا للنشر. قلّل حجم الوسائط أو استخدم روابط مباشرة للملفات والصور." });
       const slug = crypto.randomBytes(12).toString("base64url");

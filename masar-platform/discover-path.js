@@ -19,7 +19,7 @@
       var careerResponse = await fetch("/api/admin?action=public-config", { credentials: "same-origin", cache: "no-store" });
       if (careerResponse.ok) {
         var careerConfig = await careerResponse.json();
-        if (Array.isArray(careerConfig.careerPaths) && careerConfig.careerPaths.length) paths = careerConfig.careerPaths.slice(0, 4);
+        if (Array.isArray(careerConfig.careerPaths) && careerConfig.careerPaths.length) paths = careerConfig.careerPaths.slice(0, 100);
         careerStats = careerConfig.careerStats && typeof careerConfig.careerStats === "object" ? careerConfig.careerStats : {};
       }
     } catch (_) {}
@@ -158,7 +158,7 @@
         page.querySelector("#pathQuestProgress").style.width = "100%";
         body.innerHTML = '<div class="path-quest-finish"><span class="path-quest-finish-icon" style="background:'+escapeHTML(winner.color||"#eee9ff")+';color:'+escapeHTML(winner.ink||"#5140a8")+'">'+escapeHTML(winner.icon||"✦")+'</span><div><small>المسار الأقرب لاختياراتك</small><h3>'+escapeHTML(winner.name||winner.title)+'</h3><p>'+escapeHTML(winner.outcome||winner.description||"جرّب تحديًا قصيرًا واكتشف ما يناسبك.")+'</p></div></div>';
         result.hidden = false;
-        result.innerHTML = '<button type="button" class="primary" id="pathQuestStart">ابدأ تحدي هذا المسار ↗</button><button type="button" class="path-quest-retry" id="pathQuestRetry">أعد التجربة</button><small>اقتراح استكشافي مبني على اختياراتك، وليس اختبار شخصية أو حكمًا على قدراتك.</small>';
+        result.innerHTML = '<button type="button" class="primary" id="pathQuestStart">ابدأ تحدي هذا المسار ↗</button><button type="button" class="path-quest-save" id="pathQuestAddSkill">أضف المجال إلى مهاراتي</button><button type="button" class="path-quest-retry" id="pathQuestRetry">أعد التجربة</button><small>اقتراح استكشافي مبني على اختياراتك، وليس اختبار شخصية أو حكمًا على قدراتك.</small>';
         return;
       }
       var q = questQuestions[questStep];
@@ -175,6 +175,29 @@
     });
     page.querySelector("#pathQuestResult").addEventListener("click", function(event) {
       if (event.target.closest("#pathQuestStart")) { if (typeof window.MadaStartQuiz === "function") window.MadaStartQuiz(chosenPath); else { var button=page.querySelector('[data-path-key="'+chosenPath+'"] [data-quiz]'); if(button)button.click(); } }
+      if (event.target.closest("#pathQuestAddSkill")) {
+        var selected = paths.find(function (path) { return path.key === chosenPath; });
+        if (!selected || !window.MadaApp || typeof window.MadaApp.getState !== "function") return;
+        var savedState = window.MadaApp.getState();
+        savedState.growth = savedState.growth || {};
+        savedState.growth.skills = Array.isArray(savedState.growth.skills) ? savedState.growth.skills : [];
+        var skillName = String(selected.name || selected.title || "").trim();
+        if (!skillName) return;
+        if (savedState.growth.skills.some(function (skill) { return String(skill.name || "").toLocaleLowerCase() === skillName.toLocaleLowerCase(); })) {
+          if (window.MadaApp.toast) window.MadaApp.toast("هذا المجال موجود بالفعل في قائمة مهاراتك.");
+          return;
+        }
+        savedState.growth.skills.push({ name: skillName, level: "مبتدئ", evidence: "أُضيف من تجربة اكتشاف المسار؛ أضف مشروعًا أو دليلًا لإثباته." });
+        var currentSkills = String(savedState.profile && savedState.profile.skills || "").split(/[,،]/).map(function (item) { return item.trim(); }).filter(Boolean);
+        if (!currentSkills.some(function (item) { return item.toLocaleLowerCase() === skillName.toLocaleLowerCase(); })) currentSkills.push(skillName);
+        savedState.profile = savedState.profile || {};
+        savedState.profile.skills = currentSkills.join("، ");
+        window.MadaApp.applyCloudState(savedState);
+        if (window.MadaAuth && typeof window.MadaAuth.sync === "function") window.MadaAuth.sync(window.MadaApp.getState());
+        if (window.MadaApp.toast) window.MadaApp.toast("أُضيف المجال إلى مهاراتك. أرفق دليلًا عمليًا لتوضيح مستواك.");
+        var addButton = page.querySelector("#pathQuestAddSkill");
+        if (addButton) { addButton.textContent = "أُضيف إلى مهاراتي ✓"; addButton.disabled = true; }
+      }
       if (event.target.closest("#pathQuestRetry")) { questStep=0; questAnswers=[]; page.querySelector("#pathQuestTitle").textContent="اكتشف طريقة تفكيرك، لا مجرد اسم تخصص."; renderPathQuest(); }
     });
     renderPathQuest();
