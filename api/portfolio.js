@@ -88,6 +88,12 @@ module.exports = async function handler(req, res) {
     const origin = (host.startsWith("localhost") ? "http://" : "https://") + host;
     const image = firstCover || origin + "/icons/og-image.png";
     const canonical = origin + "/@" + encodeURIComponent(row.username);
+    if (!username) {
+      res.statusCode = 308;
+      res.setHeader("Location", canonical);
+      res.setHeader("Cache-Control", "public, max-age=300, s-maxage=600");
+      return res.end();
+    }
     const title = name + " | معرض أعمال مَدى";
     const jsonLd = { "@context": "https://schema.org", "@type": "Person", name, url: canonical, description, image, sameAs: safeUrl(profile.link, false) ? [safeUrl(profile.link, false)] : undefined };
     const data = { ok: true, username: row.username, slug: row.slug, authorName: row.display_name, portfolio };
