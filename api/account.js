@@ -268,7 +268,8 @@ module.exports = async function handler(req, res) {
       const design = req.body?.design;
       const designId = String(req.body?.designId || "").trim();
       const isPublic = req.body?.isPublic === true;
-      const priceDzd = Math.max(0, Math.min(1000000, Math.floor(Number(req.body?.priceDzd) || 0)));
+      // Public template sharing is free until a real payment provider is integrated.
+      const priceDzd = 0;
       if (!/^[A-Za-z0-9_-]{8,100}$/.test(designId)) return send(res, 400, { error: "معرّف المشاركة غير صالح." });
       if (!design || typeof design !== "object" || Array.isArray(design)) return send(res, 400, { error: "بيانات القالب غير صالحة." });
       const encoded = JSON.stringify(design);
@@ -294,8 +295,8 @@ module.exports = async function handler(req, res) {
       if (!result.rows[0]) return send(res, 404, { error: "هذا القالب غير منشور أو تم جعله خاصًا." });
       const row = result.rows[0];
       const design = row.design && typeof row.design === "object" ? row.design : {};
-      const paid = Number(row.price_dzd) > 0;
-      return send(res, 200, { ok: true, paid, priceDzd: Number(row.price_dzd), authorName: row.display_name, design: paid ? { name: design.name, title: design.title, subtitle: design.subtitle, author: design.author, color: design.color, kind: design.kind } : design });
+      // Legacy paid flags are ignored: public sharing is free and always returns the complete design.
+      return send(res, 200, { ok: true, paid: false, priceDzd: 0, authorName: row.display_name, design });
     }
 
 

@@ -104,6 +104,32 @@ if (!hasMeaningfulGrowth({ growth: { cv: { name: "Test User" } } })) throw new E
 if (!hasMeaningfulGrowth({ growth: { skills: [{ name: "HTML" }] } })) throw new Error("Growth skills must prevent an account from being treated as empty");
 if (hasMeaningfulGrowth({ growth: { cv: { name: "", headline: "", languages: "العربية، الفرنسية" }, skills: [], paths: {}, history: [], requests: [], customTemplates: [], locale: "ar" } })) throw new Error("Default Growth Hub data must not be mistaken for user content");
 console.log("OK account restoration preserves custom templates, CV, skills, paths and history");
+
+const accountMergeDetector = auth.match(/function mergeAccountState\(cloudValue, guestValue\) \{[\s\S]*?\n  \}/);
+if (!accountMergeDetector) throw new Error("Account restoration must merge guest and cloud data without dropping guest-only records");
+const mergeAccountState = vm.runInNewContext("(" + accountMergeDetector[0] + ")");
+const mergedAccountState = mergeAccountState(
+  { profile: { name: "Cloud name", city: "" }, projects: [{ id: "cloud", title: "Cloud project" }, { id: "same", title: "Cloud title" }], growth: { skills: [{ id: "html", name: "HTML" }] } },
+  { profile: { name: "Guest name", city: "Ouargla" }, projects: [{ id: "guest", title: "Guest project" }, { id: "same", description: "Guest detail" }], growth: { skills: [{ id: "css", name: "CSS" }] } }
+);
+const mergedSnapshot = JSON.parse(JSON.stringify(mergedAccountState));
+if (mergedSnapshot.profile.name !== "Cloud name" || mergedSnapshot.profile.city !== "Ouargla") throw new Error("Account merge must prefer non-empty cloud profile values and fill missing fields from guest data");
+if (mergedSnapshot.projects.length !== 3 || mergedSnapshot.projects[0].id !== "cloud" || mergedSnapshot.projects[1].title !== "Cloud title" || mergedSnapshot.projects[1].description !== "Guest detail" || mergedSnapshot.projects[2].id !== "guest") throw new Error("Account merge must retain cloud and guest-only projects and merge matching project IDs");
+if (mergedSnapshot.growth.skills.length !== 2) throw new Error("Account merge must preserve skills from both guest and cloud state");
+console.log("OK guest/cloud restoration merges records and fills missing fields without dropping unique data");
+if (!profile.includes('format:"mada-full-backup",version:2') || !profile.includes('parsed.format==="mada-full-backup"&&parsed.version===2') || !profile.includes('parsed.format==="mada-portfolio-backup"&&parsed.version===1')) throw new Error("Mada backups must export a complete versioned state and import both current and legacy formats");
+if (!profile.includes('$("#exportData").addEventListener("click",function(){') || !profile.includes('downloadFullBackup();toast("تم تصدير نسخة كاملة من بياناتك")')) throw new Error("General data export must use the same complete backup format as portfolio export");
+console.log("OK full-state backup format and legacy import compatibility");
+
+const growthHub = fs.readFileSync("masar-platform/growth-hub.js", "utf8");
+const sharedTemplatePage = fs.readFileSync("masar-platform/share.html", "utf8");
+if (profile.includes('id="designPrice"') || profile.includes('السعر بالدينار (0 = مجاني)')) throw new Error("Template sharing UI must not expose unsupported prices");
+if (!account.includes("const priceDzd = 0;") || !account.includes("paid: false, priceDzd: 0") || !account.includes("design });")) throw new Error("Public template sharing must stay available and free while returning the full design");
+if (sharedTemplatePage.includes("قالب مدفوع") || sharedTemplatePage.includes("السعر المحدد:") || sharedTemplatePage.includes("data.paid")) throw new Error("Shared template pages must not show unsupported paid states");
+if (growthHub.includes("القوالب المميزة ستتوفر لاحقًا") || growthHub.includes("t.paid")) throw new Error("Growth template library must not expose obsolete paid placeholders");
+console.log("OK public template sharing remains enabled and free; unsupported pricing states are removed");
+
+
 if (!account.includes('if (!origin || !host) return false') || !account.includes('req.headers.host || ""')) throw new Error("Account API must reject missing origins and compare against the request host");
 if (!account.includes("4 * 1024 * 1024") || !account.includes("encoded.length > 3500000") || !account.includes("Retry-After") || !account.includes("allowedActions") || !account.includes("methodsByAction") || !account.includes("SameSite=Strict") || !account.includes("parsed.protocol === \"https:\"")) throw new Error("Account API request size, method/action allowlists, strict cookies/origin, and write-rate protections are required");
 if (!adminApi.includes('req.headers.host||""') || !adminApi.includes("INTERVAL '5 minutes'") || !adminApi.includes("Retry-After") || !adminApi.includes("public-config") || !adminApi.includes("methodsByAction") || !adminApi.includes('u.protocol==="https:"')) throw new Error("Admin API origin, method/action allowlist, and write-rate protections are required");

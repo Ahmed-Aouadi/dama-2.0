@@ -109,9 +109,9 @@
     user = result.user;
     setUser(user);
   }
-  async function publishDesign(design, designId, isPublic, priceDzd) {
+  async function publishDesign(design, designId, isPublic) {
     if (!user) throw new Error("سجّل الدخول أولًا لنشر القالب.");
-    const result = await request("publish-design", "POST", { design, designId, isPublic: !!isPublic, priceDzd: Number(priceDzd) || 0 });
+    const result = await request("publish-design", "POST", { design, designId, isPublic: !!isPublic });
     return { ...result, url: new URL("share.html?id=" + encodeURIComponent(result.designId), window.location.href).href };
   }
   async function sync(data) {
@@ -140,42 +140,69 @@
     return ["name", "headline", "email", "phone", "city", "summary", "education", "experience", "projects", "skills"]
       .some(key => String(cv[key] || "").trim().length > 0);
   }
+  function mergeAccountState(cloudValue, guestValue) {
+    if (Array.isArray(cloudValue) || Array.isArray(guestValue)) {
+      const cloud = Array.isArray(cloudValue) ? cloudValue : [];
+      const guest = Array.isArray(guestValue) ? guestValue : [];
+      const merged = [];
+      const positions = new Map();
+      function identity(item) {
+        if (item && typeof item === "object" && !Array.isArray(item) && item.id != null) return "id:" + String(item.id);
+        if (item && typeof item === "object" && !Array.isArray(item) && item.name) return "name:" + String(item.name).trim().toLocaleLowerCase();
+        try { return "value:" + JSON.stringify(item); } catch (_) { return "value:" + String(item); }
+      }
+      cloud.concat(guest).forEach(item => {
+        const key = identity(item);
+        if (positions.has(key)) {
+          const index = positions.get(key);
+          if (item && typeof item === "object" && !Array.isArray(item)) merged[index] = mergeAccountState(merged[index], item);
+          return;
+        }
+        positions.set(key, merged.length);
+        merged.push(item);
+      });
+      return merged;
+    }
+    if (cloudValue && typeof cloudValue === "object" && !Array.isArray(cloudValue) ||
+        guestValue && typeof guestValue === "object" && !Array.isArray(guestValue)) {
+      const cloud = cloudValue && typeof cloudValue === "object" && !Array.isArray(cloudValue) ? cloudValue : {};
+      const guest = guestValue && typeof guestValue === "object" && !Array.isArray(guestValue) ? guestValue : {};
+      const result = {};
+      new Set(Object.keys(guest).concat(Object.keys(cloud))).forEach(key => {
+        result[key] = key in cloud ? mergeAccountState(cloud[key], guest[key]) : guest[key];
+      });
+      return result;
+    }
+    const cloudIsEmpty = cloudValue == null || cloudValue === "";
+    return cloudIsEmpty && guestValue != null ? guestValue : cloudValue;
+  }
   async function restoreAccountData(migrateGuest) {
     if (!user || !window.MadaApp) return;
+    // Capture the guest workspace before switching to the account-scoped key.
     const guestState = window.MadaApp.getState();
     window.MadaApp.setKey("mada-platform-v1:" + user.id);
     const result = await request("data", "GET");
-    // Preserve projects created while the account's cloud data was loading.
     const latestState = window.MadaApp.getState();
-    const originalProjectIds = new Set((guestState.projects || []).map(project => String(project.id)));
-    const cloudProjects = result.data && Array.isArray(result.data.projects) ? result.data.projects : [];
-    const cloudProjectIds = new Set(cloudProjects.map(project => String(project.id)));
-    const projectsAddedDuringRestore = (latestState.projects || []).filter(project =>
-      !originalProjectIds.has(String(project.id)) && !cloudProjectIds.has(String(project.id))
-    );
     const guestHasContent = hasMeaningfulProfile(guestState) ||
       ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
       hasMeaningfulGrowth(guestState);
-    const cloudIsEmpty = !result.data ||
-      (!hasMeaningfulProfile(result.data) &&
-       !["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) &&
-       !hasMeaningfulGrowth(result.data));
-    if (result.data && !(migrateGuest && cloudIsEmpty && guestHasContent)) {
-      const needsName = !result.data.profile || !result.data.profile.name;
-      const restoredState = Object.assign({}, result.data, {
-        projects: projectsAddedDuringRestore.concat(cloudProjects)
-      });
-      window.MadaApp.applyCloudState(restoredState, user.name);
-      if (needsName || projectsAddedDuringRestore.length) await request("data", "POST", { data: window.MadaApp.getState() });
+    const cloudHasContent = result.data && (
+      hasMeaningfulProfile(result.data) ||
+      ["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) ||
+      hasMeaningfulGrowth(result.data)
+    );
+    let restoredState;
+    if (migrateGuest && guestHasContent) {
+      // Merge by record ID: cloud records remain first, while guest-only records are retained.
+      // Non-empty cloud scalar values win; guest values fill missing cloud fields.
+      restoredState = mergeAccountState(result.data || {}, guestState);
+      restoredState = mergeAccountState(restoredState, latestState);
     } else {
-      const initialState = migrateGuest && guestHasContent ? Object.assign({}, guestState, {
-        projects: projectsAddedDuringRestore.concat(guestState.projects || [])
-      }) : Object.assign({}, latestState, {
-        projects: projectsAddedDuringRestore.concat(latestState.projects || [])
-      });
-      window.MadaApp.applyCloudState(initialState, user.name);
-      await request("data", "POST", { data: window.MadaApp.getState() });
+      restoredState = result.data && cloudHasContent ? result.data : (result.data || latestState);
     }
+    window.MadaApp.applyCloudState(restoredState, user.name);
+    // Persist the merged result so both the device and the account have the same snapshot.
+    await request("data", "POST", { data: window.MadaApp.getState() });
   }
   async function logout() {
     const confirmed = window.confirm("هل تريد تسجيل الخروج من حسابك في مَدى؟\n\nستبقى بيانات ملفك ومشاريعك محفوظة في حسابك، ويمكنك العودة إليها عند تسجيل الدخول مرة أخرى.");

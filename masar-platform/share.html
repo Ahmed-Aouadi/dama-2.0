@@ -27,7 +27,6 @@
   paper.append(el("div","eyebrow",d.author||data.authorName||"قالب من مَدى"));
   paper.append(el("h1","",d.title||"قالب مشترك"));
   paper.append(el("p","subtitle",d.subtitle||""));
-  if(data.paid){const n=el("div","notice");n.append(el("h2","", "قالب مدفوع"));n.append(el("p","", "السعر المحدد: "+Number(data.priceDzd||0).toLocaleString("ar-DZ")+" دج"));n.append(el("p","", "هذه صفحة معاينة فقط. الشراء الإلكتروني غير متاح حتى يربط صاحب المنصة بوابة دفع آمنة."));paper.append(n);return}
   const fields=d.fields&&typeof d.fields==="object"?d.fields:{};
   Object.keys(fields).forEach(function(key){if(!String(fields[key]||"").trim())return;const section=el("section","field");section.append(el("h2","",labels[key]||key));section.append(el("div","field-value",String(fields[key])));paper.append(section)});
   printBtn.hidden=false;

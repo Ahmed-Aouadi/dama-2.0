@@ -71,7 +71,7 @@ async function fill(preview){
   frame=document.createElement("iframe");frame.id="growthTemplatePreviewFrame";frame.className="growth-template-preview-frame";frame.title="معاينة القالب";host.appendChild(frame);frame.srcdoc=doc;
  }else{printHtml(doc)}
 }
-function builtin(id){const managed=managedTemplates.find(t=>t.id===id);if(managed){if(managed.paid){say("هذا القالب مميز، لكن الدفع غير مفعل حاليًا.");return}useTemplate(Object.assign({},managed,{adminManaged:true}));return}const specs={
+function builtin(id){const managed=managedTemplates.find(t=>t.id===id);if(managed){useTemplate(Object.assign({},managed,{adminManaged:true}));return}const specs={
 cv:{id:"builtin_cv",title:"سيرة ذاتية",intro:"املأ معلوماتك وأضف صورتك ورابط ملف أعمالك.",fields:[["الاسم الكامل","text",true],["المسمى المهني","text"],["الصورة الشخصية","image",false,"circle"],["معلومات التواصل","textarea"],["نبذة مهنية","textarea"],["المهارات","textarea"],["الخبرة والمشاريع","textarea"],["التعليم والتكوين","textarea"],["اللغات","text"],["رابط الأعمال","url"]]},
 case:{id:"builtin_case",title:"دراسة حالة مشروع",intro:"وثق المشكلة والهدف ودورك ونتيجة العمل.",fields:["اسم المشروع","المشكلة","الهدف والجمهور","دوري ومسؤولياتي","الأدوات والقرارات","النتيجة والأثر","ما تعلمته"].map((x,i)=>[x,i===0?"text":"textarea"])},
 study:{id:"builtin_study",title:"مخطط دراسة أسبوعي",intro:"خطة قابلة للتعبئة والطباعة.",fields:["أهداف الأسبوع","المهام اليومية","جلسات التركيز","المراجعة الأسبوعية"].map(x=>[x,"textarea"])},
