@@ -75,6 +75,16 @@ function assert(condition, message) {
       else if (action === "data") body = { ok: true, revision: 2 };
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
     });
+    const careerCatalog = JSON.parse(fs.readFileSync(path.join(root, "api/career-paths-default.json"), "utf8"));
+    await page.route("**/api/admin**", async route => {
+      const url = new URL(route.request().url());
+      const action = url.searchParams.get("action");
+      if (action === "public-config") {
+        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ careerPaths: careerCatalog, careerStats: {}, growthTemplates: [] }) });
+      } else {
+        await route.fulfill({ status: 401, contentType: "application/json", body: JSON.stringify({ error: "Unauthenticated test request." }) });
+      }
+    });
     await page.addInitScript(() => {
       window.__madaBrowserErrors = [];
       window.addEventListener("error", event => window.__madaBrowserErrors.push({message:event.message,source:event.filename,line:event.lineno,column:event.colno,stack:event.error && event.error.stack}), true);
@@ -120,6 +130,36 @@ function assert(condition, message) {
     assert(await page.locator("#helpModal").evaluate(el => el.classList.contains("open")), "Help button did not open its dialog");
     await page.locator('#helpModal [data-close="helpModal"]').click();
     console.log("PASS help button opens and closes its dialog");
+
+    assert(await page.locator("#helpModal .help-faq details").count() >= 4, "Help center must expose practical FAQ answers");
+    console.log("PASS help center includes onboarding and practical account/privacy/backup FAQs");
+
+    await page.locator('[data-page="growth"]').first().click();
+    await page.waitForSelector("#growthProgressLabel", { timeout: 5000 });
+    assert((await page.locator("#growthProgressLabel").textContent()).includes("ابدأ بتوثيق إنجاز"), "An empty Growth Hub should show a helpful start state instead of 0% progress");
+    assert((await page.locator("#growthProgress").getAttribute("style") || "").includes("width: 0%"), "An empty Growth Hub should have zero completed progress without counting unstarted path steps");
+    console.log("PASS empty Growth Hub progress shows an actionable start state");
+
+    await page.locator('[data-page="careers"]').first().click();
+    await page.waitForFunction(() => Array.isArray(window.MadaCareerCatalog) && window.MadaCareerCatalog.length > 10, undefined, { timeout: 5000 });
+    assert(await page.locator("#pathCardGrid .path-card").count() === careerCatalog.length, "Discover Path must render the complete career catalog");
+    for (let i = 0; i < 3; i++) await page.locator("#pathQuestBody .path-quest-option").first().click();
+    await page.locator("#pathQuestAddSkill").click();
+    await page.waitForFunction(() => window.MadaApp.getState().growth.skills.some(skill => skill.name === "التفكير البرمجي"), undefined, { timeout: 5000 });
+    const discoveryState = await page.evaluate(() => window.MadaApp.getState());
+    assert(String(discoveryState.profile.skills).includes("التفكير البرمجي"), "Career discovery should also add the selected field to profile skills");
+    console.log("PASS full career catalog and add-discovery-result-to-profile workflow");
+
+    await page.locator('[data-page="settings"]').first().click();
+    await page.locator("#appThemeSelect").selectOption("dark");
+    assert(await page.locator("html").getAttribute("data-theme") === "dark", "Dark theme selection did not apply");
+    await page.locator("#appThemeSelect").selectOption("light");
+    assert(await page.locator("html").getAttribute("data-theme") === "light", "Light theme selection did not apply");
+    await page.locator("#appThemeSelect").selectOption("system");
+    assert(await page.locator("html").getAttribute("data-theme") === null, "System theme selection should defer to the operating system");
+    assert(await page.evaluate(() => window.MadaApp.getState().settings.theme) === "system", "Theme preference was not saved in app settings");
+    console.log("PASS persisted light/dark/system appearance settings");
+
 
     await page.locator('[data-page="portfolio"]').first().click();
     await page.locator("#addProjectBtn").click();
