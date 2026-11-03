@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const API = "/api/account";
-  let user = null, syncing = false, pending = null, syncTimer = null, retryDelay = 1500, activeMode = "login", avatarUrl = "";
+  let user = null, syncing = false, pending = null, syncTimer = null, retryDelay = 1500, cloudRevision = 0, activeMode = "login", avatarUrl = "";
   const style = document.createElement("style");
   style.textContent = `
     .mada-auth-button{border:1px solid #e9e6f1;background:#fff;color:#5b46e6;border-radius:12px;padding:10px 14px;font:700 13px Arial,sans-serif;cursor:pointer;white-space:nowrap}
@@ -76,7 +76,7 @@
   async function request(action, method, body) {
     const response = await fetch(API + "?action=" + encodeURIComponent(action), { method: method || "GET", credentials: "same-origin", headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined, cache: "no-store" });
     const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.error || "تعذّر إكمال الطلب.");
+    if (!response.ok) { const error = new Error(result.error || "تعذّر إكمال الطلب."); error.status = response.status; error.data = result; throw error; }
     return result;
   }
   function setUser(nextUser) {
@@ -125,15 +125,27 @@
     const snapshot = pending; pending = null; syncing = true;
     setSyncStatus("syncing", "جارٍ الحفظ في حسابك…");
     try {
-      await request("data", "POST", { data: snapshot });
+      const saved = await request("data", "POST", { data: snapshot, expectedRevision: cloudRevision });
+      cloudRevision = Number(saved.revision || cloudRevision);
       retryDelay = 1500; setSyncStatus("synced", "تمت المزامنة");
     } catch (error) {
+      if (error.status === 409 && error.data && user) {
+        const remoteState = error.data.data && typeof error.data.data === "object" ? error.data.data : {};
+        try { localStorage.setItem("mada-sync-conflict-backup:" + user.id, JSON.stringify({ version: 1, savedAt: new Date().toISOString(), local: snapshot, remote: remoteState })); } catch (_) {}
+        cloudRevision = Number(error.data.revision || 0);
+        pending = mergeAccountState(remoteState, snapshot);
+        if (window.MadaApp) window.MadaApp.applyCloudState(pending, user.name);
+        retryDelay = 500;
+        setSyncStatus("pending", "دمج تغييرات جهاز آخر…");
+        if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast("اكتشفنا تعديلات من جهاز آخر. احتفظنا بنسخة محلية ودمجنا العناصر المختلفة قبل إعادة المزامنة.");
+      } else {
       pending = snapshot;
       if (error.message.includes("سجّل الدخول") || error.message.includes("انتهت الجلسة")) {
         setUser(null); setSyncStatus("error", "انتهت الجلسة — بياناتك محفوظة محليًا");
       } else {
         setSyncStatus("error", "تعذّرت المزامنة — محفوظ محليًا");
         if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast(error.message && error.message.includes("كبيرة") ? "بياناتك كبيرة جدًا للمزامنة. قلّل حجم الصور أو استخدم روابط مباشرة." : "تعذّرت المزامنة الآن. بياناتك محفوظة على هذا الجهاز وستتم إعادة المحاولة تلقائيًا.");
+      }
       }
     } finally {
       syncing = false;
@@ -198,7 +210,7 @@
     const guestState = window.MadaApp.getState();
     window.MadaApp.setKey("mada-platform-v1:" + user.id);
     let result;
-    try { result = await request("data", "GET"); }
+    try { result = await request("data", "GET"); cloudRevision = Number(result.revision || 0); }
     catch (error) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); setSyncStatus("error", "تعذّر تحميل السحابة — تعمل الآن محليًا"); throw error; }
     const latestState = window.MadaApp.getState();
     const guestHasContent = hasMeaningfulProfile(guestState) ||
@@ -220,15 +232,29 @@
     }
     window.MadaApp.applyCloudState(restoredState, user.name);
     // Persist the merged result so both the device and the account have the same snapshot.
-    await request("data", "POST", { data: window.MadaApp.getState() });
-    setSyncStatus("synced", "تمت مزامنة بيانات الحساب");
+    try {
+      const saved = await request("data", "POST", { data: window.MadaApp.getState(), expectedRevision: cloudRevision });
+      cloudRevision = Number(saved.revision || cloudRevision);
+      setSyncStatus("synced", "تمت مزامنة بيانات الحساب");
+    } catch (error) {
+      if (error.status === 409 && error.data) {
+        cloudRevision = Number(error.data.revision || 0);
+        const merged = mergeAccountState(error.data.data || {}, window.MadaApp.getState());
+        try { localStorage.setItem("mada-sync-conflict-backup:" + user.id, JSON.stringify({ version: 1, savedAt: new Date().toISOString(), local: window.MadaApp.getState(), remote: error.data.data || {} })); } catch (_) {}
+        window.MadaApp.applyCloudState(merged, user.name);
+        sync(merged);
+      } else {
+        sync(window.MadaApp.getState());
+        setSyncStatus("error", "تم الحفظ محليًا — بانتظار المزامنة");
+      }
+    }
   }
   async function logout() {
     const confirmed = window.confirm("هل تريد تسجيل الخروج من حسابك في مَدى؟\n\nستبقى بيانات ملفك ومشاريعك محفوظة في حسابك، ويمكنك العودة إليها عند تسجيل الدخول مرة أخرى.");
     if (!confirmed) return;
     try { await request("logout", "POST", {}); } catch (_) {}
     const guestState = window.MadaApp && window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1") : null;
-    user = null; pending = null; if (syncTimer) clearTimeout(syncTimer); setUser(null);
+    user = null; pending = null; cloudRevision = 0; if (syncTimer) clearTimeout(syncTimer); setUser(null);
     if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); }
     setSyncStatus("local", "وضع الزائر — حفظ محلي");
   }
@@ -257,7 +283,7 @@
   async function deleteAccount(password) {
     const result = await request("delete-account", "POST", { password: String(password || "") });
     const guestState = window.MadaApp && window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1") : null;
-    user = null; pending = null;
+    user = null; pending = null; cloudRevision = 0;
     if (syncTimer) clearTimeout(syncTimer);
     setUser(null);
     if (window.MadaApp) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); }
