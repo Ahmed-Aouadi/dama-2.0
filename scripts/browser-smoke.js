@@ -240,16 +240,14 @@ function assert(condition, message) {
       const body = action === "me" ? { user: null } : { ok: true };
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
     });
-    await guestPage.addInitScript(() => {
-      if (!localStorage.getItem("mada-platform-v1")) {
-        localStorage.setItem("mada-platform-v1", JSON.stringify({ profile: { name: "ضيف الاختبار" }, projects: [], designs: [], quizzes: [], settings: {}, portfolioSettings: {}, growth: {} }));
-      }
-    });
     await guestPage.goto("http://127.0.0.1:4173/?guest-smoke=1", { waitUntil: "domcontentloaded" });
     await guestPage.waitForFunction(() => window.MadaAuth && window.MadaAuth.getUser() === null, undefined, { timeout: 5000 });
     assert(await guestPage.locator("#madaAccessGate").count() === 0, "Guest workspace must not render an authentication gate");
     assert((await guestPage.locator("#madaSyncStatus").textContent()).includes("وضع الزائر"), "Guest workspace must show local-only save status");
-    const guestStateCheck = await guestPage.evaluate(() => ({ name: window.MadaApp.getState().profile.name, stored: localStorage.getItem("mada-platform-v1"), user: window.MadaAuth.getUser(), status: document.querySelector("#madaSyncStatus")?.textContent }));
+    await guestPage.evaluate(() => localStorage.setItem("mada-platform-v1", JSON.stringify({ profile: { name: "ضيف الاختبار" }, projects: [], designs: [], quizzes: [], settings: {}, portfolioSettings: {}, growth: {} })));
+    await guestPage.reload({ waitUntil: "domcontentloaded" });
+    await guestPage.waitForFunction(() => window.MadaApp && window.MadaAuth && window.MadaAuth.getUser() === null, undefined, { timeout: 5000 });
+    const guestStateCheck = await guestPage.evaluate(() => ({ name: window.MadaApp.getState().profile.name, stored: localStorage.getItem("mada-platform-v1"), status: document.querySelector("#madaSyncStatus")?.textContent }));
     assert(guestStateCheck.name === "ضيف الاختبار", "Guest profile must load from localStorage without login: " + JSON.stringify(guestStateCheck));
     await guestPage.reload({ waitUntil: "domcontentloaded" });
     assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must persist across reloads");
