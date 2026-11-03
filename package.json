@@ -10,6 +10,7 @@
     "@vercel/blob": "^2.6.1"
   },
   "scripts": {
+    "dev": "node scripts/dev-server.js",
     "check": "node scripts/check-syntax.js"
   }
 }

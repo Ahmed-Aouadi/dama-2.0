@@ -64,7 +64,7 @@ ensureProjectDialog();
 $("loadStatus").hidden=true;
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
-const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery"].includes(display.template)?display.template:"classic";
+const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery","aurora"].includes(display.template)?display.template:"classic";
 const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
@@ -172,7 +172,10 @@ const profileFirst=display.sectionOrder!=="works-first";
 const mainContent=(profileFirst?sectionHead+works:works+sectionHead);
 const brandName=esc(display.brandText||"معرض أعمال شخصي · مَدى");
 const identity=hero;
-switch(template){
+  switch(template){
+ case "aurora":
+  view.innerHTML='<div class="aurora-layout"><div class="aurora-topline"><strong>'+brandName+'</strong><span>SELECTED WORKS / '+String(projects.length).padStart(2,"0")+'</span></div><div class="aurora-hero"><div>'+identity+'</div><aside class="aurora-note">مساحة مختارة من الأعمال والتجارب التي تصنع الفرق. استكشف التفاصيل، ثم تعرّف إلى القصة خلف كل مشروع.</aside></div><main>'+sectionHead+works+'</main><footer class="aurora-footer"><span>معرض أعمال شخصي</span><span>تم الإنشاء عبر مَدى</span></footer></div>';
+  break;
  case "mosaic":
   view.innerHTML='<div class="layout-mosaic"><div class="mosaic-masthead"><span class="mosaic-brand">'+brandName+'</span><span class="mosaic-mark">SELECTED / WORKS</span></div><header class="mosaic-profile">'+identity+'</header><main class="mosaic-gallery">'+sectionHead+works+'</main></div>';
   break;
