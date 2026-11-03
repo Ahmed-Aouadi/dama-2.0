@@ -167,6 +167,21 @@ function assert(condition, message) {
     await page.locator('#projectModal [data-close="projectModal"]').click();
     console.log("PASS add-project button opens and closes its dialog");
 
+    await page.locator("#addPortfolioRecord").click();
+    await page.locator("#portfolioRecordModal").waitFor({ state: "visible", timeout: 3000 });
+    await page.locator("#portfolioRecordType").selectOption("certificate");
+    await page.locator("#portfolioRecordTitle").fill("شهادة اختبارية");
+    await page.locator("#portfolioRecordOrganization").fill("جهة الاختبار");
+    await page.locator("#portfolioRecordDate").fill("2026");
+    await page.locator("#portfolioRecordDescription").fill("وصف مختصر للشهادة.");
+    await page.locator("#portfolioRecordPublic").check();
+    await page.locator('#portfolioRecordForm button[type="submit"]').click();
+    assert(await page.locator("#portfolioRecordsList .portfolio-record-row").count() === 1, "New portfolio record was not saved and rendered");
+    assert((await page.locator("#portfolioRecordsList").textContent()).includes("شهادة اختبارية"), "Saved portfolio record title is missing");
+    assert(await page.evaluate(() => window.MadaApp.getState().records[0].public === true), "Public visibility choice was not persisted for the record");
+    console.log("PASS portfolio records: create, save, and per-record public visibility");
+
+
     await page.evaluate(() => {
       if (!window.MadaAuth || typeof window.MadaAuth.getUser !== "function") throw new Error("MadaAuth.getUser is unavailable for the stale-session regression test");
       window.MadaAuth.getUser = () => null;
@@ -175,6 +190,7 @@ function assert(condition, message) {
     await page.waitForFunction(() => /تم نشر المعرض بنجاح/.test(document.querySelector("#portfolioShareStatus")?.textContent || ""), undefined, { timeout: 5000 });
     assert(sessionRefreshRequested, "Publishing did not refresh the server session when client auth state was empty");
     assert(!errors.length, "Uncaught browser exceptions after portfolio publishing click: " + errors.join(" | "));
+    assert(lastPublishedPayload && Array.isArray(lastPublishedPayload.portfolio.records) && lastPublishedPayload.portfolio.records.some(record => record.title === "شهادة اختبارية"), "Public portfolio publishing omitted the selected public certificate");
     console.log("PASS publish button publishes and exposes a validated share URL");
 
     await page.locator("#openPortfolioDesignerBtn").click();
