@@ -1,5 +1,5 @@
 /* Mada theme — aligned with the logo: navy ground, violet / pink arcs, teal dot. Loaded after all other styles. */
-:root{--navy:#17152b;--navy-2:#1d1a36;--violet:#8b7bff;--violet-deep:#5b46e6;--pink:#ff6fa5;--teal:#34d6b0;--paper:#f6f4ff;--ink:#17152b;--muted:#6a6882;--line:#e6e2f4;--display:"Reem Kufi","IBM Plex Sans Arabic",sans-serif}
+:root{--navy:#17152b;--navy-2:#1d1a36;--violet:#8b7bff;--violet-deep:#5b46e6;--pink:#ff6fa5;--teal:#34d6b0;--paper:#f6f4ff;--ink:#17152b;--muted:#6a6882;--line:#e6e2f4;--display:"Reem Kufi","IBM Plex Sans Arabic",sans-serif;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:26px;--shadow-card:0 12px 35px #211e3508;--shadow-dialog:0 25px 80px #0e0b2350;--motion-fast:140ms;--motion-normal:220ms}
 body{background:var(--paper);color:var(--ink)}
 :focus-visible{outline:3px solid var(--violet);outline-offset:2px;border-radius:6px}
 .skip-link{position:fixed;top:-60px;right:12px;z-index:10001;background:var(--teal);color:var(--navy);padding:10px 16px;border-radius:10px;font-weight:700;transition:top .15s}
@@ -49,13 +49,12 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 .mobile-nav{background:var(--navy);border-top:1px solid #ffffff14}
 .mobile-nav button{color:#b9b4e0}
 .mobile-nav button.active{color:var(--teal)}
-/* auth + gate */
-.mada-auth-mark,.mada-access-mark{background:none!important;width:64px!important;height:44px!important;border-radius:0!important}
-.mada-auth-mark svg,.mada-access-mark svg{width:100%;height:100%;display:block}
-#madaAccessGate{background:rgba(23,21,43,.96)!important}
-#madaAccessGate .mada-access-card{border:0;box-shadow:0 30px 90px #05040f66}
-#madaAccessGate h1{font-family:var(--display)}
+/* account dialog and guest-first workspace */
+.mada-auth-mark{background:none!important;width:64px!important;height:44px!important;border-radius:0!important}
+.mada-auth-mark svg{width:100%;height:100%;display:block}
 .mada-auth-submit{background:var(--violet-deep)!important}
+.mada-sync-status{border-color:#ffffff1f!important;background:#ffffff0b!important;color:#d4d0e5!important}
+.mada-sync-status[data-status="synced"]:before{background:var(--teal)!important}
 /* modals */
 .modal-backdrop{background:#17152bb3}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.hero-arcs path{stroke-dashoffset:0}}
