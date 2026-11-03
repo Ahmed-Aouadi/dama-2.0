@@ -1752,5 +1752,58 @@ document.addEventListener("click",function(event){
 </script>
 
 </div>
+
+<!-- Portfolio gallery UX repair: true viewport dialogs, on-demand previews, no preset picker. -->
+<style id="mada-portfolio-dialog-fix">
+/* Dialogs must be independent of layout/transform/overflow ancestors. */
+body>.modal-backdrop,body>.media-preview-backdrop{position:fixed!important;inset:0!important;z-index:2147483000!important;display:none;align-items:center;justify-content:center;padding:clamp(10px,2.5vw,28px);background:rgba(17,15,35,.68);backdrop-filter:blur(5px);isolation:isolate}
+body>.modal-backdrop.open,body>.media-preview-backdrop.open{display:flex!important}
+body>.modal-backdrop>.modal,body>.media-preview-backdrop>.modal{position:relative!important;inset:auto!important;margin:auto!important;width:min(760px,100%)!important;max-height:min(88dvh,900px)!important;overflow:auto!important;overscroll-behavior:contain;border:1px solid #e9e6f2;box-shadow:0 28px 100px #09071966;border-radius:24px}
+body>.modal-backdrop .modal-head,body>.media-preview-backdrop .modal-head{position:sticky;top:-1px;background:#fff;z-index:4;padding:2px 0 12px}
+body>.modal-backdrop .close,body>.media-preview-backdrop .close{flex:0 0 auto}
+body.mada-dialog-open{overflow:hidden!important}
+body>.media-preview-backdrop{z-index:2147483001!important}
+body>.media-preview-backdrop .media-preview-modal{width:min(1080px,100%)!important;max-height:90dvh!important}
+body>.media-preview-backdrop .media-preview-frame{display:block;width:100%;height:min(66dvh,650px);border:0;border-radius:12px;background:#f6f4ff}
+body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .media-preview-video{display:block;max-width:100%;max-height:68dvh;margin:auto;object-fit:contain}
+@media(max-width:600px){body>.modal-backdrop,body>.media-preview-backdrop{padding:9px}body>.modal-backdrop>.modal,body>.media-preview-backdrop>.modal{max-height:94dvh!important;border-radius:18px;padding:17px!important}}
+/* The portfolio editor should no longer offer canned gallery themes. */
+#portfolioDesigner .portfolio-template-picker{display:none!important}
+</style>
+<script id="mada-portfolio-dialog-repair">
+(function(){
+ "use strict";
+ function repair(){
+  /* Move overlays to body so ancestors cannot clip or restyle them. */
+  document.querySelectorAll(".modal-backdrop,.media-preview-backdrop").forEach(function(layer){
+   if(layer.parentElement!==document.body)document.body.appendChild(layer);
+   layer.setAttribute("aria-hidden",layer.classList.contains("open")?"false":"true");
+  });
+  /* Any remaining preview content stays inert until a deliberate preview action. */
+  document.body.classList.toggle("mada-dialog-open",!!document.querySelector("body>.modal-backdrop.open,body>.media-preview-backdrop.open"));
+ }
+ repair();
+ document.addEventListener("click",function(e){
+  var backdrop=e.target;
+  if(backdrop&&backdrop.matches&&backdrop.matches("body>.modal-backdrop.open,body>.media-preview-backdrop.open")){
+   backdrop.classList.remove("open");backdrop.setAttribute("aria-hidden","true");repair();
+  }
+ },true);
+ document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape")return;
+  var layers=Array.from(document.querySelectorAll("body>.media-preview-backdrop.open,body>.modal-backdrop.open"));
+  if(!layers.length)return;
+  e.preventDefault();layers[layers.length-1].classList.remove("open");layers[layers.length-1].setAttribute("aria-hidden","true");repair();
+ });
+ /* Observe existing modal class toggles used by the app's open/close helpers. */
+ document.querySelectorAll(".modal-backdrop,.media-preview-backdrop").forEach(function(layer){
+  new MutationObserver(function(){layer.setAttribute("aria-hidden",layer.classList.contains("open")?"false":"true");repair()}).observe(layer,{attributes:true,attributeFilter:["class"]});
+ });
+ /* Explicitly keep the project detail surface hidden at initial page load. */
+ var details=document.getElementById("projectDetailsModal");
+ if(details&&!details.classList.contains("open"))details.setAttribute("aria-hidden","true");
+})();
+</script>
+
 </body>
 </html>
