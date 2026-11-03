@@ -137,7 +137,7 @@ function assert(condition, message) {
     await page.locator('[data-page="growth"]').first().click();
     await page.waitForSelector("#growthProgressLabel", { timeout: 5000 });
     assert((await page.locator("#growthProgressLabel").textContent()).includes("ابدأ بتوثيق إنجاز"), "An empty Growth Hub should show a helpful start state instead of 0% progress");
-    assert((await page.locator("#growthProgress").getAttribute("style") || "").includes("width: 0%"), "An empty Growth Hub should have zero completed progress without counting unstarted path steps");
+    assert(await page.locator("#growthProgress").evaluate(el => parseFloat(getComputedStyle(el).width) === 0), "An empty Growth Hub should have a zero-width progress bar without counting unstarted path steps");
     console.log("PASS empty Growth Hub progress shows an actionable start state");
 
     await page.locator('[data-page="careers"]').first().click();
