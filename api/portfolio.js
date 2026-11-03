@@ -83,9 +83,10 @@ module.exports = async function handler(req, res) {
     const description = String(profile.bio || ("معرض أعمال " + name + " على منصة مَدى.")).replace(/\s+/g, " ").slice(0, 300);
     const projects = Array.isArray(portfolio.projects) ? portfolio.projects : [];
     const firstCover = projects.map(project => safeUrl(project.cover, false)).find(Boolean);
-    const image = firstCover || "https://" + String(req.headers.host || "dama-20.vercel.app").split(",")[0].trim() + "/icons/og-image.png";
-    const host = String(req.headers["x-forwarded-host"] || req.headers.host || "dama-20.vercel.app").split(",")[0].trim();
+    const rawHost = String(req.headers.host || "dama-20.vercel.app").split(",")[0].trim();
+    const host = /^[a-z0-9.-]+(?::\\d{1,5})?$/i.test(rawHost) ? rawHost : "dama-20.vercel.app";
     const origin = (host.startsWith("localhost") ? "http://" : "https://") + host;
+    const image = firstCover || origin + "/icons/og-image.png";
     const canonical = origin + "/@" + encodeURIComponent(row.username);
     const title = name + " | معرض أعمال مَدى";
     const jsonLd = { "@context": "https://schema.org", "@type": "Person", name, url: canonical, description, image, sameAs: safeUrl(profile.link, false) ? [safeUrl(profile.link, false)] : undefined };
@@ -95,7 +96,7 @@ module.exports = async function handler(req, res) {
       '<link rel="canonical" href="' + esc(canonical) + '">' +
       '<meta property="og:type" content="profile"><meta property="og:title" content="' + esc(title) + '">' +
       '<meta property="og:description" content="' + esc(description) + '"><meta property="og:url" content="' + esc(canonical) + '">' +
-      '<meta property="og:image" content="' + esc(image) + '"><meta name="twitter:card" content="summary_large_image">' +
+      '<meta property="og:image" content="' + esc(image) + '"><meta property="og:image:alt" content="' + esc(title) + '"><meta property="og:site_name" content="مَدى"><meta name="twitter:card" content="summary_large_image">' +
       '<meta name="twitter:title" content="' + esc(title) + '"><meta name="twitter:description" content="' + esc(description) + '">' +
       '<script type="application/ld+json">' + safeJson(jsonLd) + '</script>';
     html = html.replace(/<title>[\s\S]*?<\/title>/i, "<title>" + esc(title) + "</title>");
