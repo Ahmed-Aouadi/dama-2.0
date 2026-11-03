@@ -121,6 +121,15 @@ if (!profile.includes('format:"mada-full-backup",version:2') || !profile.include
 if (!profile.includes('$("#exportData").addEventListener("click",function(){') || !profile.includes('downloadFullBackup();toast("تم تصدير نسخة كاملة من بياناتك")')) throw new Error("General data export must use the same complete backup format as portfolio export");
 console.log("OK full-state backup format and legacy import compatibility");
 
+const growthHub = fs.readFileSync("masar-platform/growth-hub.js", "utf8");
+const sharedTemplatePage = fs.readFileSync("masar-platform/share.html", "utf8");
+if (profile.includes('id="designPrice"') || profile.includes('السعر بالدينار (0 = مجاني)')) throw new Error("Template sharing UI must not expose unsupported prices");
+if (!account.includes("const priceDzd = 0;") || !account.includes("paid: false, priceDzd: 0") || !account.includes("design });")) throw new Error("Public template sharing must stay available and free while returning the full design");
+if (sharedTemplatePage.includes("قالب مدفوع") || sharedTemplatePage.includes("السعر المحدد:") || sharedTemplatePage.includes("data.paid")) throw new Error("Shared template pages must not show unsupported paid states");
+if (growthHub.includes("القوالب المميزة ستتوفر لاحقًا") || growthHub.includes("t.paid")) throw new Error("Growth template library must not expose obsolete paid placeholders");
+console.log("OK public template sharing remains enabled and free; unsupported pricing states are removed");
+
+
 if (!account.includes('if (!origin || !host) return false') || !account.includes('req.headers.host || ""')) throw new Error("Account API must reject missing origins and compare against the request host");
 if (!account.includes("4 * 1024 * 1024") || !account.includes("encoded.length > 3500000") || !account.includes("Retry-After") || !account.includes("allowedActions") || !account.includes("methodsByAction") || !account.includes("SameSite=Strict") || !account.includes("parsed.protocol === \"https:\"")) throw new Error("Account API request size, method/action allowlists, strict cookies/origin, and write-rate protections are required");
 if (!adminApi.includes('req.headers.host||""') || !adminApi.includes("INTERVAL '5 minutes'") || !adminApi.includes("Retry-After") || !adminApi.includes("public-config") || !adminApi.includes("methodsByAction") || !adminApi.includes('u.protocol==="https:"')) throw new Error("Admin API origin, method/action allowlist, and write-rate protections are required");
