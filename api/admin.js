@@ -114,7 +114,8 @@ module.exports=async function handler(req,res){
   if(action==="settings"&&req.method==="POST"){const s=normalizeSettings(req.body&&req.body.settings);await saveSettings(s);await audit(admin,req,"settings_updated");return send(res,200,{ok:true,settings:s})}
    if(action==="growth-templates"&&req.method==="GET"){await ensureSettingsSchema();const s=await readSettings();return send(res,200,{templates:normalizeGrowthTemplates(s.growthTemplates)})}
    if(action==="growth-templates"&&req.method==="POST"){const templates=normalizeGrowthTemplates(req.body&&req.body.templates);if(!Array.isArray(req.body&&req.body.templates))return send(res,400,{error:"قائمة القوالب غير صالحة."});if((req.body.templates||[]).length>100)return send(res,400,{error:"الحد الأقصى 100 قالب."});await db().query("INSERT INTO mada_site_settings(key,value,updated_at) VALUES($1,$2::jsonb,NOW()) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value,updated_at=NOW()",["growthTemplates",JSON.stringify(templates)]);await audit(admin,req,"growth_templates_updated","templates",String(templates.length));return send(res,200,{ok:true,templates})}
-  const r=await db().query("SELECT id,password_slot,action,target_type,target_id,created_at FROM mada_admin_audit ORDER BY created_at DESC LIMIT 100");return send(res,200,{events:r.rows})}
+  if(action==="audit"&&req.method==="GET"){
+   const r=await db().query("SELECT id,password_slot,action,target_type,target_id,created_at FROM mada_admin_audit ORDER BY created_at DESC LIMIT 100");return send(res,200,{events:r.rows})}
   return send(res,404,{error:"القسم المطلوب غير موجود."})
  }catch(e){console.error("Mada admin API:",e&&e.message||e);return send(res,500,{error:"تعذر تنفيذ العملية. تحقق من إعدادات قاعدة البيانات وسجلات الخادم."})}
 };
