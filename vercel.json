@@ -18,7 +18,14 @@
     },
     {
       "source": "/portfolio.html",
+      "has": [
+        { "type": "query", "key": "preview", "value": "1" }
+      ],
       "destination": "/masar-platform/portfolio.html"
+    },
+    {
+      "source": "/portfolio.html",
+      "destination": "/api/portfolio"
     },
     {
       "source": "/share.html",
