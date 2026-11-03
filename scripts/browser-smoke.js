@@ -137,6 +137,7 @@ function assert(condition, message) {
     console.log("PASS empty Growth Hub progress shows an actionable start state");
 
 
+    await page.locator('[data-page="settings"]').first().click();
     await page.locator("#appThemeSelect").selectOption("dark");
     assert(await page.locator("html").getAttribute("data-theme") === "dark", "Dark theme selection did not apply");
     await page.locator("#appThemeSelect").selectOption("light");
