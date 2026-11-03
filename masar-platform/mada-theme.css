@@ -72,6 +72,7 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .profile-copy h1{color:var(--gallery-heading,#f5f3ff)}
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .kicker{color:var(--teal)}
 
+
 /* Explicit appearance modes and system preference fallback */
 :root[data-theme="dark"]{color-scheme:dark;--paper:#12111f;--ink:#f5f3ff;--muted:#b9b4d5;--line:#37334f}
 :root[data-theme="dark"] body{background:var(--paper);color:var(--ink)}
