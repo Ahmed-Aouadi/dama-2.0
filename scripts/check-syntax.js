@@ -240,6 +240,13 @@ const themeCss = fs.readFileSync("masar-platform/mada-theme.css", "utf8");
 if (!themeCss.includes(':root[data-theme="dark"]') || !themeCss.includes("prefers-color-scheme:dark") || !themeCss.includes("#appThemeSelect")) throw new Error("Dark and system theme styles are missing");
 console.log("OK full career catalog, add-to-skills, accurate growth progress, theme settings, and help FAQs");
 
+if (!profile.includes('records:Array.isArray(state.records)?state.records:[]') || !profile.includes('records:(state.records||[]).filter(function(record){return record.public===true})')) throw new Error("Portfolio record entities must persist locally and flow into public previews/publishing");
+if (!account.includes("const recordTypes = new Set") || !account.includes("record.public === true") || !account.includes("const portfolio = { profile, projects, records, display")) throw new Error("The account API must validate and whitelist public record entities");
+if (!ssrPortfolio.includes("portfolio.records") || !ssrPortfolio.includes("portfolio-records-grid") || !portfolioViewer.includes("p.records") || !portfolioViewer.includes("view.insertAdjacentHTML(\"beforeend\",recordsHtml)")) throw new Error("Public portfolio SSR and client templates must both render record entities");
+for (const id of ["portfolioRecordsPanel", "portfolioRecordsList", "portfolioRecordModal", "portfolioRecordForm", "portfolioRecordPublic"]) if (!profile.includes('id="' + id + '"')) throw new Error("Missing portfolio record manager control: " + id);
+console.log("OK structured education, experience, certificates, participation, documents and links across local, cloud and public portfolio");
+
+
 
 
 const growthPage = fs.readFileSync("masar-platform/index.html", "utf8");
