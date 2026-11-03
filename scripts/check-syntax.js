@@ -185,8 +185,12 @@ if (!portfolioPage.includes('typeof result.shareUrl!=="string"') || !portfolioPa
 if (!portfolioPage.includes("new TextEncoder().encode(requestBody).length>3900000") || !portfolioPage.includes("aria-busy") || !portfolioApi.includes('module.exports.config = { api: { bodyParser: { sizeLimit: "4mb" } } }')) throw new Error("Portfolio publishing must support bounded media payloads and expose a clear size error");
 if (!portfolioViewer.includes("const normalizeWhatsAppNumber=function(value)") || !portfolioViewer.includes("https://wa.me/") || !portfolioViewer.includes("?text=") || !portfolioViewer.includes("راسلني على واتساب") || !portfolioPage.includes("يفتح زر المعرض محادثة واتساب مباشرة")) throw new Error("WhatsApp contact must open a direct chat using a normalized international number");
 
-if (!auth.includes('id = "madaAccessGate"') || !auth.includes('accessGate.classList.toggle("show", !user)')) throw new Error("Private workspace must remain gated until a verified session exists");
-if (!auth.includes('id="madaAccessLogin"') || !auth.includes('open("login")')) throw new Error("Unauthenticated users must have a working login/register entry point");
+if (auth.includes("madaAccessGate") || auth.includes("mada-auth-required")) throw new Error("Guest workspace must not be blocked by an authentication gate");
+if (!auth.includes('setSyncStatus("local", "وضع الزائر — حفظ محلي")') || !auth.includes('getSyncStatus: () => syncStatus.dataset.status')) throw new Error("Guest mode must expose local-save status and cloud sync state");
+if (!auth.includes('window.addEventListener("online"') || !auth.includes('setTimeout(flushSync, retryDelay)')) throw new Error("Cloud sync must retry after connectivity returns and preserve pending snapshots");
+if (!profile.includes('getStoredState:function(key)') || !auth.includes('getStoredState("mada-platform-v1")')) throw new Error("Logout and account deletion must restore the guest workspace instead of clearing it");
+if ((profile.match(/<nav class="mobile-nav">[\\s\\S]*?<\\/nav>/)||[""])[0].match(/data-page=/g).length > 5) throw new Error("Mobile navigation must contain no more than five primary items");
+if (profile.includes("��") || profile.includes("�")) throw new Error("Replacement characters remain in the main application interface");
 for (const action of ['publish-design', 'publish-portfolio', 'data']) {
   const routeStart = account.indexOf('action === "' + action + '"');
   if (routeStart < 0) throw new Error("Missing protected action: " + action);
@@ -197,7 +201,7 @@ if (!account.includes("disabled_until>NOW()") || !account.includes("disabled_unt
 if (!adminApi.includes("disabled_until TIMESTAMPTZ") || !adminApi.includes('"delete-user":["POST"]') || !adminApi.includes("account_suspended_permanently") || !adminApi.includes("account_suspended_temporarily") || !adminApi.includes('"account_deleted"')) throw new Error("Admin API must support permanent/temporary suspension and audited account deletion");
 if (!adminConsole.includes("data-suspension-duration") || !adminConsole.includes("data-delete-user") || !adminConsole.includes('confirmation:typed')) throw new Error("Admin console must expose timed suspensions and guarded account deletion");
 console.log("OK timed account suspension, expiry restoration, and audited deletion");
-console.log("OK private workspace is gated and write APIs require an authenticated session");
+console.log("OK local guest workspace, sync status/retry, and protected cloud APIs");
 console.log("OK account settings integration and security checks");
 
 
