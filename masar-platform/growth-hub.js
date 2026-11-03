@@ -80,18 +80,18 @@ async function updateCollaboration(id,status){
  try{const response=await fetch("/api/account?action=collaboration-update",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status})});const data=await response.json();if(!response.ok){notify(data.error||"تعذر تحديث الطلب.");return}await refreshCollaboration();notify("تم تحديث حالة طلب التعاون.")}catch(e){notify("تعذر الاتصال بالخادم. حاول لاحقًا.")}
 }
 const templates=[
-{id:"cv",icon:"▤",title:"سيرة ذاتية عصرية",desc:"سيرة منظمة بتصميم حديث وأقسام واضحة.",paid:false},
-{id:"case",icon:"◈",title:"دراسة حالة مشروع",desc:"قصة المشروع من المشكلة إلى النتيجة.",paid:false},
-{id:"study",icon:"✓",title:"مخطط دراسة أسبوعي",desc:"تخطيط الأهداف والمهام والمراجعة.",paid:false},
-{id:"brief",icon:"✳",title:"موجز مشروع إبداعي",desc:"الجمهور والرسالة والألوان والمخرجات.",paid:false},
-{id:"invoice",icon:"▧",title:"عرض سعر احترافي",desc:"خدمات وتكاليف وشروط تنفيذ واضحة.",paid:false},
-{id:"event",icon:"✉",title:"بطاقة دعوة أنيقة",desc:"دعوات المناسبات والفعاليات.",paid:false},
-{id:"social",icon:"◉",title:"منشور شبكات اجتماعية",desc:"تصميم محتوى قصير للإعلانات والمنشورات.",paid:false},
-{id:"certificate",icon:"✦",title:"شهادة تقدير",desc:"شهادة تكريم بإطار رسمي.",paid:false},
-{id:"notes",icon:"✎",title:"ورقة ملاحظات",desc:"صفحة هادئة للأفكار والنقاط المهمة.",paid:false},
-{id:"project",icon:"▦",title:"ملخص مشروع",desc:"الأهداف والمهام والعوائق والنتائج.",paid:false},
-{id:"lesson",icon:"▤",title:"ملخص درس",desc:"قالب مراجعة للمفاهيم والأمثلة والأسئلة.",paid:false},
-{id:"menu",icon:"≡",title:"قائمة خدمات وأسعار",desc:"عرض خدمات النشاط وأسعارها بوضوح.",paid:false},
+{id:"cv",icon:"▤",title:"سيرة ذاتية عصرية",desc:"سيرة منظمة بتصميم حديث وأقسام واضحة."},
+{id:"case",icon:"◈",title:"دراسة حالة مشروع",desc:"قصة المشروع من المشكلة إلى النتيجة."},
+{id:"study",icon:"✓",title:"مخطط دراسة أسبوعي",desc:"تخطيط الأهداف والمهام والمراجعة."},
+{id:"brief",icon:"✳",title:"موجز مشروع إبداعي",desc:"الجمهور والرسالة والألوان والمخرجات."},
+{id:"invoice",icon:"▧",title:"عرض سعر احترافي",desc:"خدمات وتكاليف وشروط تنفيذ واضحة."},
+{id:"event",icon:"✉",title:"بطاقة دعوة أنيقة",desc:"دعوات المناسبات والفعاليات."},
+{id:"social",icon:"◉",title:"منشور شبكات اجتماعية",desc:"تصميم محتوى قصير للإعلانات والمنشورات."},
+{id:"certificate",icon:"✦",title:"شهادة تقدير",desc:"شهادة تكريم بإطار رسمي."},
+{id:"notes",icon:"✎",title:"ورقة ملاحظات",desc:"صفحة هادئة للأفكار والنقاط المهمة."},
+{id:"project",icon:"▦",title:"ملخص مشروع",desc:"الأهداف والمهام والعوائق والنتائج."},
+{id:"lesson",icon:"▤",title:"ملخص درس",desc:"قالب مراجعة للمفاهيم والأمثلة والأسئلة."},
+{id:"menu",icon:"≡",title:"قائمة خدمات وأسعار",desc:"عرض خدمات النشاط وأسعارها بوضوح."},
 
 ];
 function downloadTemplate(id){
