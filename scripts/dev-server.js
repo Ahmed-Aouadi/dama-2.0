@@ -3,6 +3,14 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
+const envPath = path.join(root, ".env.development.local");
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!match || process.env[match[1]]) continue;
+    process.env[match[1]] = match[2].replace(/^([\"'])(.*)\1$/, "$2");
+  }
+}
 const port = Number(process.env.PORT || 4173);
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -25,8 +33,40 @@ const rewrites = {
   "/share.html": "/masar-platform/share.html"
 };
 
+const accountHandler = require(path.join(root, "api", "account.js"));
+
+function handleAccountApi(request, response, url) {
+  const chunks = [];
+  request.on("data", chunk => chunks.push(chunk));
+  request.on("end", async () => {
+    const rawBody = Buffer.concat(chunks).toString("utf8");
+    const contentType = String(request.headers["content-type"] || "").toLowerCase();
+    let body = {};
+    if (rawBody && contentType.includes("application/json")) {
+      try { body = JSON.parse(rawBody); } catch { body = null; }
+    }
+    request.query = Object.fromEntries(url.searchParams.entries());
+    request.body = body;
+    try {
+      await accountHandler(request, response);
+    } catch (error) {
+      console.error("[mada] account API error:", error);
+      if (!response.headersSent) {
+        response.writeHead(500, { "content-type": "application/json; charset=utf-8" });
+        response.end(JSON.stringify({ error: "تعذّر الاتصال بخدمة الحساب. تحقق من إعدادات قاعدة البيانات." }));
+      }
+    }
+  });
+}
+
 const server = http.createServer((request, response) => {
-  const requestPath = new URL(request.url, "http://localhost").pathname;
+  const url = new URL(request.url, "http://localhost");
+  const requestPath = url.pathname;
+  if (requestPath === "/api/account") {
+    handleAccountApi(request, response, url);
+    return;
+  }
+
   const relativePath = rewrites[requestPath] || requestPath;
   const filePath = path.resolve(root, `.${decodeURIComponent(relativePath)}`);
 
