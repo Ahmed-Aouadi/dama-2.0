@@ -20,7 +20,8 @@ async function ensureSchema() {
         "CREATE TABLE IF NOT EXISTS mada_sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, expires_at TIMESTAMPTZ NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE INDEX IF NOT EXISTS mada_sessions_user_idx ON mada_sessions(user_id)",
         "CREATE INDEX IF NOT EXISTS mada_sessions_expiry_idx ON mada_sessions(expires_at)",
-        "CREATE TABLE IF NOT EXISTS mada_user_data (user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}'::jsonb, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
+        "CREATE TABLE IF NOT EXISTS mada_user_data (user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}'::jsonb, revision BIGINT NOT NULL DEFAULT 1, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
+        "ALTER TABLE mada_user_data ADD COLUMN IF NOT EXISTS revision BIGINT NOT NULL DEFAULT 1",
         "CREATE TABLE IF NOT EXISTS mada_login_attempts (ip_hash TEXT PRIMARY KEY, attempts INTEGER NOT NULL DEFAULT 0, window_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE TABLE IF NOT EXISTS mada_public_designs (design_id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, design JSONB NOT NULL, is_public BOOLEAN NOT NULL DEFAULT FALSE, price_dzd INTEGER NOT NULL DEFAULT 0 CHECK (price_dzd >= 0), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE INDEX IF NOT EXISTS mada_public_designs_owner_idx ON mada_public_designs(user_id)",
@@ -556,8 +557,8 @@ module.exports = async function handler(req, res) {
     if (action === "data" && req.method === "GET") {
       const user = await currentUser(req);
       if (!user) return send(res, 401, { error: "سجّل الدخول أولًا." });
-      const result = await db().query("SELECT data FROM mada_user_data WHERE user_id=$1", [user.id]);
-      return send(res, 200, { data: result.rows[0]?.data ?? null });
+      const result = await db().query("SELECT data,revision,updated_at FROM mada_user_data WHERE user_id=$1", [user.id]);
+      return send(res, 200, { data: result.rows[0]?.data ?? null, revision: Number(result.rows[0]?.revision || 0), updatedAt: result.rows[0]?.updated_at || null });
     }
 
     if (action === "data" && req.method === "POST") {
@@ -567,8 +568,21 @@ module.exports = async function handler(req, res) {
       if (!data || typeof data !== "object" || Array.isArray(data)) return send(res, 400, { error: "بيانات الحساب غير صالحة." });
       const encoded = JSON.stringify(data);
       if (encoded.length > 3000000) return send(res, 413, { error: "البيانات كبيرة جدًا للحفظ." });
-      await db().query("INSERT INTO mada_user_data(user_id,data,updated_at) VALUES($1,$2::jsonb,NOW()) ON CONFLICT(user_id) DO UPDATE SET data=EXCLUDED.data,updated_at=NOW()", [user.id, encoded]);
-      return send(res, 200, { ok: true, savedAt: new Date().toISOString() });
+      const expectedRevision = Number.isSafeInteger(Number(req.body?.expectedRevision)) && Number(req.body.expectedRevision) >= 0 ? Number(req.body.expectedRevision) : null;
+      let saved;
+      if (expectedRevision === null) {
+        // Backward compatibility for older clients; new clients always send a revision.
+        saved = await db().query("INSERT INTO mada_user_data(user_id,data,revision,updated_at) VALUES($1,$2::jsonb,1,NOW()) ON CONFLICT(user_id) DO UPDATE SET data=EXCLUDED.data,revision=mada_user_data.revision+1,updated_at=NOW() RETURNING revision,updated_at", [user.id, encoded]);
+      } else if (expectedRevision === 0) {
+        saved = await db().query("INSERT INTO mada_user_data(user_id,data,revision,updated_at) VALUES($1,$2::jsonb,1,NOW()) ON CONFLICT(user_id) DO NOTHING RETURNING revision,updated_at", [user.id, encoded]);
+      } else {
+        saved = await db().query("UPDATE mada_user_data SET data=$2::jsonb,revision=revision+1,updated_at=NOW() WHERE user_id=$1 AND revision=$3 RETURNING revision,updated_at", [user.id, encoded, expectedRevision]);
+      }
+      if (!saved.rows[0]) {
+        const latest = await db().query("SELECT data,revision,updated_at FROM mada_user_data WHERE user_id=$1", [user.id]);
+        return send(res, 409, { error: "وجدنا تعديلات أحدث من جهاز آخر. أعدنا بياناتها للمزامنة الآمنة.", conflict: true, data: latest.rows[0]?.data ?? null, revision: Number(latest.rows[0]?.revision || 0), updatedAt: latest.rows[0]?.updated_at || null });
+      }
+      return send(res, 200, { ok: true, revision: Number(saved.rows[0].revision), savedAt: saved.rows[0].updated_at || new Date().toISOString() });
     }
 
     return send(res, 400, { error: "طلب غير معروف." });
