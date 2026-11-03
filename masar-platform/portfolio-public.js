@@ -69,6 +69,7 @@ const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
 view.className="portfolio-theme portfolio-template-"+template;
+view.dataset.swissGallery="on";
 view.style.setProperty("--gallery-accent",accent);
 view.style.setProperty("--gallery-paper",background);
 view.style.setProperty("--gallery-columns",String(columns));
