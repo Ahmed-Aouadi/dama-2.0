@@ -48,7 +48,7 @@ function renderSsr(portfolio, authorName, username) {
     (skills.length ? '<div class="skills">' + skills.map(skill => '<span class="skill">' + esc(skill) + '</span>').join("") + '</div>' : "") +
     '</div>' + (avatar ? '<div class="profile-avatar"><img src="' + esc(avatar) + '" alt="الصورة الشخصية"></div>' : "") + '</header>';
   const cards = visibleProjects.map(project => {
-    const cover = safeUrl(project.cover, true);
+    const cover = safeUrl(project.cover || (Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "") || (Array.isArray(project.mediaImages) ? project.mediaImages[0] : ""), true);
     const link = safeUrl(project.link, false);
     return '<article class="work"><div class="work-cover">' + (cover ? '<img src="' + esc(cover) + '" alt="' + esc(project.title || "صورة العمل") + '" loading="lazy">' : '<span class="cover-mark" aria-hidden="true">مَدى</span>') + '</div><div class="work-body"><span class="work-category">' + esc(project.category || "عمل") + '</span><h3>' + esc(project.title || "عمل بدون عنوان") + '</h3>' + (project.description ? '<p>' + esc(String(project.description).slice(0, 300)) + '</p>' : "") + (link ? '<a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">فتح العمل ↗</a>' : "") + '</div></article>';
   }).join("");
