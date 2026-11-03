@@ -109,9 +109,9 @@
     user = result.user;
     setUser(user);
   }
-  async function publishDesign(design, designId, isPublic, priceDzd) {
+  async function publishDesign(design, designId, isPublic) {
     if (!user) throw new Error("سجّل الدخول أولًا لنشر القالب.");
-    const result = await request("publish-design", "POST", { design, designId, isPublic: !!isPublic, priceDzd: Number(priceDzd) || 0 });
+    const result = await request("publish-design", "POST", { design, designId, isPublic: !!isPublic });
     return { ...result, url: new URL("share.html?id=" + encodeURIComponent(result.designId), window.location.href).href };
   }
   async function sync(data) {
