@@ -462,7 +462,7 @@ html,body{height:100%;overflow:hidden}
   </nav></div>
   <div class="side-bottom">
 
-    <div class="user-mini"><div class="avatar" id="sideAvatar">م</div><div><strong id="sideName">مبدع جديد</strong><small>حساب مجاني</small></div></div>
+    <div class="user-mini"><div class="avatar" id="sideAvatar">م</div><div><strong id="sideName">مبدع جديد</strong><small id="sideAccountMode">حفظ محلي</small></div></div>
   </div>
 </aside>
 <main>
@@ -969,11 +969,12 @@ $("#cancelGallerySectionEdit")?.addEventListener("click",resetGallerySectionForm
 $("#gallerySectionsList")?.addEventListener("click",function(e){const edit=e.target.closest("[data-sec-edit]"),toggle=e.target.closest("[data-sec-toggle]"),del=e.target.closest("[data-sec-delete]"),sections=state.portfolioSettings.gallerySections;if(edit){const x=sections.find(y=>y.id===edit.dataset.secEdit);if(!x)return;editingGallerySectionId=x.id;$("#gallerySectionName").value=x.name;$("#gallerySectionDescription").value=x.description||"";$("#gallerySectionVisible").checked=x.visible!==false;$("#gallerySectionDefault").checked=state.portfolioSettings.defaultGallerySection===x.id;$("#saveGallerySection").textContent="حفظ التعديلات";$("#cancelGallerySectionEdit").hidden=false;return}if(toggle){const x=sections.find(y=>y.id===toggle.dataset.secToggle);if(!x||x.locked){toast("قسم أعمال عامة لا يمكن إخفاؤه");return}x.visible=x.visible===false;save();renderGallerySectionsManager();renderPortfolioLivePreview();toast(x.visible?"تم إظهار القسم":"تم إخفاء القسم وأعماله");return}if(del){const x=sections.find(y=>y.id===del.dataset.secDelete);if(!x||x.locked)return;if(!confirm("حذف القسم؟ ستُنقل أعماله إلى أعمال عامة."))return;state.projects.forEach(p=>{if(p.gallerySection===x.id)p.gallerySection=""});state.portfolioSettings.gallerySections=sections.filter(y=>y.id!==x.id);if(state.portfolioSettings.defaultGallerySection===x.id)state.portfolioSettings.defaultGallerySection="general";save();renderGallerySectionsManager();renderAll();renderPortfolioLivePreview()}});
 function syncAccountSettings(){
  const user=window.MadaAuth&&window.MadaAuth.getUser?window.MadaAuth.getUser():null;
- const username=$("#accountUsername"),display=$("#accountDisplayName"),pill=$("#accountStatePill"),submit=$("#saveAccountSettings");
+ const username=$("#accountUsername"),display=$("#accountDisplayName"),pill=$("#accountStatePill"),submit=$("#saveAccountSettings"),mode=$("#sideAccountMode");
  if(username)username.value=user?user.username:"";
  if(display)display.value=(state.profile&&state.profile.name)||(user&&user.name)||"";
  if(pill){pill.textContent=user?"الحساب متصل":"وضع الزائر — محلي";pill.classList.toggle("green",!!user);pill.classList.toggle("gray",!user)}
  if(submit)submit.disabled=!user;
+ if(mode)mode.textContent=user?"حساب متصل":"حفظ محلي";
 }
 document.addEventListener("mada:authchange",syncAccountSettings);
  function syncDesignerChoices(s){$$("#portfolioDesigner [data-hero-style]").forEach(function(b){b.classList.toggle("is-active",b.dataset.heroStyle===(s.heroStyle||"dark"))});$$("#portfolioDesigner [data-pattern]").forEach(function(b){b.classList.toggle("is-active",b.dataset.pattern===(s.pattern||"none"))});$$("#portfolioDesigner [data-density]").forEach(function(b){b.classList.toggle("is-active",b.dataset.density===(s.density||"comfortable"))});$$("#portfolioDesigner [data-font]").forEach(function(b){b.classList.toggle("is-active",b.dataset.font===(s.fontFamily||"tajawal"))});$$("#portfolioDesigner [data-palette]").forEach(function(b){b.classList.toggle("is-active",b.dataset.palette===(s.palette||""))})}
