@@ -169,6 +169,55 @@
 @media(max-width:560px){#quizModal .mission-brief{padding:14px}#quizModal .mission-step-list{grid-template-columns:1fr}#quizModal .mission-step-choice{min-height:54px}#quizModal .mission-choice{padding:10px;gap:8px}#quizModal .mission-budget{padding:12px}}
 @media(prefers-reduced-motion:reduce){#quizModal .mission-choice,#quizModal .mission-progress span,#quizModal .mission-budget-track span{transition:none}}
 
+/* Full visual reset for اكتشف مسارك: editorial, calm, and action-first. */
+#page-careers{--path-ink:#19332f;--path-muted:#687772;--path-line:#dce7e1;--path-violet:#187a68;--path-lime:#d9ef68;max-width:1120px;margin:0 auto;padding:10px 0 56px;color:var(--path-ink)}
+#page-careers .path-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;margin:10px 0 24px}
+#page-careers .path-kicker{color:#187a68;font-size:11px;letter-spacing:.03em}
+#page-careers .path-kicker:before{width:30px;height:3px;background:#d9ef68}
+#page-careers .path-head h1{max-width:720px;font-family:"Reem Kufi","Tajawal",sans-serif;font-size:clamp(32px,4.8vw,58px);line-height:1.18;letter-spacing:-1.8px;margin:13px 0 12px}
+#page-careers .path-head p{max-width:650px;color:#687772;font-size:14px;line-height:2;margin:0}
+#page-careers .path-count{min-width:112px;padding:14px 16px;border:1px solid var(--path-line);border-radius:18px;background:#fff;color:#687772;font-size:11px;text-align:center;box-shadow:0 8px 22px #19332f08}
+#page-careers .path-count strong{color:#19332f;font-size:25px}
+#page-careers .path-hero{grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);gap:28px;padding:clamp(28px,4vw,54px);border-radius:30px;background:#19332f;margin-bottom:18px;box-shadow:0 22px 50px #19332f1c}
+#page-careers .path-hero:before{width:420px;height:420px;left:-160px;top:-270px;border-color:#d9ef6830;box-shadow:0 0 0 42px #d9ef6808,0 0 0 88px #d9ef6805}
+#page-careers .path-hero h2{font-family:"Reem Kufi","Tajawal",sans-serif;font-size:clamp(25px,3.5vw,40px);line-height:1.45;margin:13px 0}
+#page-careers .path-hero p{color:#c5d7d0;font-size:13px;line-height:2.1}
+#page-careers .path-hero .path-kicker{color:#d9ef68}
+#page-careers .path-hero-art{min-height:190px}
+#page-careers .path-orbit{width:168px;height:168px;border-radius:50%;transform:none;background:radial-gradient(circle at 32% 25%,#d9ef68,#b5dd53 25%,#187a68 26%,#0f5b4d 70%);box-shadow:0 25px 55px #061d1980;color:#19332f;font-size:62px;border:10px solid #ffffff18}
+#page-careers .path-orbit:after{width:48px;height:48px;left:-16px;bottom:3px;background:#f2a65a;box-shadow:0 10px 25px #061d1960}
+#page-careers .path-art-note{background:#f8fcf5;color:#19332f;border-radius:12px;box-shadow:0 14px 35px #061d1960;padding:10px 12px}
+#page-careers .path-art-note small{color:#687772}
+#page-careers .path-quest{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;align-items:center;margin:18px 0;padding:22px;border:1px solid #dce7e1;border-radius:26px;background:#eff7ee;overflow:hidden}
+#page-careers .path-quest-visual{min-height:220px;border-radius:20px;background:#d9ef68;position:relative;display:grid;place-items:center;overflow:hidden}
+#page-careers .path-quest-orbit{width:120px;height:120px;border-radius:38% 62% 55% 45%;background:#19332f;color:#d9ef68;display:grid;place-items:center;font-size:42px;transform:rotate(-12deg);box-shadow:16px 22px 0 #f2a65a}
+#page-careers .path-quest-chip{position:absolute;padding:8px 10px;border-radius:99px;background:#fff;color:#19332f;font-size:10px;font-weight:800;box-shadow:0 7px 15px #19332f18}
+#page-careers .path-quest-chip.chip-a{top:22px;right:20px}.path-quest-chip.chip-b{bottom:25px;right:28px}.path-quest-chip.chip-c{left:18px;top:88px}
+#page-careers .path-quest-eyebrow{color:#187a68;font-size:11px;font-weight:800}.path-live-dot{background:#187a68}
+#page-careers .path-quest h2{font-family:"Reem Kufi","Tajawal",sans-serif;font-size:25px;line-height:1.55;margin:10px 0 5px}
+#page-careers .path-quest-content>p{color:#687772;line-height:1.9;font-size:12px;margin:0 0 16px}
+#page-careers .path-quest-progress{padding:12px 0 4px}.path-quest-track{background:#d9e7df}.path-quest-track span{background:#187a68}
+#page-careers .path-quest-option{border-color:#dce7e1;border-radius:14px;background:#fff;color:#19332f;box-shadow:0 3px 10px #19332f08}.path-quest-option:hover{border-color:#187a68!important;background:#f8fff2!important}
+#page-careers .path-choice{padding:22px;border-radius:24px;border-color:#dce7e1;box-shadow:0 8px 25px #19332f07}
+#page-careers .path-section-title h2,#page-careers .path-catalog-head h2{font-family:"Reem Kufi","Tajawal",sans-serif;font-size:23px}
+#page-careers .path-step-label{background:#eaf5dd;color:#187a68}
+#page-careers .path-interest{border-color:#dce7e1;border-radius:99px;padding:11px 16px;color:#526a63;background:#fff}
+#page-careers .path-interest[aria-pressed="true"]{background:#19332f;border-color:#19332f;color:#d9ef68;box-shadow:none}
+#page-careers .path-recommendation{background:#f4f8f1;border-color:#dce7e1;border-radius:17px}.path-recommend-icon{background:#d9ef68!important;color:#19332f!important}
+#page-careers .path-card-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#page-careers .path-card{border-color:#dce7e1;border-radius:21px;padding:16px;background:#fff;box-shadow:0 8px 20px #19332f07}
+#page-careers .path-card:hover{transform:translateY(-5px);border-color:#9ccbbb;box-shadow:0 20px 34px #19332f16}
+#page-careers .path-card:before{background:linear-gradient(180deg,#d9ef68,#187a68);width:4px}
+#page-careers .path-card-icon{border-radius:15px;box-shadow:none}.path-card-tag{background:#eff7ee!important;color:#187a68!important}
+#page-careers .path-card h3{font-family:"Reem Kufi","Tajawal",sans-serif;font-size:16px;margin:15px 0 7px}
+#page-careers .path-card>p{font-size:11px;line-height:1.85;min-height:62px}
+#page-careers .path-card-outcome{background:#f7faf5;border-radius:12px;padding:10px}.path-card-outcome strong{color:#187a68}
+#page-careers .path-card-bottom{border-top:1px solid #eef3ef;padding-top:12px}
+#page-careers .path-card-bottom .primary{background:#19332f;color:#d9ef68;box-shadow:none}
+#page-careers .path-search input,#page-careers .path-filter{border-color:#dce7e1;background:#fff;min-height:44px}
+@media(max-width:900px){#page-careers .path-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){#page-careers{padding-top:0}.path-head{grid-template-columns:1fr!important}.path-head .path-count{display:none}#page-careers .path-hero{grid-template-columns:1fr;padding:25px}.path-hero-art{grid-row:1;min-height:130px!important}#page-careers .path-quest{grid-template-columns:1fr;padding:15px}.path-quest-visual{min-height:150px}.path-quest-content{padding:4px}.path-card-grid{grid-template-columns:1fr!important}}
+
 
 /* Minimal Discover Your Path: focus on the four core experiences. */
 #page-careers .path-hero,
