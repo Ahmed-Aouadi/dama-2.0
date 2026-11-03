@@ -208,25 +208,29 @@
     if (!user || !window.MadaApp) return;
     // Capture the guest workspace before switching to the account-scoped key.
     const guestState = window.MadaApp.getState();
+    const accountLocalState = window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1:" + user.id) : null;
     window.MadaApp.setKey("mada-platform-v1:" + user.id);
     let result;
     try { result = await request("data", "GET"); cloudRevision = Number(result.revision || 0); }
     catch (error) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); setSyncStatus("error", "تعذّر تحميل السحابة — تعمل الآن محليًا"); throw error; }
-    const latestState = window.MadaApp.getState();
+    const latestState = accountLocalState || {};
     const guestHasContent = hasMeaningfulProfile(guestState) ||
       ["projects", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
       hasMeaningfulGrowth(guestState);
+    const accountLocalHasContent = hasMeaningfulProfile(latestState) ||
+      ["projects", "designs", "quizzes"].some(key => Array.isArray(latestState[key]) && latestState[key].length > 0) ||
+      hasMeaningfulGrowth(latestState);
     const cloudHasContent = result.data && (
       hasMeaningfulProfile(result.data) ||
       ["projects", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) ||
       hasMeaningfulGrowth(result.data)
     );
     let restoredState;
-    if (migrateGuest && guestHasContent) {
-      // Merge by record ID: cloud records remain first, while guest-only records are retained.
-      // Non-empty cloud scalar values win; guest values fill missing cloud fields.
-      restoredState = mergeAccountState(result.data || {}, guestState);
-      restoredState = mergeAccountState(restoredState, latestState);
+    if (migrateGuest && (guestHasContent || accountLocalHasContent)) {
+      // Keep cloud records first, then retain unique guest and account-local records.
+      // Non-empty cloud fields win; local snapshots fill missing values and preserve offline-only work.
+      restoredState = mergeAccountState(result.data || {}, latestState);
+      restoredState = mergeAccountState(restoredState, guestState);
     } else {
       restoredState = result.data && cloudHasContent ? result.data : (result.data || latestState);
     }
