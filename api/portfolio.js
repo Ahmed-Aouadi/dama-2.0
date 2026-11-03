@@ -84,7 +84,7 @@ module.exports = async function handler(req, res) {
     const projects = Array.isArray(portfolio.projects) ? portfolio.projects : [];
     const firstCover = projects.map(project => safeUrl(project.cover, false)).find(Boolean);
     const rawHost = String(req.headers.host || "dama-20.vercel.app").split(",")[0].trim();
-    const host = /^[a-z0-9.-]+(?::\\d{1,5})?$/i.test(rawHost) ? rawHost : "dama-20.vercel.app";
+    const host = /^[a-z0-9.-]+(?::\d{1,5})?$/i.test(rawHost) ? rawHost : "dama-20.vercel.app";
     const origin = (host.startsWith("localhost") ? "http://" : "https://") + host;
     const image = firstCover || origin + "/icons/og-image.png";
     const canonical = origin + "/@" + encodeURIComponent(row.username);
@@ -105,7 +105,7 @@ module.exports = async function handler(req, res) {
     html = html.replace(/<div class="status" id="loadStatus" role="status">[\s\S]*?<\/div>/, '<div class="status" id="loadStatus" role="status" hidden></div>');
     const template = ["classic", "cv", "engineering", "marketing", "rose", "resume-sidebar", "resume-creative", "resume-minimal", "split", "bold", "studio", "gallery", "aurora"].includes(portfolio.display?.template) ? portfolio.display.template : "classic";
     html = html.replace('<section id="portfolioView" hidden></section>', '<section id="portfolioView" class="portfolio-theme portfolio-template-' + template + '">' + renderSsr(portfolio, row.display_name, row.username) + '</section>');
-    html = html.replace('<script src="/masar-platform/portfolio-public.js?v=20261103a" defer></script>', '<script>window.__MADA_PUBLIC_DATA__=' + safeJson(data) + ';</script><script src="/masar-platform/portfolio-public.js?v=20261027g" defer></script>');
+    html = html.replace('<script src="/masar-platform/portfolio-public.js?v=20261103a" defer></script>', '<script>window.__MADA_PUBLIC_DATA__=' + safeJson(data) + ';</script><script src="/masar-platform/portfolio-public.js?v=20261103a" defer></script>');
     return sendHtml(res, 200, html, "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
   } catch (error) {
     console.error("Mada public portfolio SSR error:", error?.message || error);
