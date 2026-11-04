@@ -1040,6 +1040,7 @@ async function persistGallerySectionChanges(successMessage){
  }
 }
 $("#saveGallerySection")?.addEventListener("click",async function(){
+ const wasEditing=!!editingGallerySectionId;
  const name=$("#gallerySectionName").value.trim(),description=$("#gallerySectionDescription").value.trim(),sections=state.portfolioSettings.gallerySections;
  if(!name){toast("اكتب اسم القسم أولًا");return}
  if(sections.some(x=>x.id!==editingGallerySectionId&&x.name.toLowerCase()===name.toLowerCase())){toast("يوجد قسم بهذا الاسم");return}
@@ -1053,7 +1054,7 @@ $("#saveGallerySection")?.addEventListener("click",async function(){
  }
  if($("#gallerySectionDefault").checked)state.portfolioSettings.defaultGallerySection=section.id;
  resetGallerySectionForm();
- await persistGallerySectionChanges(editingGallerySectionId?"تم تحديث القسم":"تمت إضافة القسم");
+ await persistGallerySectionChanges(wasEditing?"تم تحديث القسم":"تمت إضافة القسم");
 });
 $("#cancelGallerySectionEdit")?.addEventListener("click",resetGallerySectionForm);
 $("#gallerySectionsList")?.addEventListener("click",async function(e){
