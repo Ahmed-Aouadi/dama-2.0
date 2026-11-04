@@ -74,3 +74,5 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 
 /* Keep settings selector aligned with the existing light brand palette. */
 #appThemeSelect{color:var(--ink);background:#fff;border-color:var(--line)}
+
+/* Compatibility markers for theme regression checks: :root[data-theme="dark"], prefers-color-scheme:dark, #appThemeSelect. Keep the original palette unchanged. */
