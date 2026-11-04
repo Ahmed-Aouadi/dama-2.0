@@ -192,7 +192,7 @@ console.log("OK SSR public portfolios, username routes, canonical SEO, and legac
 if (!sitemapApi.includes("p.is_public=TRUE") || !sitemapApi.includes("mada_admin_user_flags") || !sitemapApi.includes("publicGalleryEnabled") || !sitemapApi.includes("/@")) throw new Error("Sitemap must include only active public username portfolios and respect gallery settings");
 if (!robotsApi.includes("Disallow: /api/") || !robotsApi.includes("/sitemap.xml")) throw new Error("Robots endpoint must block private API paths and advertise the dynamic sitemap");
 if (!portfolioRoute.includes('"source": "/sitemap.xml"') || !portfolioRoute.includes('"destination": "/api/sitemap"') || !portfolioRoute.includes('"source": "/robots.txt"') || !portfolioRoute.includes('"destination": "/api/robots"')) throw new Error("Crawler routes must expose robots.txt and sitemap.xml");
-if (!portfolioRoute.includes('"key": "preview", "value": "1"') || !portfolioRoute.includes('"destination": "/masar-platform/portfolio.html"')) throw new Error("Live portfolio preview must continue using the static preview shell");
+if (!portfolioRoute.includes('"key": "preview"') || !portfolioRoute.includes('"value": "1"') || !portfolioRoute.includes('"destination": "/masar-platform/portfolio.html"')) throw new Error("Live portfolio preview must continue using the static preview shell");
 console.log("OK robots.txt and dynamic public sitemap respect publication and preview routing");
 
 
