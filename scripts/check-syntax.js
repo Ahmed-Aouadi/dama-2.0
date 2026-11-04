@@ -12,7 +12,8 @@ const javascriptFiles = [
   "masar-platform/mada-ux.js",
   "masar-platform/growth-hub.js",
   "masar-platform/growth-templates.js",
-  "masar-platform/development-template-editor.js"
+  "masar-platform/development-template-editor.js",
+  "masar-platform/discover-path.js"
 ];
 
 for (const retiredRoute of ["api/db.js", "api/store.js", "api/requests.js"]) {
