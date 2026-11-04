@@ -228,8 +228,9 @@ async function syncAndWait(data) {
       const result = {};
       new Set(Object.keys(guest).concat(Object.keys(cloud))).forEach(key => {
         if (key === "gallerySections" && Array.isArray(guest[key])) {
-          const guestIsOnlyDefault = guest[key].length === 1 && guest[key][0] && guest[key][0].id === "general";
-          result[key] = guestIsOnlyDefault && Array.isArray(cloud[key]) && cloud[key].length > 1 ? cloud[key] : guest[key];
+          // Gallery section lists are authoritative snapshots, not additive records.
+          // Merging by ID resurrected deleted sections from the cloud copy.
+          result[key] = guest[key];
           return;
         }
         result[key] = key in cloud ? mergeAccountState(cloud[key], guest[key]) : guest[key];
