@@ -1797,6 +1797,12 @@ body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .
 /* The portfolio editor should no longer offer canned gallery themes. */
 #portfolioDesigner .portfolio-template-picker{display:none!important}
 </style>
+<style id="mada-growth-remove-built-in-templates">
+/* Hide the bundled ready-made template gallery in Development Center.
+   Keep the user-created template builder and saved personal templates intact. */
+#growthPanelTemplates #growthTemplates,
+#growthPanelTemplates #growthTemplates + .growth-muted{display:none!important}
+</style>
 <script id="mada-portfolio-dialog-repair">
 (function(){
  "use strict";
