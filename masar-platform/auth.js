@@ -120,7 +120,37 @@
     if (syncTimer) clearTimeout(syncTimer);
     syncTimer = setTimeout(flushSync, 650);
   }
-  async function flushSync() {
+async function syncAndWait(data) {
+    if (!data) throw new Error("لا توجد بيانات لحفظها.");
+    if (!user) throw new Error("سجّل الدخول أولًا لحفظ المشروع في حسابك.");
+    if (syncTimer) { clearTimeout(syncTimer); syncTimer = null; }
+    if (syncing) throw new Error("تجري مزامنة أخرى الآن. انتظر قليلًا ثم أعد الحفظ.");
+    syncing = true; setSyncStatus("syncing", "جارٍ تثبيت المشروع في حسابك…");
+    try {
+      let snapshot = data;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const saved = await request("data", "POST", { data: snapshot, expectedRevision: cloudRevision });
+          cloudRevision = Number(saved.revision || cloudRevision); pending = null; retryDelay = 1500;
+          setSyncStatus("synced", "تم حفظ المشروع في حسابك"); return saved;
+        } catch (error) {
+          if (error.status !== 409 || !error.data || attempt === 2) throw error;
+          const remote = error.data.data && typeof error.data.data === "object" ? error.data.data : {};
+          try { localStorage.setItem("mada-sync-conflict-backup:" + user.id, JSON.stringify({version:1,savedAt:new Date().toISOString(),local:snapshot,remote})); } catch (_) {}
+          cloudRevision = Number(error.data.revision || 0); snapshot = mergeAccountState(remote, snapshot);
+          if (window.MadaApp) window.MadaApp.applyCloudState(snapshot, user.name);
+        }
+      }
+    } catch (error) {
+      pending = data; setSyncStatus("error", "تعذّر تثبيت المشروع سحابيًا");
+      if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast("لم يتم تأكيد الحفظ السحابي. مشروعك باقٍ محليًا؛ أعد المحاولة.");
+      throw error;
+    } finally {
+      syncing = false;
+      if (pending && user) { if (syncTimer) clearTimeout(syncTimer); syncTimer = setTimeout(flushSync, retryDelay); }
+    }
+  }
+    async function flushSync() {
     if (!user || !pending || syncing) return;
     const snapshot = pending; pending = null; syncing = true;
     setSyncStatus("syncing", "جارٍ الحفظ في حسابك…");
@@ -294,7 +324,7 @@
     setSyncStatus("local", "وضع الزائر — حفظ محلي");
     return result;
   }
-  window.MadaAuth = { sync, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
+  window.MadaAuth = { sync, syncAndWait, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
   renderMode();
   request("me", "GET").then(async result => {
     if (!result.user) { setUser(null); setSyncStatus("local", "وضع الزائر — حفظ محلي"); return; }
