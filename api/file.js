@@ -1,4 +1,4 @@
-const { get, list } = require("@vercel/blob");
+const { get } = require("@vercel/blob");
 const { Readable } = require("node:stream");
 
 function send(response, status, body) {
@@ -19,32 +19,23 @@ module.exports = async function fileHandler(request, response) {
   try {
     const requestUrl = new URL(request.url || "/", `https://${request.headers.host || "localhost"}`);
     const pathname = String(requestUrl.searchParams.get("pathname") || "").trim();
+    const allowedNamespace =
+      pathname.startsWith("mada-project-files/") ||
+      pathname.startsWith("portfolio/");
 
-    // Public portfolio assets are deliberately readable without an account.
-    // Only files uploaded into Mada's dedicated portfolio namespaces qualify.
-    const allowedNamespace = pathname.startsWith("mada-project-files/") || pathname.startsWith("portfolio/");
-    if (!pathname || pathname.includes("..") || pathname.startsWith("/") ||
-        !allowedNamespace || !/^[a-zA-Z0-9._/-]+$/.test(pathname)) {
+    if (
+      !pathname ||
+      pathname.includes("..") ||
+      pathname.startsWith("/") ||
+      !allowedNamespace ||
+      !/^[a-zA-Z0-9._/-]+$/.test(pathname)
+    ) {
       return send(response, 400, "Invalid file reference");
     }
 
-    // The Blob SDK's get() expects the full Blob URL, not the pathname.
-    // Resolve the private pathname to its canonical URL first.
-    let cursor;
-    let blob = null;
-    do {
-      const page = await list({
-        prefix: pathname,
-        limit: 1000,
-        ...(cursor ? { cursor } : {}),
-      });
-      blob = (page.blobs || []).find(item => item.pathname === pathname) || null;
-      cursor = page.hasMore ? page.cursor : undefined;
-    } while (!blob && cursor);
-
-    if (!blob || !blob.url) return send(response, 404, "File not found");
-
-    const result = await get(blob.url, {
+    // Private Blob SDK get() accepts the pathname directly. Avoid listing the
+    // store first: list() is unnecessary and can fail independently of reads.
+    const result = await get(pathname, {
       access: "private",
       ifNoneMatch: request.headers["if-none-match"] || undefined,
     });
@@ -60,20 +51,31 @@ module.exports = async function fileHandler(request, response) {
       return response.end();
     }
 
-    const contentType = result.blob.contentType || "application/octet-stream";
+    if (result.statusCode !== 200 || !result.stream) {
+      return send(response, 404, "File not found");
+    }
+
     const headers = {
-      "content-type": contentType,
-      "content-length": String(result.blob.size),
+      "content-type": result.blob.contentType || "application/octet-stream",
       etag: result.blob.etag,
       "cache-control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
       "x-content-type-options": "nosniff",
       "content-disposition": "inline",
       "access-control-allow-origin": "*",
+      "accept-ranges": "none",
     };
-    response.writeHead(200, headers);
+    if (Number.isFinite(result.blob.size)) {
+      headers["content-length"] = String(result.blob.size);
+    }
 
+    response.writeHead(200, headers);
     if (request.method === "HEAD") return response.end();
-    Readable.fromWeb(result.stream).pipe(response);
+
+    Readable.fromWeb(result.stream).on("error", error => {
+      console.error("[mada] public file stream error:", error?.message || error);
+      if (!response.headersSent) send(response, 500, "Unable to deliver file");
+      else response.destroy(error);
+    }).pipe(response);
   } catch (error) {
     console.error("[mada] public file delivery error:", error?.message || error);
     return send(response, 500, "Unable to deliver file");
