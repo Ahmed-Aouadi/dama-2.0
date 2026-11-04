@@ -123,8 +123,16 @@
 async function syncAndWait(data) {
     if (!data) throw new Error("لا توجد بيانات لحفظها.");
     if (!user) throw new Error("سجّل الدخول أولًا لحفظ المشروع في حسابك.");
+    // Wait for an in-flight background sync instead of rejecting an explicit save.
+    // Otherwise a quick section save can be left only in local storage.
+    let waitCount = 0;
+    while (syncing && waitCount < 200) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      waitCount++;
+    }
+    if (syncing) throw new Error("استغرقت المزامنة السابقة وقتًا طويلًا. أعد الحفظ بعد لحظات.");
     if (syncTimer) { clearTimeout(syncTimer); syncTimer = null; }
-    if (syncing) throw new Error("تجري مزامنة أخرى الآن. انتظر قليلًا ثم أعد الحفظ.");
+    pending = null;
     syncing = true; setSyncStatus("syncing", "جارٍ تثبيت المشروع في حسابك…");
     try {
       let snapshot = data;
