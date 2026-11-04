@@ -1772,7 +1772,7 @@ body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .
 window.madaUploadProjectFile = async function(file, onProgress) {
  const { upload } = await import("https://esm.sh/@vercel/blob@2.6.1/client");
  const name=String(file.name||"attachment").normalize("NFKC").replace(/[^a-zA-Z0-9._-]/g,"-").slice(-100)||"attachment";
- return upload("mada-project-files/"+name,file,{access:"public",handleUploadUrl:"/api/blob-upload",multipart:file.size>5*1024*1024,onUploadProgress:function(e){if(onProgress)onProgress(e.percentage||0)}});
+ return upload("mada-project-files/"+name,file,{access:"private",handleUploadUrl:"/api/blob-upload",multipart:file.size>5*1024*1024,onUploadProgress:function(e){if(onProgress)onProgress(e.percentage||0)}});
 };
 </script>
 </body>
