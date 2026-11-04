@@ -13,8 +13,28 @@ function esc(value) {
 }
 function safeUrl(value, allowDataImage) {
   const raw = String(value || "").trim();
+  if (!raw) return "";
   if (allowDataImage && /^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(raw) && raw.length < 250000) return raw;
-  try { const url = new URL(raw); return ["http:", "https:"].includes(url.protocol) ? url.href : ""; } catch (_) { return ""; }
+
+  // Portfolio uploads are served through the same-origin public file proxy.
+  // Preserve safe root-relative URLs such as /api/file?pathname=... instead
+  // of dropping them (which made uploaded gallery covers disappear in SSR).
+  if (raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("\\\\")) {
+    try {
+      const url = new URL(raw, "https://mada.invalid");
+      if (url.origin !== "https://mada.invalid") return "";
+      if (url.pathname === "/api/file") {
+        const pathname = url.searchParams.get("pathname") || "";
+        if (!pathname.startsWith("mada-project-files/") || pathname.includes("..")) return "";
+      }
+      return url.pathname + url.search + url.hash;
+    } catch (_) { return ""; }
+  }
+
+  try {
+    const url = new URL(raw);
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch (_) { return ""; }
 }
 function safeJson(value) {
   return JSON.stringify(value).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
@@ -88,11 +108,16 @@ module.exports = async function handler(req, res) {
     const name = String(profile.name || row.display_name || row.username).trim();
     const description = String(profile.bio || ("معرض أعمال " + name + " على منصة مَدى.")).replace(/\s+/g, " ").slice(0, 300);
     const projects = Array.isArray(portfolio.projects) ? portfolio.projects : [];
-    const firstCover = projects.map(project => safeUrl(project.cover, false)).find(Boolean);
+    const firstCover = projects.map(project => safeUrl(
+      project.cover ||
+      (Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "") ||
+      (Array.isArray(project.mediaImages) ? project.mediaImages[0] : ""),
+      true
+    )).find(Boolean);
     const rawHost = String(req.headers.host || "dama-20.vercel.app").split(",")[0].trim();
     const host = /^[a-z0-9.-]+(?::\d{1,5})?$/i.test(rawHost) ? rawHost : "dama-20.vercel.app";
     const origin = (host.startsWith("localhost") ? "http://" : "https://") + host;
-    const image = firstCover || origin + "/icons/og-image.png";
+    const image = firstCover ? new URL(firstCover, origin).href : origin + "/icons/og-image.png";
     const canonical = origin + "/@" + encodeURIComponent(row.username);
     if (!username) {
       res.statusCode = 308;
