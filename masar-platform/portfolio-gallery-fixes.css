@@ -58,3 +58,61 @@ body.has-open-dialog{overflow:hidden}
  #projectDetailsModal #projectDetailsContent{padding:13px}
 }
 @media(prefers-reduced-motion:reduce){#portfolioView[data-swiss-gallery="on"] .project-tile .work-cover img{transition:none}#portfolioView[data-swiss-gallery="on"] .project-tile:hover .work-cover img{transform:none}}
+
+
+/* Work-details v2 — calmer editorial hierarchy, clearer actions, reliable small-screen layout. */
+#projectDetailsModal{padding:clamp(12px,3vw,36px);background:rgba(17,16,24,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#projectDetailsModal .project-details-dialog{width:min(960px,100%);max-height:min(92dvh,980px);border:1px solid #dedbd2;border-radius:22px;background:#f8f7f2;box-shadow:0 32px 110px rgba(0,0,0,.32)}
+#projectDetailsModal .dialog-head{padding:17px clamp(18px,3vw,32px);background:#191919;color:#fff;border:0}
+#projectDetailsModal .dialog-head:before{content:"مَدى / تفاصيل العمل";display:block;color:#a9a69c;font-size:10px;font-weight:700;letter-spacing:.08em}
+#projectDetailsModal .dialog-head h2{color:#fff;font-size:clamp(17px,2vw,21px);font-weight:700;letter-spacing:-.02em}
+#projectDetailsModal .dialog-close{width:42px;height:42px;flex:0 0 42px;border:1px solid #ffffff38;border-radius:50%;background:#ffffff10;color:#fff;line-height:1;font-size:26px;transition:background .18s,transform .18s}
+#projectDetailsModal .dialog-close:hover{background:#ffffff24;transform:rotate(90deg)}
+#projectDetailsModal #projectDetailsContent{padding:clamp(18px,3.5vw,38px);scrollbar-width:thin;scrollbar-color:#b7b4aa transparent}
+#projectDetailsModal .project-detail-cover{display:block;width:100%;max-height:min(48vh,460px);object-fit:contain;object-position:center;background:#eeede7;border:1px solid #e3e1d8;border-radius:12px;padding:0;margin:0 0 28px}
+#projectDetailsModal .project-detail-placeholder{min-height:220px;margin:0 0 28px;border:1px solid #e3e1d8;border-radius:12px;background:#efeee8;color:#55534d}
+#projectDetailsModal .project-detail-placeholder span{font-size:44px}
+#projectDetailsModal .project-detail-heading{display:flex;align-items:center;gap:10px;margin:0 0 24px}
+#projectDetailsModal .project-detail-heading .kicker{font-size:10px;letter-spacing:.08em;color:#77756d}
+#projectDetailsModal .project-detail-heading h2{font-size:clamp(25px,4vw,40px);line-height:1.25;letter-spacing:-.045em;color:#191919;font-weight:800;overflow-wrap:anywhere}
+#projectDetailsModal .project-detail-heading .tag{background:#e9e7de;border:1px solid #dedbd1;color:#393830;border-radius:5px;padding:5px 10px;font-size:11px}
+#projectDetailsModal .project-detail-section{margin:20px 0;padding:clamp(16px,2.5vw,24px);border:1px solid #e4e1d7;border-radius:12px;background:#fff}
+#projectDetailsModal .project-detail-section h3,#projectDetailsModal .project-detail-media h3{margin:0 0 13px;font-size:12px;letter-spacing:.015em;color:#33332e}
+#projectDetailsModal .project-detail-section h3:before,#projectDetailsModal .project-detail-media h3:before{width:3px;height:15px;border-radius:0;background:#8b897e}
+#projectDetailsModal .project-detail-description{font-size:14px;line-height:2.05;color:#57564f;overflow-wrap:anywhere}
+#projectDetailsModal .facts{gap:9px;margin-top:20px}
+#projectDetailsModal .fact{min-width:0;padding:14px 15px;border:1px solid #e7e5dd;border-radius:9px;background:#f6f5ef}
+#projectDetailsModal .fact strong{font-size:10px;letter-spacing:.02em;color:#77766d}
+#projectDetailsModal .fact span{font-size:13px;line-height:1.75;color:#25251f;overflow-wrap:anywhere}
+#projectDetailsModal .work-outcome{margin-top:18px;padding:15px 17px;border:1px solid #d7e5d8;border-right:3px solid #547c5c;border-radius:8px;background:#eef4eb;color:#294630;font-size:13px;line-height:1.9}
+#projectDetailsModal .project-detail-media{margin-top:25px}
+#projectDetailsModal .media-gallery{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:14px}
+#projectDetailsModal .media-gallery a{height:auto;aspect-ratio:1.25;border:1px solid #e2dfd6;border-radius:8px;background:#eeece5;transition:transform .2s,border-color .2s;overflow:hidden}
+#projectDetailsModal .media-gallery a:hover{transform:translateY(-2px);border-color:#77756d}
+#projectDetailsModal .media-gallery img{width:100%;height:100%;object-fit:cover}
+#projectDetailsModal .media-links{gap:8px;margin-top:18px}
+#projectDetailsModal .media-links a{display:inline-flex;align-items:center;min-height:42px;padding:10px 15px;border:1px solid #d8d5ca;border-radius:7px;background:#fff;color:#25251f;font-size:12px;transition:background .18s,border-color .18s}
+#projectDetailsModal .media-links a:hover{background:#eeede6;border-color:#a6a397}
+#projectDetailsModal .dialog-actions{display:flex;align-items:center;justify-content:flex-start;gap:9px;padding:13px clamp(18px,3vw,32px);border-top:1px solid #e2dfd6;background:#f8f7f2}
+#projectDetailsModal .dialog-actions .btn{min-height:44px;min-width:112px;padding:10px 19px;border:1px solid #191919;border-radius:7px;background:#191919;color:#fff;font-size:12px;font-weight:800;transition:transform .18s,background .18s}
+#projectDetailsModal .dialog-actions .btn:hover{background:#383832;transform:translateY(-1px)}
+@media(max-width:640px){
+ #projectDetailsModal{padding:7px}
+ #projectDetailsModal .project-details-dialog{max-height:96dvh;border-radius:14px}
+ #projectDetailsModal .dialog-head{padding:13px 15px}
+ #projectDetailsModal .dialog-head h2{font-size:17px}
+ #projectDetailsModal .dialog-close{width:38px;height:38px;flex-basis:38px}
+ #projectDetailsModal #projectDetailsContent{padding:14px}
+ #projectDetailsModal .project-detail-cover{max-height:34vh;margin-bottom:20px;border-radius:8px}
+ #projectDetailsModal .project-detail-placeholder{min-height:145px;margin-bottom:20px}
+ #projectDetailsModal .project-detail-heading{margin-bottom:18px}
+ #projectDetailsModal .project-detail-heading h2{font-size:clamp(23px,7vw,32px)}
+ #projectDetailsModal .project-detail-section{margin:14px 0;padding:15px;border-radius:9px}
+ #projectDetailsModal .project-details-dialog .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #projectDetailsModal .fact{padding:11px}
+ #projectDetailsModal .fact span{font-size:12px}
+ #projectDetailsModal .media-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ #projectDetailsModal .dialog-actions{padding:10px 14px}
+ #projectDetailsModal .dialog-actions .btn{flex:1;min-width:0;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){#projectDetailsModal *{transition:none!important;scroll-behavior:auto!important}}
