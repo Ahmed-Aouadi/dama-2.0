@@ -1038,7 +1038,7 @@ async function persistGallerySectionChanges(successMessage){
     must never persist the older state captured before a preceding save finishes. */
  const persist=gallerySectionsSaveQueue.then(async function(){
   if(!window.MadaAuth.syncAndWait)throw new Error("خدمة الحفظ السحابي غير متاحة.");
-  await window.MadaAuth.syncAndWait(getState());
+  await window.MadaAuth.syncAndWait(JSON.parse(JSON.stringify(state)));
  });
  gallerySectionsSaveQueue=persist.catch(function(){});
  try{
