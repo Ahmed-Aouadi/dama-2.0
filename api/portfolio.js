@@ -25,7 +25,8 @@ function safeUrl(value, allowDataImage) {
       if (url.origin !== "https://mada.invalid") return "";
       if (url.pathname === "/api/file") {
         const pathname = url.searchParams.get("pathname") || "";
-        if (!pathname.startsWith("mada-project-files/") || pathname.includes("..")) return "";
+        const allowedNamespace = pathname.startsWith("mada-project-files/") || pathname.startsWith("portfolio/");
+        if (!allowedNamespace || pathname.includes("..")) return "";
       }
       return url.pathname + url.search + url.hash;
     } catch (_) { return ""; }
