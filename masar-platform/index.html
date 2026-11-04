@@ -1021,18 +1021,26 @@ let editingGallerySectionId=null;
 function renderGallerySectionOptions(selected){const sections=(state.portfolioSettings.gallerySections||initial.portfolioSettings.gallerySections),el=$("#projectGallerySection");if(!el)return;const val=selected!==undefined?selected:el.value;el.innerHTML='<option value="">أعمال عامة</option>'+sections.filter(x=>x.id!=="general").map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join("");el.value=sections.some(x=>x.id===val)?val:""}
 function renderGallerySectionsManager(){const host=$("#gallerySectionsList");if(!host)return;const sections=state.portfolioSettings.gallerySections||[];host.innerHTML=sections.map(x=>'<div class="gallery-section-row '+(x.visible===false?'gallery-section-hidden':'')+'"><div><strong>'+esc(x.name)+'</strong>'+(x.locked?'<span class="gallery-section-default"> · افتراضي لا يُحذف</span>':'')+'<p>'+esc(x.description||"بدون شرح")+'</p><p>'+(x.visible===false?'مخفي عن الزوار':'ظاهر للزوار')+'</p></div><div class="gallery-section-row-actions"><button type="button" class="secondary" data-sec-edit="'+esc(x.id)+'">تعديل</button><button type="button" class="ghost" data-sec-toggle="'+esc(x.id)+'">'+(x.visible===false?'إظهار':'إخفاء')+'</button>'+(x.locked?'':'<button type="button" class="ghost" data-sec-delete="'+esc(x.id)+'">حذف</button>')+'</div></div>').join("");renderGallerySectionOptions()}
 function resetGallerySectionForm(){editingGallerySectionId=null;$("#gallerySectionName").value="";$("#gallerySectionDescription").value="";$("#gallerySectionVisible").checked=true;$("#gallerySectionDefault").checked=false;$("#saveGallerySection").textContent="＋ إضافة قسم";$("#cancelGallerySectionEdit").hidden=true}
+/* Serialize section snapshots: rapid add/edit/toggle/delete actions must not
+   race one another or let an older in-flight save overwrite a newer snapshot. */
+let gallerySectionsSaveQueue=Promise.resolve();
 async function persistGallerySectionChanges(successMessage){
  save(false);
  renderGallerySectionsManager();
  renderAll();
  renderPortfolioLivePreview();
+ const snapshot=getState();
  if(!window.MadaAuth||!window.MadaAuth.getUser||!window.MadaAuth.getUser()){
   toast(successMessage+" (محليًا؛ سجّل الدخول للمزامنة بين الأجهزة)");
   return;
  }
- try{
+ const persist=gallerySectionsSaveQueue.then(async function(){
   if(!window.MadaAuth.syncAndWait)throw new Error("خدمة الحفظ السحابي غير متاحة.");
-  await window.MadaAuth.syncAndWait(state);
+  await window.MadaAuth.syncAndWait(snapshot);
+ });
+ gallerySectionsSaveQueue=persist.catch(function(){});
+ try{
+  await persist;
   toast(successMessage+" وتم تأكيد الحفظ في حسابك.");
  }catch(error){
   console.error("Gallery sections cloud save failed:",error);
@@ -1788,6 +1796,12 @@ body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .
 @media(max-width:600px){body>.modal-backdrop,body>.media-preview-backdrop{padding:9px}body>.modal-backdrop>.modal,body>.media-preview-backdrop>.modal{max-height:94dvh!important;border-radius:18px;padding:17px!important}}
 /* The portfolio editor should no longer offer canned gallery themes. */
 #portfolioDesigner .portfolio-template-picker{display:none!important}
+</style>
+<style id="mada-growth-remove-built-in-templates">
+/* Hide the bundled ready-made template gallery in Development Center.
+   Keep the user-created template builder and saved personal templates intact. */
+#growthPanelTemplates #growthTemplates,
+#growthPanelTemplates #growthTemplates + .growth-muted{display:none!important}
 </style>
 <script id="mada-portfolio-dialog-repair">
 (function(){
