@@ -115,7 +115,7 @@ module.exports=async function handler(req,res){
    const client=await db().connect();
    try{
     await client.query("BEGIN");
-    await client.query("TRUNCATE TABLE mada_sessions,mada_user_data,mada_public_designs,mada_public_portfolios,mada_admin_user_flags,mada_admin_sessions,mada_admin_login_attempts,mada_site_settings,mada_admin_audit,mada_users RESTART IDENTITY CASCADE");
+    await client.query("TRUNCATE TABLE products,reservations,reservation_items,orders,order_items,inventory_movements,analytics_events,mada_sessions,mada_user_data,mada_public_designs,mada_public_portfolios,mada_admin_user_flags,mada_admin_sessions,mada_admin_login_attempts,mada_site_settings,mada_admin_audit,mada_users RESTART IDENTITY CASCADE");
     for(const [key,value] of Object.entries(DEFAULT_SETTINGS)){
      await client.query("INSERT INTO mada_site_settings(key,value) VALUES($1,$2::jsonb) ON CONFLICT(key) DO NOTHING",[key,JSON.stringify(value)]);
     }
