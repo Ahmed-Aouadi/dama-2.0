@@ -343,6 +343,10 @@ function showPublicImage(index){
 const dialogReturnFocus=new Map();
 function openDialog(id){
  const el=$(id);if(!el)return;
+ if(id==="projectDetailsModal"){
+  const gallery=$("portfolioView"),style=gallery?getComputedStyle(gallery):null;
+  if(style){el.style.setProperty("--detail-accent",style.getPropertyValue("--gallery-accent").trim()||"#5b46e6");el.style.setProperty("--detail-paper",style.getPropertyValue("--gallery-paper").trim()||"#f6f4ff");el.style.setProperty("--detail-text",style.getPropertyValue("--gallery-text").trim()||"#20221f");el.style.setProperty("--detail-heading",style.getPropertyValue("--gallery-heading").trim()||"var(--detail-accent)");el.style.setProperty("--detail-radius",style.borderRadius||"16px");}
+ }
  dialogReturnFocus.set(id,document.activeElement);
  el.setAttribute("aria-hidden","false");
  el.classList.add("open");
