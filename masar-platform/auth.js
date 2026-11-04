@@ -236,9 +236,19 @@ async function syncAndWait(data) {
       const result = {};
       new Set(Object.keys(guest).concat(Object.keys(cloud))).forEach(key => {
         if (key === "gallerySections" && Array.isArray(guest[key])) {
-          // Gallery section lists are authoritative snapshots, not additive records.
-          // Merging by ID resurrected deleted sections from the cloud copy.
+          // Legacy shape support: section lists are authoritative snapshots.
           result[key] = guest[key];
+          return;
+        }
+        if (key === "portfolioSettings") {
+          const c = cloud[key] && typeof cloud[key] === "object" ? cloud[key] : {};
+          const g = guest[key] && typeof guest[key] === "object" ? guest[key] : {};
+          const settings = mergeAccountState(c, g);
+          // Do not union section snapshots: removed entries must stay removed.
+          if (Array.isArray(g.gallerySections)) settings.gallerySections = g.gallerySections;
+          else if (Array.isArray(c.gallerySections)) settings.gallerySections = c.gallerySections;
+          if (Object.prototype.hasOwnProperty.call(g, "defaultGallerySection")) settings.defaultGallerySection = g.defaultGallerySection;
+          result[key] = settings;
           return;
         }
         result[key] = key in cloud ? mergeAccountState(cloud[key], guest[key]) : guest[key];
