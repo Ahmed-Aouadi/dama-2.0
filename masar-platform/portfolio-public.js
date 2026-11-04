@@ -3,6 +3,7 @@
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 const slug=(params.get("id")||"").trim();
+const usernameFromPath=(()=>{const raw=location.pathname.startsWith("/@")?location.pathname.slice(2):(params.get("username")||"");try{return decodeURIComponent(raw)}catch(_){return raw}})();
 const isPreview=params.get("preview")==="1";
 let portfolioData=null;
 function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -35,33 +36,69 @@ const display=portfolioData&&portfolioData.portfolio&&portfolioData.portfolio.di
 const cover=safeUrl(p.cover,true)||(Array.isArray(p.mediaImages)&&safeUrl(p.mediaImages[0],true))||(Array.isArray(p.uploadedImages)&&safeUrl(p.uploadedImages[0],true))||"";
 const images=Array.from(new Set((Array.isArray(p.mediaImages)?p.mediaImages:[]).concat(Array.isArray(p.uploadedImages)?p.uploadedImages:[]).map(v=>safeUrl(v,true)).filter(Boolean))).slice(0,12);
 const link=safeUrl(p.link,false),video=safeUrl(p.uploadedVideo||p.videoUrl,false),file=safeUrl(p.uploadedFile||p.fileUrl,false),downloadItems=p.showFileDownload===true?publicDownloadItems(p):[],templateUrl=p.allowTemplateUse===true?safeUrl(p.templateUrl,false):"";
+const isPdf=!!file&&(/\.pdf(?:$|[?#])/i.test(file)||/^data:application\/pdf;base64,/i.test(file));
+const fileLabel=isPdf?"قراءة الكتاب أو ملف PDF":"فتح الملف المرفق";
+const workPresentation=({book:["كتاب أو كتيّب",isPdf?"تصفّح صفحات الكتاب من القارئ أدناه، أو افتح النسخة الكاملة.":"تعرّف على هذا الإصدار وتفاصيله."],research:["بحث أو دراسة",isPdf?"معاينة البحث متاحة أدناه، مع خيار فتح ملف PDF.":"تفاصيل الدراسة ومرفقاتها."],document:["وثيقة أو ملف",isPdf?"استعرض صفحات الوثيقة داخل المعرض.":"تفاصيل الوثيقة والملفات المرفقة."],website:["موقع إلكتروني",link?"شاهد صورة المشروع ثم انتقل إلى الموقع عبر الرابط الرسمي.":"لم يُضف رابط زيارة لهذا العمل بعد."],design:["تصميم وهوية بصرية",images.length?"استعرض الصور الإضافية لمشاهدة تفاصيل التصميم.":"يمكن إضافة صور إضافية لإظهار تفاصيل التصميم."],video:["فيديو أو إنتاج مرئي",video?"شغّل الفيديو من المشغّل المضمّن أدناه.":"لم يُرفق فيديو قابل للتشغيل لهذا العمل بعد."],writing:["كتابة وتأليف",isPdf?"يمكنك قراءة الملف أو فتح النسخة الكاملة.":"عمل في الكتابة والتأليف."]})[p.workType]||null;
 const workType=({general:"مشروع عام أو متكامل",software:"مشروع برمجي",website:"موقع إلكتروني",app:"تطبيق هاتف أو حاسوب",design:"تصميم جرافيكي أو هوية بصرية",video:"فيديو أو إنتاج مرئي",media:"مشروع إعلامي أو صناعة محتوى",journalism:"تقرير أو عمل صحفي",photography:"تصوير فوتوغرافي",writing:"كتابة أو تأليف",book:"كتاب أو كتيّب",research:"بحث أو دراسة",education:"محتوى تعليمي أو تدريب",business:"مشروع تجاري أو ريادي",engineering:"مشروع هندسي أو صناعي",community:"مبادرة أو نشاط مجتمعي",event:"فعالية أو تنظيم",document:"ملف أو مستند",gallery:"معرض صور أو أعمال فنية"})[p.workType]||"";const category=({design:"تصميم وفنون",tech:"برمجة وتقنية",media:"إعلام وإنتاج محتوى",writing:"كتابة وتأليف",study:"دراسة وبحث",education:"تعليم وتدريب",business:"أعمال وريادة",engineering:"هندسة وصناعة",science:"علوم وتجارب",community:"مبادرات ومجتمع",event:"فعاليات وتنظيم",personal:"مشروع شخصي",other:"أخرى"})[p.category]||"عمل شخصي";
 const status=({done:"مكتمل",progress:"قيد العمل",idea:"فكرة"})[p.status]||"عمل";
 const facts=[["نوع العمل",display.showWorkType===false?"":workType],["التصنيف",display.showWorkCategory===false?"":category],["الحالة",display.showWorkStatus===false?"":status],["دوري في العمل",display.showWorkRole===false?"":p.role],["الأدوات",display.showWorkTools===false?"":p.tools],["المهارات",display.showWorkTags===false?"":p.tags]].filter(x=>String(x[1]||"").trim());
 return '<div class="project-detail">'+(cover?'<img class="project-detail-cover" src="'+esc(cover)+'" alt="صورة '+esc(p.title||"العمل")+'">':'<div class="project-detail-placeholder" aria-label="لا توجد صورة لهذا العمل"><span>✳</span><strong>لا توجد صورة مرفقة</strong><small>تفاصيل العمل متاحة أدناه</small></div>')+
 '<div class="project-detail-heading"><span class="kicker">تفاصيل العمل</span><h2>'+esc(p.title||"عمل بدون عنوان")+'</h2>'+(p.featured?'<span class="tag">✦ عمل مميز</span>':"")+'</div>'+
 (display.showWorkDescription!==false&&p.description?'<section class="project-detail-section"><h3>نبذة عن العمل</h3><p class="project-detail-description">'+esc(p.description)+'</p></section>':"")+
+(workPresentation?"<aside class=\"project-type-intro\"><span>"+esc(workPresentation[0])+"</span><p>"+esc(workPresentation[1])+"</p></aside>":"")+
 (facts.length?'<div class="facts">'+facts.map(x=>'<div class="fact"><strong>'+esc(x[0])+'</strong><span>'+esc(x[1])+'</span></div>').join("")+'</div>':"")+
 (display.showWorkOutcome!==false&&p.outcome?'<section class="work-outcome"><strong>النتيجة أو ما تعلّمته</strong>'+esc(p.outcome)+'</section>':"")+
 (images.length?'<section class="project-detail-media"><h3>صور إضافية</h3><div class="media-gallery">'+images.map(src=>'<a href="'+esc(src)+'" target="_blank" rel="noopener noreferrer" aria-label="عرض صورة إضافية"><img loading="lazy" src="'+esc(src)+'" alt="صورة إضافية للعمل"></a>').join("")+'</div></section>':"")+
-(link?'<section class="project-detail-section project-detail-links"><h3>رابط العمل</h3><a class="btn" href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">فتح رابط العمل ↗</a></section>':"")+
+(link?'<section class="project-link-panel" aria-label="رابط الموقع أو المشروع"><div class="project-link-copy"><span class="project-link-eyebrow">الرابط الرسمي</span><h3>جرّب العمل بنفسك</h3><a class="project-link-address" href="'+esc(link)+'" target="_blank" rel="noopener noreferrer" dir="ltr">'+esc(new URL(link).hostname.replace(/^www\./i,""))+' ↗</a><p>يفتح الرابط في تبويب جديد.</p></div><a class="project-link-cta" href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">زيارة الموقع <span aria-hidden="true">↗</span></a></section>':"")+
 (video?'<section class="project-detail-media"><h3>الفيديو</h3>'+getVideoMarkup(video)+'</section>':"")+
+(file?'<section class="project-detail-media project-document-viewer"><div class="project-document-heading"><div><span class="project-link-eyebrow">محتوى مرفق</span><h3>'+fileLabel+'</h3><p>'+(isPdf?"يمكنك تصفح الصفحات من داخل المعرض، أو فتح الملف في نافذة مستقلة.":"يمكنك فتح الملف من الرابط أدناه.")+'</p></div><a class="project-link-cta" href="'+esc(file)+'" target="_blank" rel="noopener noreferrer">'+(isPdf?"فتح PDF كاملًا ↗":"فتح الملف ↗")+'</a></div>'+(isPdf?'<div class="project-pdf-frame-wrap"><iframe class="project-pdf-frame" title="قارئ ملف PDF" src="'+esc(file)+'#toolbar=1&navpanes=1&view=FitH" loading="lazy"></iframe></div>':"")+'</section>':"")+
 (downloadItems.length?'<section class="project-detail-section"><h3>الملفات المتاحة للتنزيل</h3><p class="project-detail-description">اختار صاحب العمل العناصر المسموح بتنزيلها. عند وجود عدة عناصر ستُنزل في ملف ZIP واحد.</p><button type="button" class="btn" data-download-public-project="'+esc(p.id)+'">تنزيل الملفات المتاحة ('+downloadItems.length+')</button></section>':"")+(templateUrl?'<section class="project-detail-section"><h3>قالب قابل للاستعمال</h3><p class="project-detail-description">يمكنك إنشاء نسخة مستقلة من هذا التصميم وتعديلها دون تغيير الأصل.</p><a class="public-project-link" href="'+esc(templateUrl)+'" rel="noopener noreferrer">استعمال القالب ↗</a></section>':"")+
 '</div>';
 }
 function ensureProjectDialog(){
 if($("projectDetailsModal"))return;
 const modal=document.createElement("div");modal.className="modal-backdrop project-details-backdrop";modal.id="projectDetailsModal";
-modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-labelledby","projectDetailsTitle");
+modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-hidden","true");modal.setAttribute("aria-labelledby","projectDetailsTitle");
 modal.innerHTML='<section class="dialog-card project-details-dialog"><div class="dialog-head"><div><small>مَدى · معرض الأعمال</small><h2 id="projectDetailsTitle">تفاصيل العمل</h2></div><button class="dialog-close" type="button" data-modal-close="projectDetailsModal" aria-label="إغلاق">×</button></div><div id="projectDetailsContent"></div><div class="dialog-actions"><button class="btn" type="button" data-modal-close="projectDetailsModal">إغلاق التفاصيل</button></div></section>';
 document.body.appendChild(modal);modal.addEventListener("click",e=>{if(e.target===modal)closeDialog("projectDetailsModal")});
+}
+function updatePortfolioMeta(data){
+ const portfolio=data.portfolio||{},profile=portfolio.profile||{},display=portfolio.display||{};
+ const name=String(profile.name||data.authorName||data.username||"معرض أعمال").trim();
+ const bio=String(profile.bio||"").replace(/\s+/g," ").trim();
+ const projects=Array.isArray(portfolio.projects)?portfolio.projects:[];
+ const description=(bio||("معرض أعمال "+name+" على منصة مَدى." )).slice(0,300);
+ const canonical=new URL(location.href);canonical.searchParams.delete("preview");
+ document.title=name+" | معرض أعمال مَدى";
+ const upsert=(selector,key,value)=>{
+  let node=document.head.querySelector(selector);
+  if(!node){node=document.createElement("meta");node.setAttribute(key,selector.includes("property=")?selector.match(/property="([^"]+)"/)[1]:selector.match(/name="([^"]+)"/)[1]);document.head.appendChild(node)}
+  node.setAttribute("content",value);
+ };
+ upsert('meta[name="description"]',"name",description);
+ upsert('meta[property="og:type"]',"property","profile");
+ upsert('meta[property="og:title"]',"property",name+" | معرض أعمال مَدى");
+ upsert('meta[property="og:description"]',"property",description);
+ upsert('meta[property="og:url"]',"property",canonical.href);
+ upsert('meta[property="og:locale"]',"property","ar_AR");
+ upsert('meta[name="twitter:card"]',"name","summary_large_image");
+ upsert('meta[name="twitter:title"]',"name",name+" | معرض أعمال مَدى");
+ upsert('meta[name="twitter:description"]',"name",description);
+ const first=projects.find(project=>safeUrl(project.cover,true));
+ let image=first?safeUrl(first.cover,true):"";
+ if(!/^https?:/i.test(image))image=new URL("/icons/og-image.png",location.origin).href;
+ upsert('meta[property="og:image"]',"property",image);
+ let canonicalNode=document.head.querySelector('link[rel="canonical"]');
+ if(!canonicalNode){canonicalNode=document.createElement("link");canonicalNode.rel="canonical";document.head.appendChild(canonicalNode)}
+ canonicalNode.href=canonical.href;
 }
 /* Custom work sections only appear when the owner assigns at least one section. */
 function render(data){
 portfolioData=data;
-const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},projects=(Array.isArray(p.projects)?p.projects:[]).filter(function(x){const id=String(x.gallerySection||"general"),sections=Array.isArray(display.gallerySections)?display.gallerySections:[];const section=sections.find(function(item){return String(item.id)===id});return (id==="general"||!section||section.visible!==false)&&(!display.featuredOnly||x.featured)});
+const p=data.portfolio||{},profile=p.profile||{},display=p.display||{},allProjects=Array.isArray(p.projects)?p.projects:[],projects=allProjects.filter(function(x){const id=String(x.gallerySection||"general"),sections=Array.isArray(display.gallerySections)?display.gallerySections:[];const section=sections.find(function(item){return String(item.id)===id});return (id==="general"||!section||section.visible!==false)&&(!display.featuredOnly||x.featured)});
 ensureProjectDialog();
 $("loadStatus").hidden=true;
+updatePortfolioMeta(data);
 const safeHex=(value,fallback)=>/^#[0-9a-f]{6}$/i.test(String(value||""))?String(value):fallback;
 const accent=safeHex(display.accent,"#5b46e6"),background=safeHex(display.background,"#f6f4ff");
 const template=["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery","aurora"].includes(display.template)?display.template:"classic";
@@ -69,6 +106,7 @@ const columns=Math.max(2,Math.min(4,Number(display.columns)||3));
 const view=$("portfolioView");
 view.hidden=false;
 view.className="portfolio-theme portfolio-template-"+template;
+/* Swiss editorial styling is opt-in; do not force a monochrome theme on every portfolio. */
 view.style.setProperty("--gallery-accent",accent);
 view.style.setProperty("--gallery-paper",background);
 view.style.setProperty("--gallery-columns",String(columns));
@@ -166,7 +204,7 @@ const works=groupedProjects.length?(function(){
  visibleSections.forEach(function(section){groups.set(String(section.id),{section:section,projects:[]})});
  if(!groups.has("general"))groups.set("general",{section:generalSection,projects:[]});
  groupedProjects.forEach(function(project){const id=String(project.gallerySection||"general"),key=groups.has(id)?id:"general";groups.get(key).projects.push(project)});
- return Array.from(groups.values()).filter(function(group){return group.projects.length>0}).map(function(group){const section=group.section;return '<section class="gallery-work-group" data-gallery-section="'+esc(section.id)+'"><div class="section-head gallery-group-heading"><div><h2>'+esc(section.name)+'</h2>'+(section.description?'<p>'+esc(section.description)+'</p>':"")+'</div><span class="count">'+group.projects.length+' أعمال</span></div><div class="works-grid">'+group.projects.map(function(project){return projectCard(project,projects.indexOf(project))}).join("")+'</div></section>'}).join("");
+ return Array.from(groups.values()).filter(function(group){return group.projects.length>0}).map(function(group){const section=group.section;return '<section class="gallery-work-group" data-gallery-section="'+esc(section.id)+'"><div class="section-head gallery-group-heading"><div><h2>'+esc(section.name)+'</h2>'+(section.description?'<p>'+esc(section.description)+'</p>':"")+'</div><span class="count">'+group.projects.length+' أعمال</span></div><div class="works-grid">'+group.projects.map(function(project){return projectCard(project,allProjects.indexOf(project))}).join("")+'</div></section>'}).join("");
 })():'<div class="empty"><strong>لا توجد أعمال منشورة بعد</strong>هذا المعرض لا يحتوي على أعمال متاحة للعرض حاليًا.</div>';
 const profileFirst=display.sectionOrder!=="works-first";
 const mainContent=(profileFirst?sectionHead+works:works+sectionHead);
@@ -271,11 +309,29 @@ const identity=hero;
  default:
   view.innerHTML=mainContent.indexOf(sectionHead)===0?identity+mainContent:mainContent+identity;
 }
+const publicRecords=Array.isArray(p.records)?p.records.slice(0,100):[];
+if(publicRecords.length){
+ const typeLabels={education:"تعليم ومؤهل",experience:"خبرة",certificate:"شهادة",participation:"مشاركة",document:"وثيقة",link:"رابط"};
+ const recordsHtml='<section class="portfolio-records"><div class="portfolio-records-heading"><h2>الشهادات والخبرات والإنجازات</h2><span class="count">'+publicRecords.length+' عناصر</span></div><div class="portfolio-records-grid">'+publicRecords.map(function(record){
+  const url=safeUrl(record.url,false);
+  return '<article class="portfolio-record-card"><span class="portfolio-record-type">'+esc(typeLabels[record.type]||"إنجاز")+'</span><h3>'+esc(record.title||"عنصر في ملف الإنجاز")+'</h3>'+(record.organization?'<p class="portfolio-record-meta">'+esc(record.organization)+'</p>':"")+(record.date?'<p class="portfolio-record-meta">'+esc(record.date)+'</p>':"")+(record.description?'<p>'+esc(String(record.description).slice(0,500))+'</p>':"")+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">عرض الإثبات أو الرابط ↗</a>':"")+'</article>';
+ }).join("")+'</div></section>';
+ view.insertAdjacentHTML("beforeend",recordsHtml);
+}
 }
 async function load(){
 if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}
-if(!slug){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
-try{const r=await fetch("/api/account?action=public-portfolio&id="+encodeURIComponent(slug),{credentials:"same-origin",cache:"no-store"});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||"تعذّر تحميل المعرض.");render(data);document.title=(data.portfolio?.profile?.name||data.authorName||data.username)+" | معرض أعمال مَدى"}catch(error){$("loadStatus").textContent=error.message||"تعذّر تحميل المعرض.";const link=document.createElement("a");link.href="/";link.textContent="العودة إلى مَدى";link.style.color="var(--purple)";link.style.fontWeight="700";$("loadStatus").append(" ");$("loadStatus").appendChild(link)}}
+if(window.__MADA_PUBLIC_DATA__&&window.__MADA_PUBLIC_DATA__.portfolio){const data=window.__MADA_PUBLIC_DATA__;if(data.username&&!location.pathname.startsWith("/@"))history.replaceState({},"","/@"+encodeURIComponent(data.username));render(data);return}
+if(!slug&&!usernameFromPath){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
+try{
+ const query=usernameFromPath?"username="+encodeURIComponent(usernameFromPath):"id="+encodeURIComponent(slug);
+ const r=await fetch("/api/account?action=public-portfolio&"+query,{credentials:"same-origin",cache:"no-store"});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(data.error||"تعذّر تحميل المعرض.");
+ if(data.username&&!location.pathname.startsWith("/@"))history.replaceState({},"","/@"+encodeURIComponent(data.username));
+ render(data);
+ document.title=(data.portfolio?.profile?.name||data.authorName||data.username)+" | معرض أعمال مَدى";
+}catch(error){$("loadStatus").textContent=error.message||"تعذّر تحميل المعرض.";const link=document.createElement("a");link.href="/";link.textContent="العودة إلى مَدى";link.style.color="var(--purple)";link.style.fontWeight="700";$("loadStatus").append(" ");$("loadStatus").appendChild(link)}}
 let publicImageList=[],publicImageIndex=0;
 function showPublicImage(index){
  if(!publicImageList.length)return;
@@ -289,8 +345,31 @@ function showPublicImage(index){
  if(prev)prev.onclick=()=>showPublicImage(publicImageIndex-1);
  if(next)next.onclick=()=>showPublicImage(publicImageIndex+1);
 }
-function openDialog(id){const el=$(id);if(el)el.classList.add("open")}
-function closeDialog(id){const el=$(id);if(el)el.classList.remove("open")}
+const dialogReturnFocus=new Map();
+function openDialog(id){
+ const el=$(id);if(!el)return;
+ if(id==="projectDetailsModal"){
+  const gallery=$("portfolioView"),style=gallery?getComputedStyle(gallery):null;
+  if(style){el.style.setProperty("--detail-accent",style.getPropertyValue("--gallery-accent").trim()||"#5b46e6");el.style.setProperty("--detail-paper",style.getPropertyValue("--gallery-paper").trim()||"#f6f4ff");el.style.setProperty("--detail-text",style.getPropertyValue("--gallery-text").trim()||"#20221f");el.style.setProperty("--detail-heading",style.getPropertyValue("--gallery-heading").trim()||"var(--detail-accent)");el.style.setProperty("--detail-radius",style.borderRadius||"16px");}
+ }
+ dialogReturnFocus.set(id,document.activeElement);
+ el.setAttribute("aria-hidden","false");
+ el.classList.add("open");
+ document.body.classList.add("has-open-dialog");
+ const focusTarget=el.querySelector("[data-modal-close],.dialog-close,button,a[href],[tabindex]:not([tabindex='-1'])");
+ if(focusTarget)focusTarget.focus({preventScroll:true});
+}
+function closeDialog(id){
+ const el=$(id);if(!el)return;
+ el.classList.remove("open");
+ el.setAttribute("aria-hidden","true");
+ if(!document.querySelector(".modal-backdrop.open"))document.body.classList.remove("has-open-dialog");
+ const previous=dialogReturnFocus.get(id);
+ if(previous&&previous.isConnected&&typeof previous.focus==="function")previous.focus({preventScroll:true});
+ dialogReturnFocus.delete(id);
+ const media=el.querySelector("video,iframe");
+ if(media){if(media.tagName==="VIDEO")media.pause();else media.src="about:blank"}
+}
 
 document.addEventListener("click",function(e){
  const close=e.target.closest("[data-modal-close]");
@@ -323,7 +402,15 @@ document.addEventListener("click",function(e){
  openDialog("publicMediaModal");
 });
 ["publicMediaModal"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target.id===id)closeDialog(id)}));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDialog("projectDetailsModal");closeDialog("publicMediaModal")}else if($("publicMediaModal")?.classList.contains("open")&&publicImageList.length>1){if(e.key==="ArrowLeft")showPublicImage(publicImageIndex+1);else if(e.key==="ArrowRight")showPublicImage(publicImageIndex-1)}});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){closeDialog("projectDetailsModal");closeDialog("publicMediaModal");return}
+ const active=document.querySelector(".modal-backdrop.open");
+ if(e.key==="Tab"&&active){
+  const focusable=Array.from(active.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(el=>el.offsetParent!==null);
+  if(focusable.length){const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
+ }
+ if($("publicMediaModal")?.classList.contains("open")&&publicImageList.length>1){if(e.key==="ArrowLeft")showPublicImage(publicImageIndex+1);else if(e.key==="ArrowRight")showPublicImage(publicImageIndex-1)}
+});
 
 window.addEventListener("message",function(event){
  if(!isPreview||event.source!==window.parent||event.origin!==window.location.origin)return;

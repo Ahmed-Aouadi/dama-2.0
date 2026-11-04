@@ -32,7 +32,7 @@ html.is-preview body{overscroll-behavior:contain}
    A cleaner editorial gallery with deliberate desktop/mobile behaviour.
    Scoped to the public portfolio so the rest of the app remains untouched. */
 #portfolioView{
-  --gallery-paper:var(--gallery-paper,#f7f8fc);
+  /* Respect the paper color selected by the portfolio designer. */
   --gallery-card-radius:20px;
   --gallery-section-spacing:clamp(28px,4vw,48px);
   width:100%;

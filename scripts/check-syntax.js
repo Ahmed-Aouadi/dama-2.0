@@ -8,7 +8,6 @@ const javascriptFiles = [
   "legacy/api/store.js",
   "legacy/api/requests.js",
   "masar-platform/auth.js",
-  "masar-platform/discover-path.js",
   "masar-platform/portfolio-public.js",
   "masar-platform/mada-ux.js",
   "masar-platform/growth-hub.js",
@@ -66,6 +65,9 @@ for (const file of htmlFiles) {
 }
 
 const account = fs.readFileSync("api/account.js", "utf8");
+const ssrPortfolio = fs.readFileSync("api/portfolio.js", "utf8");
+const sitemapApi = fs.readFileSync("api/sitemap.js", "utf8");
+const robotsApi = fs.readFileSync("api/robots.js", "utf8");
 const auth = fs.readFileSync("masar-platform/auth.js", "utf8");
 const profile = fs.readFileSync("masar-platform/index.html", "utf8");
 const invalidCollectionSelectors = [...profile.matchAll(/(?<!\$)\$\([^)]{0,180}\)\.(?:forEach|map|filter|some|every|reduce)\s*\(/g)];
@@ -104,10 +106,35 @@ if (!hasMeaningfulGrowth({ growth: { cv: { name: "Test User" } } })) throw new E
 if (!hasMeaningfulGrowth({ growth: { skills: [{ name: "HTML" }] } })) throw new Error("Growth skills must prevent an account from being treated as empty");
 if (hasMeaningfulGrowth({ growth: { cv: { name: "", headline: "", languages: "العربية، الفرنسية" }, skills: [], paths: {}, history: [], requests: [], customTemplates: [], locale: "ar" } })) throw new Error("Default Growth Hub data must not be mistaken for user content");
 console.log("OK account restoration preserves custom templates, CV, skills, paths and history");
+
+const accountMergeDetector = auth.match(/function mergeAccountState\(cloudValue, guestValue\) \{[\s\S]*?\n  \}/);
+if (!accountMergeDetector) throw new Error("Account restoration must merge guest and cloud data without dropping guest-only records");
+const mergeAccountState = vm.runInNewContext("(" + accountMergeDetector[0] + ")");
+const mergedAccountState = mergeAccountState(
+  { profile: { name: "Cloud name", city: "" }, projects: [{ id: "cloud", title: "Cloud project" }, { id: "same", title: "Cloud title" }], growth: { skills: [{ id: "html", name: "HTML" }] } },
+  { profile: { name: "Guest name", city: "Ouargla" }, projects: [{ id: "guest", title: "Guest project" }, { id: "same", description: "Guest detail" }], growth: { skills: [{ id: "css", name: "CSS" }] } }
+);
+const mergedSnapshot = JSON.parse(JSON.stringify(mergedAccountState));
+if (mergedSnapshot.profile.name !== "Cloud name" || mergedSnapshot.profile.city !== "Ouargla") throw new Error("Account merge must prefer non-empty cloud profile values and fill missing fields from guest data");
+if (mergedSnapshot.projects.length !== 3 || mergedSnapshot.projects[0].id !== "cloud" || mergedSnapshot.projects[1].title !== "Cloud title" || mergedSnapshot.projects[1].description !== "Guest detail" || mergedSnapshot.projects[2].id !== "guest") throw new Error("Account merge must retain cloud and guest-only projects and merge matching project IDs");
+if (mergedSnapshot.growth.skills.length !== 2) throw new Error("Account merge must preserve skills from both guest and cloud state");
+console.log("OK guest/cloud restoration merges records and fills missing fields without dropping unique data");
+if (!profile.includes('format:"mada-full-backup",version:2') || !profile.includes('parsed.format==="mada-full-backup"&&parsed.version===2') || !profile.includes('parsed.format==="mada-portfolio-backup"&&parsed.version===1')) throw new Error("Mada backups must export a complete versioned state and import both current and legacy formats");
+if (!profile.includes('$("#exportData").addEventListener("click",function(){') || !profile.includes('downloadFullBackup();toast("تم تصدير نسخة كاملة من بياناتك")')) throw new Error("General data export must use the same complete backup format as portfolio export");
+console.log("OK full-state backup format and legacy import compatibility");
+
+const growthHub = fs.readFileSync("masar-platform/growth-hub.js", "utf8");
+const sharedTemplatePage = fs.readFileSync("masar-platform/share.html", "utf8");
+if (profile.includes('id="designPrice"') || profile.includes('السعر بالدينار (0 = مجاني)')) throw new Error("Template sharing UI must not expose unsupported prices");
+if (!account.includes("const priceDzd = 0;") || !account.includes("paid: false, priceDzd: 0") || !account.includes("design });")) throw new Error("Public template sharing must stay available and free while returning the full design");
+if (sharedTemplatePage.includes("قالب مدفوع") || sharedTemplatePage.includes("السعر المحدد:") || sharedTemplatePage.includes("data.paid")) throw new Error("Shared template pages must not show unsupported paid states");
+if (growthHub.includes("القوالب المميزة ستتوفر لاحقًا") || growthHub.includes("t.paid")) throw new Error("Growth template library must not expose obsolete paid placeholders");
+console.log("OK public template sharing remains enabled and free; unsupported pricing states are removed");
+
+
 if (!account.includes('if (!origin || !host) return false') || !account.includes('req.headers.host || ""')) throw new Error("Account API must reject missing origins and compare against the request host");
 if (!account.includes("4 * 1024 * 1024") || !account.includes("encoded.length > 3500000") || !account.includes("Retry-After") || !account.includes("allowedActions") || !account.includes("methodsByAction") || !account.includes("SameSite=Strict") || !account.includes("parsed.protocol === \"https:\"")) throw new Error("Account API request size, method/action allowlists, strict cookies/origin, and write-rate protections are required");
 if (!adminApi.includes('req.headers.host||""') || !adminApi.includes("INTERVAL '5 minutes'") || !adminApi.includes("Retry-After") || !adminApi.includes("public-config") || !adminApi.includes("methodsByAction") || !adminApi.includes('u.protocol==="https:"')) throw new Error("Admin API origin, method/action allowlist, and write-rate protections are required");
-if (!adminApi.includes("mada_career_progress_attempts") || !adminApi.includes('update("career-progress:"+sourceIp)') || !adminApi.includes('attempts||0)>60') || !adminApi.includes('"Retry-After":"300"')) throw new Error("Public career progress endpoint must enforce a per-IP rate limit");
 if (!securityHeaders.includes("Strict-Transport-Security") || !securityHeaders.includes("default-src 'self'") || !securityHeaders.includes("object-src 'none'") || !securityHeaders.includes("frame-ancestors 'self'") || !securityHeaders.includes('"value": "SAMEORIGIN"') || !securityHeaders.includes("X-XSS-Protection") || securityHeaders.includes("unsafe-eval")) throw new Error("Required browser security headers/CSP are missing or weakened");
 if (!profile.includes('sandbox="allow-forms allow-scripts allow-popups allow-presentation"') || profile.includes('sandbox="allow-forms allow-scripts allow-same-origin')) throw new Error("Untrusted media previews must not combine allow-scripts with allow-same-origin");
 
@@ -153,14 +180,34 @@ if (!profile.includes("state.portfolioSettings") || !profile.includes("settings.
 console.log("OK project editing, downloads, per-project gallery visibility, and gallery content settings");
 console.log("OK modal-first work gallery actions and media previews");
 console.log("OK public portfolio publishing, media, routing, and copy integration");
+
+if (!ssrPortfolio.includes('fs.readFileSync(path.join(__dirname, "../masar-platform/portfolio.html")') || !ssrPortfolio.includes('window.__MADA_PUBLIC_DATA__=') || !ssrPortfolio.includes('application/ld+json') || !ssrPortfolio.includes('og:image') || !ssrPortfolio.includes('rel="canonical"')) throw new Error("Username portfolio route must server-render public content, canonical metadata, Open Graph, and Person JSON-LD");
+if (!ssrPortfolio.includes('p.is_public=TRUE') || !ssrPortfolio.includes('mada_admin_user_flags') || !ssrPortfolio.includes('disabled_until>NOW()')) throw new Error("Server-rendered portfolios must respect public visibility and account suspension flags");
+if (!ssrPortfolio.includes("res.statusCode = 308") || !ssrPortfolio.includes('res.setHeader("Location", canonical)')) throw new Error("Legacy portfolio IDs must permanently redirect to username URLs");
+if (!portfolioRoute.includes('"source": "/@:username"') || !portfolioRoute.includes('"destination": "/api/portfolio?username=:username"') || !portfolioRoute.includes('"includeFiles": "masar-platform/portfolio.html"')) throw new Error("Public username routes must be rewritten to the SSR endpoint with the portfolio shell bundled");
+if (!portfolioApi.includes('shareUrl: "/@" + encodeURIComponent(result.rows[0].username)') || !portfolioApi.includes('LOWER(u.username)=LOWER($1)')) throw new Error("New portfolio shares and public API must resolve human-readable usernames");
+if (!portfolioViewer.includes('window.__MADA_PUBLIC_DATA__') || !portfolioViewer.includes('history.replaceState({},"","/@"+encodeURIComponent(data.username))')) throw new Error("Public portfolio viewer must hydrate SSR data and upgrade legacy IDs to username URLs");
+console.log("OK SSR public portfolios, username routes, canonical SEO, and legacy link upgrade");
+
+if (!sitemapApi.includes("p.is_public=TRUE") || !sitemapApi.includes("mada_admin_user_flags") || !sitemapApi.includes("publicGalleryEnabled") || !sitemapApi.includes("/@")) throw new Error("Sitemap must include only active public username portfolios and respect gallery settings");
+if (!robotsApi.includes("Disallow: /api/") || !robotsApi.includes("/sitemap.xml")) throw new Error("Robots endpoint must block private API paths and advertise the dynamic sitemap");
+if (!portfolioRoute.includes('"source": "/sitemap.xml"') || !portfolioRoute.includes('"destination": "/api/sitemap"') || !portfolioRoute.includes('"source": "/robots.txt"') || !portfolioRoute.includes('"destination": "/api/robots"')) throw new Error("Crawler routes must expose robots.txt and sitemap.xml");
+if (!portfolioRoute.includes('"key": "preview"') || !portfolioRoute.includes('"value": "1"') || !portfolioRoute.includes('"destination": "/masar-platform/portfolio.html"')) throw new Error("Live portfolio preview must continue using the static preview shell");
+console.log("OK robots.txt and dynamic public sitemap respect publication and preview routing");
+
+
 if (!portfolioPage.includes('id="publishPortfolioBtn"') || !portfolioPage.includes('event.target.closest("#publishPortfolioBtn")') || !portfolioPage.includes('Promise.resolve(publishPortfolio())')) throw new Error("Gallery publish button must be bound to the delegated publish workflow");
 if (!portfolioPage.includes('event.target.closest("#newBlankDesign")') || !portfolioPage.includes('event.target.closest("[data-delete-design]")')) throw new Error("Studio create/delete buttons must use resilient delegated click handlers");
 if (!portfolioPage.includes('typeof result.shareUrl!=="string"') || !portfolioPage.includes('Mada portfolio publish failed:')) throw new Error("Gallery publishing must validate the returned share URL and report runtime failures");
 if (!portfolioPage.includes("new TextEncoder().encode(requestBody).length>3900000") || !portfolioPage.includes("aria-busy") || !portfolioApi.includes('module.exports.config = { api: { bodyParser: { sizeLimit: "4mb" } } }')) throw new Error("Portfolio publishing must support bounded media payloads and expose a clear size error");
 if (!portfolioViewer.includes("const normalizeWhatsAppNumber=function(value)") || !portfolioViewer.includes("https://wa.me/") || !portfolioViewer.includes("?text=") || !portfolioViewer.includes("راسلني على واتساب") || !portfolioPage.includes("يفتح زر المعرض محادثة واتساب مباشرة")) throw new Error("WhatsApp contact must open a direct chat using a normalized international number");
 
-if (!auth.includes('id = "madaAccessGate"') || !auth.includes('accessGate.classList.toggle("show", !user)')) throw new Error("Private workspace must remain gated until a verified session exists");
-if (!auth.includes('id="madaAccessLogin"') || !auth.includes('open("login")')) throw new Error("Unauthenticated users must have a working login/register entry point");
+if (auth.includes("madaAccessGate") || auth.includes("mada-auth-required")) throw new Error("Guest workspace must not be blocked by an authentication gate");
+if (!auth.includes('setSyncStatus("local", "وضع الزائر — حفظ محلي")') || !auth.includes('getSyncStatus: () => syncStatus.dataset.status')) throw new Error("Guest mode must expose local-save status and cloud sync state");
+if (!auth.includes('window.addEventListener("online"') || !auth.includes('setTimeout(flushSync, retryDelay)')) throw new Error("Cloud sync must retry after connectivity returns and preserve pending snapshots");
+if (!profile.includes('getStoredState:function(key)') || !auth.includes('getStoredState("mada-platform-v1")')) throw new Error("Logout and account deletion must restore the guest workspace instead of clearing it");
+if ((profile.match(/<nav class="mobile-nav">[\s\S]*?<\/nav>/)||[""])[0].match(/data-page=/g).length > 5) throw new Error("Mobile navigation must contain no more than five primary items");
+if (profile.includes("��") || profile.includes("�")) throw new Error("Replacement characters remain in the main application interface");
 for (const action of ['publish-design', 'publish-portfolio', 'data']) {
   const routeStart = account.indexOf('action === "' + action + '"');
   if (routeStart < 0) throw new Error("Missing protected action: " + action);
@@ -171,8 +218,29 @@ if (!account.includes("disabled_until>NOW()") || !account.includes("disabled_unt
 if (!adminApi.includes("disabled_until TIMESTAMPTZ") || !adminApi.includes('"delete-user":["POST"]') || !adminApi.includes("account_suspended_permanently") || !adminApi.includes("account_suspended_temporarily") || !adminApi.includes('"account_deleted"')) throw new Error("Admin API must support permanent/temporary suspension and audited account deletion");
 if (!adminConsole.includes("data-suspension-duration") || !adminConsole.includes("data-delete-user") || !adminConsole.includes('confirmation:typed')) throw new Error("Admin console must expose timed suspensions and guarded account deletion");
 console.log("OK timed account suspension, expiry restoration, and audited deletion");
-console.log("OK private workspace is gated and write APIs require an authenticated session");
+console.log("OK local guest workspace, sync status/retry, and protected cloud APIs");
+if (!account.includes("revision BIGINT NOT NULL DEFAULT 1") || !account.includes("ADD COLUMN IF NOT EXISTS revision BIGINT NOT NULL DEFAULT 1") || !account.includes("expectedRevision") || !account.includes("RETURNING data,revision") && !account.includes("revision: Number(latest.rows[0]?.revision || 0)")) throw new Error("Account data sync must use a backward-compatible revision column and optimistic concurrency checks");
+if (!account.includes("return send(res, 409") || !auth.includes("error.status === 409") || !auth.includes("mada-sync-conflict-backup:") || !auth.includes("mergeAccountState(remoteState, snapshot)")) throw new Error("Concurrent account edits must be detected, locally backed up, and merged before retrying");
+if (!auth.includes("expectedRevision: cloudRevision") || !auth.includes("cloudRevision = Number(saved.revision || cloudRevision)")) throw new Error("Client cloud sync must send and track account data revisions");
+if (!auth.includes('authButton.id = "madaAuthButton"') || !auth.includes('authButton.onclick = () => open("login")')) throw new Error("Guest users must retain an accessible account sign-in entry point");
+console.log("OK revision-based multi-device conflict detection, backup, and merge");
+
 console.log("OK account settings integration and security checks");
+
+if (!growthHub.includes("startedPaths=pathsData.filter(path=>Array.isArray(growth.paths[path.id]))") || growthHub.includes("pathsData.reduce((sum,path)=>sum+path.steps.length,0)")) throw new Error("Growth progress must count only learning paths the user has started");
+if (!profile.includes('id="appThemeSelect"') || !profile.includes('theme:"system"') || !profile.includes("function applyAppTheme(theme)") || !profile.includes('appThemeSelect.addEventListener("change"')) throw new Error("App appearance must be selectable and persisted in settings");
+if (!profile.includes("مركز المساعدة") || !profile.includes('class="help-faq"') || !profile.includes("هل أحتاج إلى حساب؟")) throw new Error("Help dialog must contain practical FAQs, not only onboarding steps");
+const themeCss = fs.readFileSync("masar-platform/mada-theme.css", "utf8");
+if (!themeCss.includes(':root[data-theme="dark"]') || !themeCss.includes("prefers-color-scheme:dark") || !themeCss.includes("#appThemeSelect")) throw new Error("Dark and system theme styles are missing");
+console.log("OK accurate growth progress, theme settings, and help FAQs");
+
+if (!profile.includes('records:Array.isArray(state.records)?state.records:[]') || !profile.includes('records:(state.records||[]).filter(function(record){return record.public===true})')) throw new Error("Portfolio record entities must persist locally and flow into public previews/publishing");
+if (!account.includes("const recordTypes = new Set") || !account.includes("record.public === true") || !account.includes("const portfolio = { profile, projects, records, display")) throw new Error("The account API must validate and whitelist public record entities");
+if (!ssrPortfolio.includes("portfolio.records") || !ssrPortfolio.includes("portfolio-records-grid") || !portfolioViewer.includes("p.records") || !portfolioViewer.includes("view.insertAdjacentHTML(\"beforeend\",recordsHtml)")) throw new Error("Public portfolio SSR and client templates must both render record entities");
+for (const id of ["portfolioRecordsPanel", "portfolioRecordsList", "portfolioRecordModal", "portfolioRecordForm", "portfolioRecordPublic"]) if (!profile.includes('id="' + id + '"')) throw new Error("Missing portfolio record manager control: " + id);
+console.log("OK structured education, experience, certificates, participation, documents and links across local, cloud and public portfolio");
+
+
 
 
 const growthPage = fs.readFileSync("masar-platform/index.html", "utf8");

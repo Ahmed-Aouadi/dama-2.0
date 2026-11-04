@@ -128,3 +128,9 @@
 #page-portfolio .designer-pane[data-designer-pane="style"] .designer-field,#page-portfolio .designer-pane[data-designer-pane="layout"] .designer-field{background:#fff;border-color:#e8e3f3;border-radius:13px}
 #page-portfolio .designer-pane[data-designer-pane="style"] .segmented{padding:4px;border:1px solid #e8e3f3;border-radius:13px;background:#faf9ff}
 @media(max-width:560px){#page-portfolio .gallery-style-intro{gap:10px;padding:14px}.gallery-style-intro-icon{width:34px;height:34px!important;font-size:17px!important}}
+
+/* Type-aware public portfolio detail context */
+.project-type-intro{display:flex;align-items:flex-start;gap:12px;margin:14px 0;padding:13px 15px;border:1px solid #e6e0fb;border-right:4px solid var(--purple,#5b46e6);border-radius:13px;background:linear-gradient(110deg,#fff,#f7f5ff)}
+.project-type-intro>span{flex:none;border-radius:999px;padding:5px 9px;background:#eee9ff;color:#4f3ad6;font-size:11px;font-weight:800}
+.project-type-intro p{margin:1px 0 0;color:#6a6882;font-size:12px;line-height:1.9}
+@media(max-width:540px){.project-type-intro{flex-direction:column;gap:7px;padding:12px}}

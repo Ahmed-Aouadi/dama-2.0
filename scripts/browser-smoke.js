@@ -69,11 +69,20 @@ function assert(condition, message) {
         growth: { cv: { name: "", headline: "", languages: "العربية، الفرنسية" }, skills: [], paths: {}, history: [], requests: [], customTemplates: [], locale: "ar" }
       };
       let body = { ok: true };
-      if (action === "me") { sessionRefreshRequested = true; body = { user }; }
-      else if (action === "data" && route.request().method() === "GET") body = { data };
+      if (action === "me") { sessionRefreshRequested = true; body = (route.request().headers().referer || "").includes("guest-smoke=1") ? { user: null } : { user }; }
+      else if (action === "data" && route.request().method() === "GET") body = { data, revision: 1 };
       else if (action === "publish-portfolio") { lastPublishedPayload = route.request().postDataJSON(); body = { shareUrl: "/portfolio.html?id=browserSmokeTest123" }; }
-      else if (action === "data") body = { ok: true };
+      else if (action === "data") body = { ok: true, revision: 2 };
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    });
+    await page.route("**/api/admin**", async route => {
+      const url = new URL(route.request().url());
+      const action = url.searchParams.get("action");
+      if (action === "public-config") {
+        await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ growthTemplates: [] }) });
+      } else {
+        await route.fulfill({ status: 401, contentType: "application/json", body: JSON.stringify({ error: "Unauthenticated test request." }) });
+      }
     });
     await page.addInitScript(() => {
       window.__madaBrowserErrors = [];
@@ -93,7 +102,7 @@ function assert(condition, message) {
     const startupErrors = await page.evaluate(() => window.__madaBrowserErrors || []);
     assert(!errors.length && !startupErrors.length, "Uncaught browser exceptions on startup: " + errors.join(" | ") + " | details: " + JSON.stringify(startupErrors));
 
-    for (const name of ["portfolio", "studio", "careers", "growth", "profile", "settings", "home"]) {
+    for (const name of ["portfolio", "studio", "growth", "profile", "settings", "home"]) {
       const nav = page.locator('[data-page="' + name + '"]').first();
       await nav.click();
       await page.waitForFunction(n => {
@@ -105,14 +114,11 @@ function assert(condition, message) {
     }
     console.log("PASS main navigation: all seven sections switch correctly without horizontal overflow");
 
-    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:false,careersSectionEnabled:false,growthSectionEnabled:false,profileSectionEnabled:false,settingsSectionEnabled:false}));
+    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:false,growthSectionEnabled:false,profileSectionEnabled:false,settingsSectionEnabled:false}));
     assert(await page.locator('[data-page="studio"]').first().evaluate(el => el.hidden), "Studio navigation was not hidden by site settings");
-    assert(await page.locator('[data-page="careers"]').first().evaluate(el => el.hidden), "Careers navigation was not hidden by site settings");
     assert(await page.locator("#page-growth").evaluate(el => el.classList.contains("section-disabled")), "Growth page was not disabled by site settings");
     assert(await page.locator("#page-profile").evaluate(el => el.classList.contains("section-disabled")), "Profile page was not disabled by site settings");
-    await page.evaluate(() => document.querySelector('[data-page="careers"]').click());
-    assert(await page.locator("#page-home").evaluate(el => el.classList.contains("active")), "Navigation to a disabled section was not redirected home");
-    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:true,careersSectionEnabled:true,growthSectionEnabled:true,profileSectionEnabled:true,settingsSectionEnabled:true}));
+    await page.evaluate(() => window.applyMadaSectionVisibility({studioSectionEnabled:true,growthSectionEnabled:true,profileSectionEnabled:true,settingsSectionEnabled:true}));
     assert(!(await page.locator('[data-page="studio"]').first().evaluate(el => el.hidden)), "Re-enabled Studio navigation stayed hidden");
     console.log("PASS admin section visibility: hides, blocks, and restores optional sections");
 
@@ -121,11 +127,47 @@ function assert(condition, message) {
     await page.locator('#helpModal [data-close="helpModal"]').click();
     console.log("PASS help button opens and closes its dialog");
 
+    assert(await page.locator("#helpModal .help-faq details").count() >= 4, "Help center must expose practical FAQ answers");
+    console.log("PASS help center includes onboarding and practical account/privacy/backup FAQs");
+
+    await page.locator('[data-page="growth"]').first().click();
+    await page.waitForSelector("#growthProgressLabel", { timeout: 5000 });
+    assert((await page.locator("#growthProgressLabel").textContent()).includes("ابدأ بتوثيق إنجاز"), "An empty Growth Hub should show a helpful start state instead of 0% progress");
+    assert(await page.locator("#growthProgress").evaluate(el => parseFloat(getComputedStyle(el).width) === 0), "An empty Growth Hub should have a zero-width progress bar without counting unstarted path steps");
+    console.log("PASS empty Growth Hub progress shows an actionable start state");
+
+
+    await page.locator('[data-page="settings"]').first().click();
+    await page.locator("#appThemeSelect").selectOption("dark");
+    assert(await page.locator("html").getAttribute("data-theme") === "dark", "Dark theme selection did not apply");
+    await page.locator("#appThemeSelect").selectOption("light");
+    assert(await page.locator("html").getAttribute("data-theme") === "light", "Light theme selection did not apply");
+    await page.locator("#appThemeSelect").selectOption("system");
+    assert(await page.locator("html").getAttribute("data-theme") === null, "System theme selection should defer to the operating system");
+    assert(await page.evaluate(() => window.MadaApp.getState().settings.theme) === "system", "Theme preference was not saved in app settings");
+    console.log("PASS persisted light/dark/system appearance settings");
+
+
     await page.locator('[data-page="portfolio"]').first().click();
     await page.locator("#addProjectBtn").click();
     assert(await page.locator("#projectModal").evaluate(el => el.classList.contains("open")), "Add project button did not open the project dialog");
     await page.locator('#projectModal [data-close="projectModal"]').click();
     console.log("PASS add-project button opens and closes its dialog");
+
+    await page.locator("#addPortfolioRecord").click();
+    await page.locator("#portfolioRecordModal").waitFor({ state: "visible", timeout: 3000 });
+    await page.locator("#portfolioRecordType").selectOption("certificate");
+    await page.locator("#portfolioRecordTitle").fill("شهادة اختبارية");
+    await page.locator("#portfolioRecordOrganization").fill("جهة الاختبار");
+    await page.locator("#portfolioRecordDate").fill("2026");
+    await page.locator("#portfolioRecordDescription").fill("وصف مختصر للشهادة.");
+    await page.locator("#portfolioRecordPublic").check();
+    await page.locator('#portfolioRecordForm button[type="submit"]').click();
+    assert(await page.locator("#portfolioRecordsList .portfolio-record-row").count() === 1, "New portfolio record was not saved and rendered");
+    assert((await page.locator("#portfolioRecordsList").textContent()).includes("شهادة اختبارية"), "Saved portfolio record title is missing");
+    assert(await page.evaluate(() => window.MadaApp.getState().records[0].public === true), "Public visibility choice was not persisted for the record");
+    console.log("PASS portfolio records: create, save, and per-record public visibility");
+
 
     await page.evaluate(() => {
       if (!window.MadaAuth || typeof window.MadaAuth.getUser !== "function") throw new Error("MadaAuth.getUser is unavailable for the stale-session regression test");
@@ -135,6 +177,7 @@ function assert(condition, message) {
     await page.waitForFunction(() => /تم نشر المعرض بنجاح/.test(document.querySelector("#portfolioShareStatus")?.textContent || ""), undefined, { timeout: 5000 });
     assert(sessionRefreshRequested, "Publishing did not refresh the server session when client auth state was empty");
     assert(!errors.length, "Uncaught browser exceptions after portfolio publishing click: " + errors.join(" | "));
+    assert(lastPublishedPayload && Array.isArray(lastPublishedPayload.portfolio.records) && lastPublishedPayload.portfolio.records.some(record => record.title === "شهادة اختبارية"), "Public portfolio publishing omitted the selected public certificate");
     console.log("PASS publish button publishes and exposes a validated share URL");
 
     await page.locator("#openPortfolioDesignerBtn").click();
@@ -142,19 +185,9 @@ function assert(condition, message) {
     assert(await page.locator("#portfolioDesigner .designer-live").count() === 0, "Obsolete customization badge is still visible");
     assert(await page.locator("#portfolioSettingsIntro").count() === 0, "Redundant public-gallery introduction is still visible");
     assert(await page.locator("#portfolioDesigner [data-designer-tab]").count() === 7, "Gallery designer tabs are missing");
-    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 13, "Gallery designer must offer exactly thirteen templates");
-    for (const template of ["classic","cv","engineering","marketing","rose","resume-sidebar","resume-creative","resume-minimal","split","bold","studio","gallery","aurora"]) {
-      await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').click();
-      assert(await page.evaluate(t => window.MadaApp.getState().portfolioSettings.template === t, template), "Selecting portfolio template did not save: " + template);
-      assert(await page.locator('#portfolioDesigner [data-portfolio-template="' + template + '"]').evaluate(el => el.classList.contains("is-selected") && el.getAttribute("aria-pressed") === "true"), "Selected portfolio template was not visually highlighted: " + template);
-      await page.waitForFunction(t => { const frame = document.querySelector("#portfolioLivePreview iframe"); try { return !!frame && frame.contentDocument.querySelector("#portfolioView")?.classList.contains("portfolio-template-" + t); } catch (_) { return false; } }, template, { timeout: 5000 }).catch(() => {});
-      assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView").evaluate((el, t) => el.classList.contains("portfolio-template-" + t), template), "Live preview did not apply selected template layout: " + template);
-      const compositionClass = { classic: "", cv: "cv-layout", engineering: "engineering-layout", marketing: "marketing-layout", rose: "rose-layout", "resume-sidebar": "resume-sidebar-layout", "resume-creative": "resume-creative-layout", "resume-minimal": "resume-minimal-layout", aurora: "aurora-layout" }[template];
-      if (compositionClass) assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView ." + compositionClass).count() === 1, template + " must render its own page composition");
-      const avatarSelector = template === "cv" ? ".cv-avatar" : ".profile-avatar img";
-      assert(await page.frameLocator("#portfolioLivePreview iframe").locator("#portfolioView " + avatarSelector).count() === 1, template + " must display the profile photo");
-
-    }
+    assert(await page.locator("#portfolioDesigner .portfolio-template-picker").count() === 1, "Removed preset picker should remain in the DOM for legacy compatibility");
+    assert(!(await page.locator("#portfolioDesigner .portfolio-template-picker").isVisible()), "Ready-made portfolio template picker is still visible");
+    assert(await page.locator("#portfolioDesigner [data-portfolio-template]").count() === 0 || !(await page.locator("#portfolioDesigner [data-portfolio-template]").first().isVisible()), "Ready-made template choices are still visible");
     for (const key of ["style", "colors", "fonts", "layout", "profile", "content", "sharing"]) {
       await page.locator(`#portfolioDesigner [data-designer-tab="${key}"]`).click();
       assert(await page.locator(`#portfolioDesigner [data-designer-pane="${key}"]`).isVisible(), `Gallery designer tab ${key} did not show its panel`);
@@ -241,6 +274,80 @@ function assert(condition, message) {
     await page.waitForFunction(old => document.querySelector("#growthLocaleToggle")?.textContent !== old, before, { timeout: 5000 });
     assert(!errors.length, "Uncaught browser exceptions after interaction tests: " + errors.join(" | "));
     console.log("PASS Growth Hub language toggle responds");
+
+    const guestContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const guestPage = await guestContext.newPage();
+    await guestPage.route("**/api/account**", async route => {
+      const url = new URL(route.request().url());
+      const action = url.searchParams.get("action");
+      const body = action === "me" ? { user: null } : { ok: true };
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    });
+    await guestPage.goto("http://127.0.0.1:4173/?guest-smoke=1", { waitUntil: "domcontentloaded" });
+    await guestPage.waitForFunction(() => window.MadaAuth && window.MadaAuth.getUser() === null, undefined, { timeout: 5000 });
+    assert(await guestPage.locator("#madaAccessGate").count() === 0, "Guest workspace must not render an authentication gate");
+    assert((await guestPage.locator("#madaSyncStatus").textContent()).includes("وضع الزائر"), "Guest workspace must show local-only save status");
+    await guestPage.evaluate(() => localStorage.setItem("mada-platform-v1", JSON.stringify({ profile: { name: "ضيف الاختبار" }, projects: [], designs: [], quizzes: [], settings: {}, portfolioSettings: {}, growth: {} })));
+    await guestPage.reload({ waitUntil: "domcontentloaded" });
+    await guestPage.waitForFunction(() => window.MadaApp && window.MadaAuth && window.MadaAuth.getUser() === null, undefined, { timeout: 5000 });
+    const guestStateCheck = await guestPage.evaluate(() => ({ name: window.MadaApp.getState().profile.name, stored: localStorage.getItem("mada-platform-v1"), status: document.querySelector("#madaSyncStatus")?.textContent }));
+    assert(guestStateCheck.name === "ضيف الاختبار", "Guest profile must load from localStorage without login: " + JSON.stringify(guestStateCheck));
+    await guestPage.reload({ waitUntil: "domcontentloaded" });
+    assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must persist across reloads");
+    assert(await guestPage.locator(".mobile-nav [data-page]").count() === 5, "Mobile navigation must expose exactly five primary items");
+    console.log("PASS guest workspace: local profile survives reload without login gate; five-item mobile nav and sync indicator");
+    await guestContext.close();
+
+
+    const galleryPage = await context.newPage();
+    await galleryPage.route("**/api/account?action=public-portfolio**", route => route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        username: "gallery-regression",
+        authorName: "اختبار المعرض",
+        portfolio: {
+          profile: { name: "اختبار المعرض", role: "مصمم ومطور", bio: "نبذة قصيرة لاختبار التخطيط." },
+          display: {
+            template: "classic",
+            gallerySections: [{ id: "hidden-section", name: "قسم مخفي", visible: false }]
+          },
+          projects: [
+            { id: "hidden-project", title: "عمل مخفي", gallerySection: "hidden-section", cover: "", description: "لا يجب عرضه." },
+            { id: "visible-project", title: "المشروع الصحيح", gallerySection: "general", cover: "", description: "تفاصيل المشروع الصحيح." }
+          ]
+        }
+      })
+    }));
+    await galleryPage.setViewportSize({ width: 360, height: 800 });
+    await galleryPage.goto("http://127.0.0.1:4173/masar-platform/portfolio.html?id=galleryRegression", { waitUntil: "domcontentloaded" });
+    await galleryPage.waitForSelector("#portfolioView:not([hidden]) .project-tile", { timeout: 5000 });
+
+    await galleryPage.goto("http://127.0.0.1:4173/masar-platform/portfolio.html?username=gallery-regression", { waitUntil: "domcontentloaded" });
+    await galleryPage.waitForSelector("#portfolioView:not([hidden]) .project-tile", { timeout: 5000 });
+    await galleryPage.waitForFunction(() => location.pathname === "/@gallery-regression", undefined, { timeout: 3000 });
+    assert(await galleryPage.locator('link[rel="canonical"]').getAttribute("href") === "http://127.0.0.1:4173/@gallery-regression", "Username gallery lookup did not canonicalize to its public profile URL");
+
+    assert(await galleryPage.locator("#portfolioView .project-tile").count() === 1, "Hidden gallery section leaked into the public portfolio");
+    const galleryLayout = await galleryPage.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+    assert(galleryLayout.scroll <= galleryLayout.client + 1, "Public portfolio overflows at 360px: " + JSON.stringify(galleryLayout));
+    const detailModal = galleryPage.locator("#projectDetailsModal");
+    assert(!(await detailModal.isVisible()), "Project details modal should not appear until a work is selected");
+    await galleryPage.locator("#portfolioView .project-tile").click();
+    await detailModal.waitFor({ state: "visible", timeout: 3000 });
+    assert(await galleryPage.locator("#projectDetailsTitle").textContent() === "المشروع الصحيح", "Filtered gallery card opened the wrong project details");
+    assert(await galleryPage.locator("#projectDetailsContent").getByText("تفاصيل المشروع الصحيح.").count() === 1, "Correct project description was not shown in the details dialog");
+    await galleryPage.keyboard.press("Escape");
+    assert(!(await detailModal.isVisible()), "Escape did not close the project details dialog");
+    await galleryPage.locator("#portfolioView .project-tile").click();
+    await detailModal.click({ position: { x: 2, y: 2 } });
+    assert(!(await detailModal.isVisible()), "Clicking outside the project details dialog did not close it");
+    await galleryPage.setViewportSize({ width: 1440, height: 900 });
+    const desktopGalleryLayout = await galleryPage.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
+    assert(desktopGalleryLayout.scroll <= desktopGalleryLayout.client + 1, "Public portfolio overflows at 1440px: " + JSON.stringify(desktopGalleryLayout));
+    assert(!errors.length, "Uncaught browser exceptions on the public portfolio: " + errors.join(" | "));
+    console.log("PASS public portfolio: correct filtered-project details, click-only dialog, Escape/outside close, and 360px/1440px layouts");
+    await galleryPage.close();
 
     console.log("PASS browser smoke suite: no uncaught JavaScript exceptions");
     await context.close();

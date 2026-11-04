@@ -20,7 +20,8 @@ async function ensureSchema() {
         "CREATE TABLE IF NOT EXISTS mada_sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, expires_at TIMESTAMPTZ NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE INDEX IF NOT EXISTS mada_sessions_user_idx ON mada_sessions(user_id)",
         "CREATE INDEX IF NOT EXISTS mada_sessions_expiry_idx ON mada_sessions(expires_at)",
-        "CREATE TABLE IF NOT EXISTS mada_user_data (user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}'::jsonb, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
+        "CREATE TABLE IF NOT EXISTS mada_user_data (user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}'::jsonb, revision BIGINT NOT NULL DEFAULT 1, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
+        "ALTER TABLE mada_user_data ADD COLUMN IF NOT EXISTS revision BIGINT NOT NULL DEFAULT 1",
         "CREATE TABLE IF NOT EXISTS mada_login_attempts (ip_hash TEXT PRIMARY KEY, attempts INTEGER NOT NULL DEFAULT 0, window_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE TABLE IF NOT EXISTS mada_public_designs (design_id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, design JSONB NOT NULL, is_public BOOLEAN NOT NULL DEFAULT FALSE, price_dzd INTEGER NOT NULL DEFAULT 0 CHECK (price_dzd >= 0), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE INDEX IF NOT EXISTS mada_public_designs_owner_idx ON mada_public_designs(user_id)",
@@ -268,7 +269,8 @@ module.exports = async function handler(req, res) {
       const design = req.body?.design;
       const designId = String(req.body?.designId || "").trim();
       const isPublic = req.body?.isPublic === true;
-      const priceDzd = Math.max(0, Math.min(1000000, Math.floor(Number(req.body?.priceDzd) || 0)));
+      // Public template sharing is free until a real payment provider is integrated.
+      const priceDzd = 0;
       if (!/^[A-Za-z0-9_-]{8,100}$/.test(designId)) return send(res, 400, { error: "معرّف المشاركة غير صالح." });
       if (!design || typeof design !== "object" || Array.isArray(design)) return send(res, 400, { error: "بيانات القالب غير صالحة." });
       const encoded = JSON.stringify(design);
@@ -294,8 +296,8 @@ module.exports = async function handler(req, res) {
       if (!result.rows[0]) return send(res, 404, { error: "هذا القالب غير منشور أو تم جعله خاصًا." });
       const row = result.rows[0];
       const design = row.design && typeof row.design === "object" ? row.design : {};
-      const paid = Number(row.price_dzd) > 0;
-      return send(res, 200, { ok: true, paid, priceDzd: Number(row.price_dzd), authorName: row.display_name, design: paid ? { name: design.name, title: design.title, subtitle: design.subtitle, author: design.author, color: design.color, kind: design.kind } : design });
+      // Legacy paid flags are ignored: public sharing is free and always returns the complete design.
+      return send(res, 200, { ok: true, paid: false, priceDzd: 0, authorName: row.display_name, design });
     }
 
 
@@ -373,6 +375,17 @@ module.exports = async function handler(req, res) {
         featured: Boolean(p.featured),
         visibility: "profile"
       }));
+      const recordTypes = new Set(["education","experience","certificate","participation","document","link"]);
+      const recordSource = Array.isArray(source.records) ? source.records : [];
+      const records = recordSource.filter(record => record && typeof record === "object" && !Array.isArray(record) && record.public === true && recordTypes.has(String(record.type || ""))).slice(0, 100).map(record => ({
+        id: String(record.id || crypto.randomUUID()).slice(0, 100),
+        type: String(record.type),
+        title: String(record.title || "").normalize("NFC").trim().slice(0, 120),
+        organization: String(record.organization || "").normalize("NFC").trim().slice(0, 120),
+        date: String(record.date || "").normalize("NFC").trim().slice(0, 60),
+        description: String(record.description || "").normalize("NFC").trim().slice(0, 700),
+        url: safeUrl(record.url)
+      })).filter(record => record.title);
       const displaySource = source.display && typeof source.display === "object" ? source.display : {};
       const validHex = (value, fallback) => /^#[0-9a-f]{6}$/i.test(String(value || "")) ? String(value) : fallback;
       const display = {
@@ -479,7 +492,7 @@ module.exports = async function handler(req, res) {
         profileLayout: ["side", "stacked", "centered"].includes(displaySource.profileLayout) ? displaySource.profileLayout : "side",
         backgroundImage: safeUrl(displaySource.backgroundImage)
       };
-      const portfolio = { profile, projects, display, publishedAt: new Date().toISOString() };
+      const portfolio = { profile, projects, records, display, publishedAt: new Date().toISOString() };
       const encoded = JSON.stringify(portfolio);
       if (encoded.length > 3500000) return send(res, 413, { error: "المعرض كبير جدًا للنشر. قلّل حجم الوسائط أو استخدم روابط مباشرة للملفات والصور." });
       const slug = crypto.randomBytes(12).toString("base64url");
@@ -487,7 +500,7 @@ module.exports = async function handler(req, res) {
         "INSERT INTO mada_public_portfolios(user_id,username,slug,portfolio,is_public,updated_at) VALUES($1,$2,$3,$4::jsonb,$5,NOW()) ON CONFLICT(user_id) DO UPDATE SET username=EXCLUDED.username,portfolio=EXCLUDED.portfolio,is_public=EXCLUDED.is_public,updated_at=NOW() RETURNING username,slug,is_public,updated_at",
         [user.id, user.username, slug, encoded, isPublic]
       );
-      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, isPublic: result.rows[0].is_public, updatedAt: result.rows[0].updated_at, shareUrl: "/portfolio.html?id=" + encodeURIComponent(result.rows[0].slug) });
+      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, isPublic: result.rows[0].is_public, updatedAt: result.rows[0].updated_at, shareUrl: "/@" + encodeURIComponent(result.rows[0].username) });
     }
 
     if (action === "public-portfolio" && req.method === "GET") {
@@ -495,11 +508,21 @@ module.exports = async function handler(req, res) {
       const siteFlagMap = Object.fromEntries(siteFlags.rows.map(row => [row.key, row.value]));
       if (siteFlagMap.publicGalleryEnabled === false || siteFlagMap.maintenanceMode === true) return send(res, 404, { error: "المعارض العامة متوقفة مؤقتًا." });
       const slug = String(req.query?.id || "").trim();
-      if (!/^[A-Za-z0-9_-]{12,80}$/.test(slug)) return send(res, 400, { error: "رابط المعرض غير صالح." });
-      const result = await db().query(
-        "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE p.slug=$1 AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
-        [slug]
-      );
+      const username = normalizeUsername(req.query?.username || "");
+      let result;
+      if (username) {
+        if (!/^[\p{L}\p{N}_.-]{3,24}$/u.test(username)) return send(res, 400, { error: "اسم المستخدم غير صالح." });
+        result = await db().query(
+          "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE LOWER(u.username)=LOWER($1) AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+          [username]
+        );
+      } else {
+        if (!/^[A-Za-z0-9_-]{12,80}$/.test(slug)) return send(res, 400, { error: "رابط المعرض غير صالح." });
+        result = await db().query(
+          "SELECT u.username,p.slug,p.portfolio,u.display_name FROM mada_public_portfolios p JOIN mada_users u ON u.id=p.user_id LEFT JOIN mada_admin_user_flags f ON f.user_id=u.id WHERE p.slug=$1 AND p.is_public=TRUE AND NOT (COALESCE(f.disabled,FALSE)=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+          [slug]
+        );
+      }
       if (!result.rows[0]) return send(res, 404, { error: "هذا المعرض غير منشور أو أصبح خاصًا." });
       return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, authorName: result.rows[0].display_name, portfolio: result.rows[0].portfolio });
     }
@@ -555,8 +578,8 @@ module.exports = async function handler(req, res) {
     if (action === "data" && req.method === "GET") {
       const user = await currentUser(req);
       if (!user) return send(res, 401, { error: "سجّل الدخول أولًا." });
-      const result = await db().query("SELECT data FROM mada_user_data WHERE user_id=$1", [user.id]);
-      return send(res, 200, { data: result.rows[0]?.data ?? null });
+      const result = await db().query("SELECT data,revision,updated_at FROM mada_user_data WHERE user_id=$1", [user.id]);
+      return send(res, 200, { data: result.rows[0]?.data ?? null, revision: Number(result.rows[0]?.revision || 0), updatedAt: result.rows[0]?.updated_at || null });
     }
 
     if (action === "data" && req.method === "POST") {
@@ -566,8 +589,21 @@ module.exports = async function handler(req, res) {
       if (!data || typeof data !== "object" || Array.isArray(data)) return send(res, 400, { error: "بيانات الحساب غير صالحة." });
       const encoded = JSON.stringify(data);
       if (encoded.length > 3000000) return send(res, 413, { error: "البيانات كبيرة جدًا للحفظ." });
-      await db().query("INSERT INTO mada_user_data(user_id,data,updated_at) VALUES($1,$2::jsonb,NOW()) ON CONFLICT(user_id) DO UPDATE SET data=EXCLUDED.data,updated_at=NOW()", [user.id, encoded]);
-      return send(res, 200, { ok: true, savedAt: new Date().toISOString() });
+      const expectedRevision = Number.isSafeInteger(Number(req.body?.expectedRevision)) && Number(req.body.expectedRevision) >= 0 ? Number(req.body.expectedRevision) : null;
+      let saved;
+      if (expectedRevision === null) {
+        // Backward compatibility for older clients; new clients always send a revision.
+        saved = await db().query("INSERT INTO mada_user_data(user_id,data,revision,updated_at) VALUES($1,$2::jsonb,1,NOW()) ON CONFLICT(user_id) DO UPDATE SET data=EXCLUDED.data,revision=mada_user_data.revision+1,updated_at=NOW() RETURNING revision,updated_at", [user.id, encoded]);
+      } else if (expectedRevision === 0) {
+        saved = await db().query("INSERT INTO mada_user_data(user_id,data,revision,updated_at) VALUES($1,$2::jsonb,1,NOW()) ON CONFLICT(user_id) DO NOTHING RETURNING revision,updated_at", [user.id, encoded]);
+      } else {
+        saved = await db().query("UPDATE mada_user_data SET data=$2::jsonb,revision=revision+1,updated_at=NOW() WHERE user_id=$1 AND revision=$3 RETURNING revision,updated_at", [user.id, encoded, expectedRevision]);
+      }
+      if (!saved.rows[0]) {
+        const latest = await db().query("SELECT data,revision,updated_at FROM mada_user_data WHERE user_id=$1", [user.id]);
+        return send(res, 409, { error: "وجدنا تعديلات أحدث من جهاز آخر. أعدنا بياناتها للمزامنة الآمنة.", conflict: true, data: latest.rows[0]?.data ?? null, revision: Number(latest.rows[0]?.revision || 0), updatedAt: latest.rows[0]?.updated_at || null });
+      }
+      return send(res, 200, { ok: true, revision: Number(saved.rows[0].revision), savedAt: saved.rows[0].updated_at || new Date().toISOString() });
     }
 
     return send(res, 400, { error: "طلب غير معروف." });

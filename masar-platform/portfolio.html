@@ -255,7 +255,20 @@
   #portfolioView.portfolio-template-aurora .aurora-footer{margin-top:56px;padding-top:16px;border-top:1px solid #cfd8cf;color:#71817a;font-size:11px;display:flex;justify-content:space-between;gap:12px}
   .template-thumb-aurora{background:#f4f0e8}.template-thumb-aurora:before{background:#1d2927;height:13px}.template-thumb-aurora i{background:#c46f4e;right:8px;top:28px;width:42%;height:40px}.template-thumb-aurora b{background:#dfe9df;right:calc(42% + 14px);left:8px;top:28px;height:13px}.template-thumb-aurora em{background:#71817a;right:calc(42% + 14px);left:8px;top:47px;height:7px}
   @media(max-width:760px){#portfolioView.portfolio-template-aurora .aurora-hero{grid-template-columns:1fr;padding:42px 0 32px;gap:24px}#portfolioView.portfolio-template-aurora .works-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}#portfolioView.portfolio-template-aurora .work,#portfolioView.portfolio-template-aurora .work:nth-child(1){grid-column:span 1}#portfolioView.portfolio-template-aurora .work:nth-child(1) .work-cover,#portfolioView.portfolio-template-aurora .work-cover{height:170px}#portfolioView.portfolio-template-aurora .aurora-topline{font-size:9px}}
-  </style>
+  
+.portfolio-records{max-width:1180px;margin:34px auto 12px;padding:0 clamp(16px,3vw,28px)}
+.portfolio-records-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px}
+.portfolio-records-heading h2{margin:0;font-size:clamp(18px,2vw,25px);color:var(--ink)}
+.portfolio-records-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:13px}
+.portfolio-record-card{min-width:0;padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--card,#fff);box-shadow:0 10px 28px #211e3508;overflow-wrap:anywhere}
+.portfolio-record-card h3{margin:9px 0 7px;font-size:15px;color:var(--ink)}
+.portfolio-record-card p{font-size:12px;line-height:1.8;color:var(--muted);margin:7px 0}
+.portfolio-record-card .portfolio-record-meta{font-weight:700}
+.portfolio-record-card a{display:inline-flex;margin-top:8px;color:var(--purple);font-size:12px;font-weight:800}
+.portfolio-record-type{display:inline-flex;padding:5px 9px;border-radius:99px;background:color-mix(in srgb,var(--purple) 12%,white);color:var(--purple);font-size:10px;font-weight:800}
+.portfolio-record-row .project-info{overflow-wrap:anywhere}
+@media(max-width:600px){.portfolio-records{padding-inline:12px}.portfolio-records-grid{grid-template-columns:minmax(0,1fr)}}
+</style>
   <style>
 
 /* Public gallery: image-and-title tiles, with full project details in an accessible modal. */
@@ -408,6 +421,8 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/masar-platform/mada-theme.css">
+<link rel="stylesheet" href="/masar-platform/portfolio-swiss.css?v=1">
+<link rel="stylesheet" href="/masar-platform/portfolio-gallery-fixes.css?v=5">
 
 <style id="custom-gallery-sections">.gallery-work-group{margin-top:24px}.gallery-group-heading{margin:0 0 13px!important}.gallery-group-heading h2{font-size:clamp(17px,2.5vw,23px)!important}.gallery-group-heading p{font-size:11px}.gallery-work-group .works-grid{margin-top:0}@media(max-width:700px){#portfolioView .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.gallery-work-group{margin-top:20px}.gallery-group-heading{gap:8px}.gallery-group-heading .count{font-size:10px;padding:5px 7px}.project-tile .work-cover{aspect-ratio:4/3}.project-tile-title{font-size:12px;padding:8px}}@media(max-width:350px){#portfolioView .works-grid{gap:6px!important}.project-tile-title{font-size:11px}}</style>
 <style id="profile-card-customization">
@@ -850,6 +865,25 @@
 }
 </style>
 
+
+<style id="mada-readable-color-repair">
+/* Readability repair: explicit foregrounds for modal text, metadata, links, and muted labels. */
+#projectDetailsModal .project-details-dialog{color:#202019!important;background:#fbfaf6!important;color-scheme:light}
+#projectDetailsModal .project-details-dialog :is(h1,h2,h3,h4,p,li,dt,dd,label,strong,b,small,span,div){text-shadow:none}
+#projectDetailsModal .project-details-dialog :is(.kicker,.muted,.hint,.meta,.eyebrow,.fact strong){color:#68675f!important}
+#projectDetailsModal .project-details-dialog :is(.project-detail-heading h2,.project-detail-section h3,.project-detail-media h3,.fact span,.project-detail-description){color:#25251f!important}
+#projectDetailsModal .project-details-dialog a:not(.btn){color:#354fc5!important;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+#projectDetailsModal .project-details-dialog button:not(.dialog-close):not(.btn){color:#202019;background:#f0eee7;border:1px solid #d9d6cb}
+#projectDetailsModal .project-details-dialog .dialog-head{background:#22221f!important;color:#fff!important}
+#projectDetailsModal .project-details-dialog .dialog-head :is(h2,small,span){color:#fff!important}
+#projectDetailsModal .project-details-dialog .dialog-close{color:#fff!important;background:#ffffff12!important}
+#projectDetailsModal .project-details-dialog .work-outcome{color:#24462e!important;background:#edf5ed!important}
+#projectDetailsModal .project-details-dialog .work-outcome *{color:inherit!important}
+#projectDetailsModal .project-details-dialog input,#projectDetailsModal .project-details-dialog textarea,#projectDetailsModal .project-details-dialog select{color:#222!important;background:#fff!important;border:1px solid #c9c6bb}
+#projectDetailsModal .project-details-dialog ::placeholder{color:#77766d!important;opacity:1}
+#projectDetailsModal .project-details-dialog :focus-visible{outline:3px solid #5369d8!important;outline-offset:3px}
+@media(max-width:640px){#projectDetailsModal .project-details-dialog{color:#202019!important}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
@@ -874,6 +908,6 @@
   <div class="mada-footer-bottom"><span>مَدى · مساحة تصنع مستقبلك</span><a href="/">الصفحة الرئيسية</a></div>
 </footer>
 </main>
-<script src="/masar-platform/portfolio-public.js?v=20261027g" defer></script>
+<script src="/masar-platform/portfolio-public.js?v=20261104a" defer></script>
 </body>
 </html>

@@ -1,12 +1,35 @@
 {
   "rewrites": [
     {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
       "source": "/mada-ops-7f3c9a",
       "destination": "/authority-console/index.html"
     },
     {
+      "source": "/@:username",
+      "destination": "/api/portfolio?username=:username"
+    },
+    {
       "source": "/portfolio.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "preview",
+          "value": "1"
+        }
+      ],
       "destination": "/masar-platform/portfolio.html"
+    },
+    {
+      "source": "/portfolio.html",
+      "destination": "/api/portfolio"
     },
     {
       "source": "/share.html",
@@ -17,6 +40,11 @@
       "destination": "/masar-platform/index.html"
     }
   ],
+  "functions": {
+    "api/portfolio.js": {
+      "includeFiles": "masar-platform/portfolio.html"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -59,7 +87,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com; media-src 'self' blob: https:; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com; media-src 'self' blob: https:; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
         },
         {
           "key": "X-XSS-Protection",
