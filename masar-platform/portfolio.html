@@ -865,6 +865,25 @@
 }
 </style>
 
+
+<style id="mada-readable-color-repair">
+/* Readability repair: explicit foregrounds for modal text, metadata, links, and muted labels. */
+#projectDetailsModal .project-details-dialog{color:#202019!important;background:#fbfaf6!important;color-scheme:light}
+#projectDetailsModal .project-details-dialog :is(h1,h2,h3,h4,p,li,dt,dd,label,strong,b,small,span,div){text-shadow:none}
+#projectDetailsModal .project-details-dialog :is(.kicker,.muted,.hint,.meta,.eyebrow,.fact strong){color:#68675f!important}
+#projectDetailsModal .project-details-dialog :is(.project-detail-heading h2,.project-detail-section h3,.project-detail-media h3,.fact span,.project-detail-description){color:#25251f!important}
+#projectDetailsModal .project-details-dialog a:not(.btn){color:#354fc5!important;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+#projectDetailsModal .project-details-dialog button:not(.dialog-close):not(.btn){color:#202019;background:#f0eee7;border:1px solid #d9d6cb}
+#projectDetailsModal .project-details-dialog .dialog-head{background:#22221f!important;color:#fff!important}
+#projectDetailsModal .project-details-dialog .dialog-head :is(h2,small,span){color:#fff!important}
+#projectDetailsModal .project-details-dialog .dialog-close{color:#fff!important;background:#ffffff12!important}
+#projectDetailsModal .project-details-dialog .work-outcome{color:#24462e!important;background:#edf5ed!important}
+#projectDetailsModal .project-details-dialog .work-outcome *{color:inherit!important}
+#projectDetailsModal .project-details-dialog input,#projectDetailsModal .project-details-dialog textarea,#projectDetailsModal .project-details-dialog select{color:#222!important;background:#fff!important;border:1px solid #c9c6bb}
+#projectDetailsModal .project-details-dialog ::placeholder{color:#77766d!important;opacity:1}
+#projectDetailsModal .project-details-dialog :focus-visible{outline:3px solid #5369d8!important;outline-offset:3px}
+@media(max-width:640px){#projectDetailsModal .project-details-dialog{color:#202019!important}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="mada-mark" viewBox="8 22 104 72"><path d="M16 76A44 44 0 0 1 104 76" fill="none" stroke="#8b7bff" stroke-width="9" stroke-linecap="round"/><path d="M34 76A26 26 0 0 1 86 76" fill="none" stroke="#ff6fa5" stroke-width="9" stroke-linecap="round"/><circle cx="60" cy="76" r="10" fill="#34d6b0"/></symbol></svg>
