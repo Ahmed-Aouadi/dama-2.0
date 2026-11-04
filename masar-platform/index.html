@@ -1828,7 +1828,7 @@ body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .
 window.madaUploadProjectFile = async function(file, onProgress) {
  const { upload } = await import("https://esm.sh/@vercel/blob@2.6.1/client");
  const name=String(file.name||"attachment").normalize("NFKC").replace(/[^a-zA-Z0-9._-]/g,"-").slice(-100)||"attachment";
- return upload("mada-project-files/"+name,file,{access:"private",handleUploadUrl:"/api/blob-upload",multipart:file.size>5*1024*1024,onUploadProgress:function(e){if(onProgress)onProgress(e.percentage||0)}});
+ const blob=await upload("mada-project-files/"+name,file,{access:"private",handleUploadUrl:"/api/blob-upload",multipart:file.size>5*1024*1024,onUploadProgress:function(e){if(onProgress)onProgress(e.percentage||0)}});\n // Private Blob URLs cannot be opened directly by the browser. Route every\n // preview/download through our authenticated server-side Blob reader.\n const pathname=String(blob.pathname||"");\n if(!pathname)throw new Error("لم يُرجع التخزين مسار الملف.");\n return {...blob,url:"/api/file?pathname="+encodeURIComponent(pathname),pathname};
 };
 </script>
 </body>
