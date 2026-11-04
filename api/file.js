@@ -21,10 +21,10 @@ module.exports = async function fileHandler(request, response) {
     const pathname = String(requestUrl.searchParams.get("pathname") || "").trim();
 
     // Public portfolio assets are deliberately readable without an account.
-    // Only files uploaded into Mada's dedicated project-files namespace qualify.
+    // Only files uploaded into Mada's dedicated portfolio namespaces qualify.
+    const allowedNamespace = pathname.startsWith("mada-project-files/") || pathname.startsWith("portfolio/");
     if (!pathname || pathname.includes("..") || pathname.startsWith("/") ||
-        !pathname.startsWith("mada-project-files/") ||
-        !/^[a-zA-Z0-9._/-]+$/.test(pathname)) {
+        !allowedNamespace || !/^[a-zA-Z0-9._/-]+$/.test(pathname)) {
       return send(response, 400, "Invalid file reference");
     }
 
