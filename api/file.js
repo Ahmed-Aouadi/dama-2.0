@@ -1,4 +1,4 @@
-const { get } = require("@vercel/blob");
+const { get, list } = require("@vercel/blob");
 const { Readable } = require("node:stream");
 
 function send(response, status, body) {
@@ -12,52 +12,70 @@ function send(response, status, body) {
 
 module.exports = async function fileHandler(request, response) {
   if (request.method !== "GET" && request.method !== "HEAD") {
+    response.setHeader("Allow", "GET, HEAD");
     return send(response, 405, "Method Not Allowed");
   }
 
   try {
-    // Vercel Node functions pass (request, response); they do not pass a
-    // third URL argument. Parse request.url so this works on Vercel and locally.
     const requestUrl = new URL(request.url || "/", `https://${request.headers.host || "localhost"}`);
-    const pathname = requestUrl.searchParams.get("pathname");
+    const pathname = String(requestUrl.searchParams.get("pathname") || "").trim();
 
-    if (!pathname || pathname.includes("..") || pathname.startsWith("/") || !/^[a-zA-Z0-9._/-]+$/.test(pathname)) {
-      return send(response, 400, "Invalid pathname");
+    // Public portfolio assets are deliberately readable without an account.
+    // Only files uploaded into Mada's dedicated project-files namespace qualify.
+    if (!pathname || pathname.includes("..") || pathname.startsWith("/") ||
+        !pathname.startsWith("mada-project-files/") ||
+        !/^[a-zA-Z0-9._/-]+$/.test(pathname)) {
+      return send(response, 400, "Invalid file reference");
     }
 
-    const result = await get(pathname, {
+    // The Blob SDK's get() expects the full Blob URL, not the pathname.
+    // Resolve the private pathname to its canonical URL first.
+    let cursor;
+    let blob = null;
+    do {
+      const page = await list({
+        prefix: pathname,
+        limit: 1000,
+        ...(cursor ? { cursor } : {}),
+      });
+      blob = (page.blobs || []).find(item => item.pathname === pathname) || null;
+      cursor = page.hasMore ? page.cursor : undefined;
+    } while (!blob && cursor);
+
+    if (!blob || !blob.url) return send(response, 404, "File not found");
+
+    const result = await get(blob.url, {
       access: "private",
       ifNoneMatch: request.headers["if-none-match"] || undefined,
     });
 
-    if (!result) return send(response, 404, "Not found");
+    if (!result) return send(response, 404, "File not found");
 
     if (result.statusCode === 304) {
       response.writeHead(304, {
         etag: result.blob.etag,
-        "cache-control": "private, no-cache",
+        "cache-control": "public, max-age=300, s-maxage=3600",
         "x-content-type-options": "nosniff",
       });
       return response.end();
     }
 
+    const contentType = result.blob.contentType || "application/octet-stream";
     const headers = {
-      "content-type": result.blob.contentType || "application/octet-stream",
+      "content-type": contentType,
       "content-length": String(result.blob.size),
       etag: result.blob.etag,
-      "cache-control": "private, no-cache",
+      "cache-control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
       "x-content-type-options": "nosniff",
       "content-disposition": "inline",
+      "access-control-allow-origin": "*",
     };
     response.writeHead(200, headers);
 
     if (request.method === "HEAD") return response.end();
-
-    // Blob SDK returns a Web ReadableStream. Vercel Node responses need a
-    // Node.js stream, so convert it before piping.
     Readable.fromWeb(result.stream).pipe(response);
   } catch (error) {
-    console.error("[mada] file delivery error:", error);
+    console.error("[mada] public file delivery error:", error?.message || error);
     return send(response, 500, "Unable to deliver file");
   }
 };
