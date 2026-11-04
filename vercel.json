@@ -47,6 +47,15 @@
   },
   "headers": [
     {
+      "source": "/api/file",
+      "headers": [
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
