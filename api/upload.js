@@ -1,13 +1,10 @@
 const { put } = require("@vercel/blob");
 
 const MAX_BYTES = 50 * 1024 * 1024;
-const ALLOWED_TYPES = new Set([
-  "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml",
-  "video/mp4", "video/webm", "video/ogg", "video/quicktime",
-  "application/pdf", "application/zip", "application/octet-stream",
-  "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-]);
+function isAllowedType(type) {
+  const normalized = String(type || "application/octet-stream").toLowerCase().split(";")[0].trim();
+  return normalized === "application/octet-stream" || /^(image|video|audio|application|text|font)\//.test(normalized);
+}
 
 function json(response, status, payload) {
   response.writeHead(status, { "content-type": "application/json; charset=utf-8" });
@@ -43,17 +40,18 @@ function parseMultipart(body, contentType) {
 module.exports = async function uploadHandler(request, response) {
   if (request.method !== "POST") return json(response, 405, { error: "الطريقة غير مدعومة" });
   try {
-    const contentType = String(request.headers["content-type"] || "").toLowerCase();
+    const contentType = String(request.headers["content-type"] || "");
     const body = await readBody(request);
     let file;
-    if (contentType.startsWith("multipart/form-data")) file = parseMultipart(body, contentType);
+    if (contentType.toLowerCase().startsWith("multipart/form-data")) file = parseMultipart(body, contentType);
     else {
       const payload = JSON.parse(body.toString("utf8"));
       const data = String(payload.data || "");
       const match = data.match(/^data:([^;]+);base64,(.+)$/s);
       file = match ? { buffer: Buffer.from(match[2], "base64"), type: match[1].toLowerCase(), name: payload.name || "portfolio-file" } : null;
     }
-    if (!file || !ALLOWED_TYPES.has(file.type)) return json(response, 400, { error: "صيغة الملف غير مدعومة" });
+    file = file && { ...file, type: String(file.type || "application/octet-stream").toLowerCase().split(";")[0].trim() || "application/octet-stream" };
+    if (!file || !isAllowedType(file.type)) return json(response, 400, { error: "صيغة الملف غير مدعومة" });
     if (!file.buffer.length || file.buffer.length > MAX_BYTES) return json(response, 413, { error: "حجم الملف أكبر من 50 ميغابايت" });
     const safeName = String(file.name).replace(/[^a-zA-Z0-9._-]+/g, "-").slice(0, 90) || "portfolio-file";
     const blob = await put(`portfolio/${Date.now()}-${safeName}`, file.buffer, { access: "private", contentType: file.type, addRandomSuffix: true });
