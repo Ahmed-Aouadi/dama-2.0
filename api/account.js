@@ -307,7 +307,7 @@ module.exports = async function handler(req, res) {
       const result = await db().query("SELECT portfolio FROM mada_public_portfolios WHERE user_id=$1 LIMIT 1", [user.id]);
       if (!result.rows[0]) return send(res, 200, { ok: true, published: false });
       const sourceProjects = Array.isArray(req.body?.projects) ? req.body.projects : [];
-      const safeUrl = value => { const raw = String(value || "").trim(); if (!raw) return ""; try { const parsed = new URL(raw); return ["http:", "https:"].includes(parsed.protocol) ? parsed.href.slice(0, 2000) : ""; } catch { return ""; } }; const safeTemplateUrl = value => { const raw = String(value || "").trim(); if (!raw || raw.length > 400000) return ""; try { const parsed = new URL(raw); return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : ""; } catch { return ""; } };
+      const safeUrl = value => { const raw = String(value || "").trim(); if (!raw) return ""; try { const base = (req.headers["x-forwarded-proto"] === "https" ? "https://" : "https://") + String(req.headers.host || "localhost"); const parsed = new URL(raw, base); const baseUrl = new URL(base); if (!["http:", "https:"].includes(parsed.protocol)) return ""; if (raw.startsWith("/") && (parsed.origin !== baseUrl.origin || !parsed.pathname.startsWith("/api/file"))) return ""; return parsed.href.slice(0, 2000); } catch { return ""; } }; const safeTemplateUrl = value => { const raw = String(value || "").trim(); if (!raw || raw.length > 400000) return ""; try { const parsed = new URL(raw); return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : ""; } catch { return ""; } };
       const safeImage = value => { const raw = String(value || "").trim(); if (!raw) return ""; if (/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(raw) && raw.length < 240000) return raw; return safeUrl(raw); }; const safeMedia = (value, kind) => { const raw = String(value || "").trim(); if (!raw) return ""; const rules = { video: /^data:video\/(?:mp4|webm|ogg);base64,/i, file: /^data:(?:application\/(?:pdf|zip|octet-stream|vnd\.[a-z0-9.+-]+)|text\/plain|image\/(?:png|jpeg|webp));base64,/i }; return rules[kind] && rules[kind].test(raw) && raw.length < 1000000 ? raw : safeUrl(raw); };
       const projects = sourceProjects.filter(p => p && typeof p === "object").slice(0, 80).map(p => ({
         id: String(p.id || crypto.randomUUID()).slice(0, 100), title: String(p.title || "عمل بدون عنوان").slice(0, 90),
@@ -333,7 +333,7 @@ module.exports = async function handler(req, res) {
       const safeUrl = value => {
         const raw = String(value || "").trim();
         if (!raw) return "";
-        try { const parsed = new URL(raw); return ["http:", "https:"].includes(parsed.protocol) ? parsed.href.slice(0, 2000) : ""; } catch { return ""; }
+        try { const base = "https://" + String(req.headers.host || "localhost"); const parsed = new URL(raw, base); const baseUrl = new URL(base); if (!["http:", "https:"].includes(parsed.protocol)) return ""; if (raw.startsWith("/") && (parsed.origin !== baseUrl.origin || !parsed.pathname.startsWith("/api/file"))) return ""; return parsed.href.slice(0, 2000); } catch { return ""; }
       };
       const safeTemplateUrl = value => { const raw = String(value || "").trim(); if (!raw || raw.length > 400000) return ""; try { const parsed = new URL(raw); return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : ""; } catch { return ""; } };
       const safeImage = value => {
