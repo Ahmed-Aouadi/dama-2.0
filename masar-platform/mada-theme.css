@@ -71,3 +71,98 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 /* public portfolio: readable name/kicker on the dark default hero */
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .profile-copy h1{color:var(--gallery-heading,#f5f3ff)}
 #portfolioView:not(.portfolio-template-editorial):not(.portfolio-template-minimal) .profile-hero .kicker{color:var(--teal)}
+
+/* User-selectable color theme. The existing selector remains available in settings. */
+#appThemeSelect{color:var(--ink);background:var(--card,#fff);border-color:var(--line)}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#11101d;--ink:#f1efff;--muted:#aaa5c5;--line:#343149;
+  --card:#1d1b2d;--shadow:0 18px 50px #00000030;
+  --purple:#a69aff;--purple2:#a69aff;--purple-deep:#8876ff;
+}
+:root[data-theme="dark"] body{background:var(--paper);color:var(--ink)}
+:root[data-theme="dark"] .side{background:#0c0b16;border-color:#302d45}
+:root[data-theme="dark"] .nav button{color:#c7c2e3}
+:root[data-theme="dark"] .nav button:hover{background:#ffffff12;color:#fff}
+:root[data-theme="dark"] .nav button.active{background:#8b7bff2c;color:#fff}
+:root[data-theme="dark"] .topbar .crumb,:root[data-theme="dark"] .crumb{color:var(--muted)}
+:root[data-theme="dark"] .icon-btn,
+:root[data-theme="dark"] .ghost,
+:root[data-theme="dark"] .stat,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .form-panel,
+:root[data-theme="dark"] .work-card,
+:root[data-theme="dark"] .project-row,
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field textarea,
+:root[data-theme="dark"] .field select,
+:root[data-theme="dark"] .search input,
+:root[data-theme="dark"] .filter,
+:root[data-theme="dark"] #appThemeSelect{
+  color:var(--ink);background:var(--card);border-color:var(--line);
+}
+:root[data-theme="dark"] .secondary{background:#302b4d;color:#d7d0ff}
+:root[data-theme="dark"] .stat-icon,
+:root[data-theme="dark"] .pill,
+:root[data-theme="dark"] .work-footer button{background:#302b4d;color:#d7d0ff}
+:root[data-theme="dark"] .pill.green{background:#193c32;color:#8ee4bd}
+:root[data-theme="dark"] .pill.gray{background:#302d40;color:#c6c1da}
+:root[data-theme="dark"] .skill-card{background:#242139}
+:root[data-theme="dark"] .progress{background:#393451}
+:root[data-theme="dark"] .project-row{border-color:#343149}
+:root[data-theme="dark"] .work-footer{border-color:#343149}
+:root[data-theme="dark"] .empty{border-color:#48435f;color:var(--muted)}
+:root[data-theme="dark"] .empty b,
+:root[data-theme="dark"] .panel-title h3,
+:root[data-theme="dark"] .section-head h2,
+:root[data-theme="dark"] .work-body h3,
+:root[data-theme="dark"] .project-info strong,
+:root[data-theme="dark"] .field label{color:var(--ink)}
+:root[data-theme="dark"] .work-visual .mock{background:#27243a;color:var(--ink)}
+:root[data-theme="dark"] .work-visual .mock .line{background:#46415c}
+:root[data-theme="dark"] .modal-backdrop .modal,
+:root[data-theme="dark"] body>.modal-backdrop>.modal,
+:root[data-theme="dark"] body>.media-preview-backdrop>.modal{background:#1d1b2d;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] body>.modal-backdrop .modal-head,
+:root[data-theme="dark"] body>.media-preview-backdrop .modal-head{background:#1d1b2d}
+:root[data-theme="dark"] .dot{border-color:#1d1b2d}
+/* System theme is applied only when no explicit light/dark preference is stored. */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme]){
+    color-scheme:dark;
+    --paper:#11101d;--ink:#f1efff;--muted:#aaa5c5;--line:#343149;
+    --card:#1d1b2d;--shadow:0 18px 50px #00000030;
+    --purple:#a69aff;--purple2:#a69aff;--purple-deep:#8876ff;
+  }
+  :root:not([data-theme]) body{background:var(--paper);color:var(--ink)}
+  :root:not([data-theme]) .side{background:#0c0b16;border-color:#302d45}
+  :root:not([data-theme]) .icon-btn,
+  :root:not([data-theme]) .ghost,
+  :root:not([data-theme]) .stat,
+  :root:not([data-theme]) .panel,
+  :root:not([data-theme]) .form-panel,
+  :root:not([data-theme]) .work-card,
+  :root:not([data-theme]) .project-row,
+  :root:not([data-theme]) .field input,
+  :root:not([data-theme]) .field textarea,
+  :root:not([data-theme]) .field select,
+  :root:not([data-theme]) .search input,
+  :root:not([data-theme]) .filter,
+  :root:not([data-theme]) #appThemeSelect{
+    color:var(--ink);background:var(--card);border-color:var(--line);
+  }
+  :root:not([data-theme]) .secondary{background:#302b4d;color:#d7d0ff}
+  :root:not([data-theme]) .skill-card{background:#242139}
+  :root:not([data-theme]) .progress{background:#393451}
+  :root:not([data-theme]) .project-row{border-color:#343149}
+  :root:not([data-theme]) .work-footer{border-color:#343149}
+  :root:not([data-theme]) .empty{border-color:#48435f;color:var(--muted)}
+  :root:not([data-theme]) .work-visual .mock{background:#27243a;color:var(--ink)}
+  :root:not([data-theme]) .work-visual .mock .line{background:#46415c}
+  :root:not([data-theme]) .modal-backdrop .modal,
+  :root:not([data-theme]) body>.modal-backdrop>.modal,
+  :root:not([data-theme]) body>.media-preview-backdrop>.modal{background:#1d1b2d;color:var(--ink);border-color:var(--line)}
+  :root:not([data-theme]) body>.modal-backdrop .modal-head,
+  :root:not([data-theme]) body>.media-preview-backdrop .modal-head{background:#1d1b2d}
+  :root:not([data-theme]) .dot{border-color:#1d1b2d}
+}
