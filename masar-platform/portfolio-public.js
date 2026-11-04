@@ -45,7 +45,7 @@ const facts=[["نوع العمل",display.showWorkType===false?"":workType],["ا
 return '<div class="project-detail">'+(cover?'<img class="project-detail-cover" src="'+esc(cover)+'" alt="صورة '+esc(p.title||"العمل")+'">':'<div class="project-detail-placeholder" aria-label="لا توجد صورة لهذا العمل"><span>✳</span><strong>لا توجد صورة مرفقة</strong><small>تفاصيل العمل متاحة أدناه</small></div>')+
 '<div class="project-detail-heading"><span class="kicker">تفاصيل العمل</span><h2>'+esc(p.title||"عمل بدون عنوان")+'</h2>'+(p.featured?'<span class="tag">✦ عمل مميز</span>':"")+'</div>'+
 (display.showWorkDescription!==false&&p.description?'<section class="project-detail-section"><h3>نبذة عن العمل</h3><p class="project-detail-description">'+esc(p.description)+'</p></section>':"")+
-+(workPresentation?"<aside class=\"project-type-intro\"><span>"+esc(workPresentation[0])+"</span><p>"+esc(workPresentation[1])+"</p></aside>":"")+
+(workPresentation?"<aside class=\"project-type-intro\"><span>"+esc(workPresentation[0])+"</span><p>"+esc(workPresentation[1])+"</p></aside>":"")+
 (facts.length?'<div class="facts">'+facts.map(x=>'<div class="fact"><strong>'+esc(x[0])+'</strong><span>'+esc(x[1])+'</span></div>').join("")+'</div>':"")+
 (display.showWorkOutcome!==false&&p.outcome?'<section class="work-outcome"><strong>النتيجة أو ما تعلّمته</strong>'+esc(p.outcome)+'</section>':"")+
 (images.length?'<section class="project-detail-media"><h3>صور إضافية</h3><div class="media-gallery">'+images.map(src=>'<a href="'+esc(src)+'" target="_blank" rel="noopener noreferrer" aria-label="عرض صورة إضافية"><img loading="lazy" src="'+esc(src)+'" alt="صورة إضافية للعمل"></a>').join("")+'</div></section>':"")+
