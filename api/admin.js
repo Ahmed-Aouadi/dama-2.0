@@ -46,8 +46,8 @@ module.exports=async function handler(req,res){
  if(["POST","PATCH"].includes(req.method)&&!sameOrigin(req))return send(res,403,{error:"مصدر الطلب غير مسموح."});
  if(["POST","PATCH"].includes(req.method)&&!(req.headers["content-type"]||"").toLowerCase().includes("application/json"))return send(res,415,{error:"أرسل البيانات بصيغة JSON."});
  if(["POST","PATCH"].includes(req.method)){const declaredLength=Number(req.headers["content-length"]||0);if(Number.isFinite(declaredLength)&&declaredLength>1024*1024)return send(res,413,{error:"حجم الطلب أكبر من الحد المسموح (1 ميغابايت)."});if(!req.body||typeof req.body!=="object"||Array.isArray(req.body))return send(res,400,{error:"جسم الطلب يجب أن يكون كائن JSON صالحًا."});let bodySize=0;try{bodySize=Buffer.byteLength(JSON.stringify(req.body||{}),"utf8")}catch{return send(res,400,{error:"بيانات الطلب غير صالحة."})}if(bodySize>1024*1024)return send(res,413,{error:"حجم الطلب أكبر من الحد المسموح (1 ميغابايت)."})}
- if(!["public-config","login","logout","me","overview","users","portfolios","designs","account-status","delete-user","moderate","settings","growth-templates","audit"].includes(action))return send(res,400,{error:"طلب غير معروف."});
- const methodsByAction={"public-config":["GET"],login:["POST"],logout:["POST"],me:["GET"],overview:["GET"],users:["GET"],portfolios:["GET"],designs:["GET"],"account-status":["PATCH"],"delete-user":["POST"],moderate:["PATCH"],settings:["GET","POST"],"growth-templates":["GET","POST"],audit:["GET"]};
+ if(!["public-config","login","logout","me","overview","users","portfolios","designs","account-status","delete-user","moderate","settings","growth-templates","audit","purge-database"].includes(action))return send(res,400,{error:"طلب غير معروف."});
+ const methodsByAction={"public-config":["GET"],login:["POST"],logout:["POST"],me:["GET"],overview:["GET"],users:["GET"],portfolios:["GET"],designs:["GET"],"account-status":["PATCH"],"delete-user":["POST"],moderate:["PATCH"],settings:["GET","POST"],"growth-templates":["GET","POST"],audit:["GET"],"purge-database":["POST"]};
  if(!methodsByAction[action].includes(req.method))return send(res,405,{error:"طريقة الطلب غير مسموحة لهذا الإجراء."},{Allow:methodsByAction[action].join(", ")});
  if(action==="login"&&req.method==="POST"&&!validConfig())return send(res,503,{error:"إعدادات لوحة التحكم غير مكتملة. أضف كلمات المرور الأربع السرية وMADA_ADMIN_SESSION_SECRET وDATABASE_URL إلى متغيرات البيئة."});
  try{
@@ -108,6 +108,22 @@ module.exports=async function handler(req,res){
    await audit(admin,req,"account_deleted","user",id);
    await db().query("DELETE FROM mada_users WHERE id=$1",[id]);
    return send(res,200,{ok:true,deleted:true,username:exists.rows[0].username});
+  }
+  if(action==="purge-database"&&req.method==="POST"){
+   const confirmation=clean(req.body&&req.body.confirmation,40);
+   if(confirmation!=="DELETE_ALL_MADA_DATA")return send(res,400,{error:"عبارة التأكيد غير صحيحة."});
+   const client=await db().connect();
+   try{
+    await client.query("BEGIN");
+    await client.query("TRUNCATE TABLE mada_sessions,mada_user_data,mada_public_designs,mada_public_portfolios,mada_admin_user_flags,mada_admin_sessions,mada_admin_login_attempts,mada_site_settings,mada_admin_audit,mada_users RESTART IDENTITY CASCADE");
+    for(const [key,value] of Object.entries(DEFAULT_SETTINGS)){
+     await client.query("INSERT INTO mada_site_settings(key,value) VALUES($1,$2::jsonb) ON CONFLICT(key) DO NOTHING",[key,JSON.stringify(value)]);
+    }
+    await client.query("INSERT INTO mada_admin_audit(password_slot,action,target_type,target_id,ip_hash) VALUES($1,$2,$3,$4,$5)",[admin.slot,"database_purged","database","all",ipHash(req)]);
+    await client.query("COMMIT");
+   }catch(error){try{await client.query("ROLLBACK")}catch(_){}throw error}
+   finally{client.release()}
+   return send(res,200,{ok:true,purged:true,message:"تم مسح بيانات قاعدة البيانات وإعادة تهيئة الإعدادات الافتراضية. ستحتاج إلى تسجيل الدخول مجددًا."},{"Set-Cookie":cookie("",0)});
   }
   if(action==="moderate"&&req.method==="PATCH"){const type=clean(req.body&&req.body.type,20),id=clean(req.body&&req.body.id,100),visible=req.body&&req.body.visible===true;let r;if(type==="portfolio")r=await db().query("UPDATE mada_public_portfolios SET is_public=$2,updated_at=NOW() WHERE user_id=$1 RETURNING user_id,is_public",[id,visible]);else if(type==="design")r=await db().query("UPDATE mada_public_designs SET is_public=$2,updated_at=NOW() WHERE design_id=$1 RETURNING design_id,is_public",[id,visible]);else return send(res,400,{error:"نوع المحتوى غير صالح."});if(!r.rows[0])return send(res,404,{error:"لم نعثر على المحتوى المطلوب."});await audit(admin,req,visible?"content_published":"content_hidden",type,id);return send(res,200,{ok:true,visible:r.rows[0].is_public})}
   if(action==="settings"&&req.method==="GET")return send(res,200,{settings:await readSettings()});
