@@ -69,7 +69,10 @@ function renderSsr(portfolio, authorName, username) {
     '</div>' + (avatar ? '<div class="profile-avatar"><img src="' + esc(avatar) + '" alt="الصورة الشخصية"></div>' : "") + '</header>';
   const records = Array.isArray(portfolio.records) ? portfolio.records.slice(0, 100) : [];
   const cards = visibleProjects.map(project => {
-    const cover = safeUrl(project.cover || (Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "") || (Array.isArray(project.mediaImages) ? project.mediaImages[0] : ""), true);
+    const cover =
+      safeUrl(project.cover, true) ||
+      safeUrl(Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "", true) ||
+      safeUrl(Array.isArray(project.mediaImages) ? project.mediaImages[0] : "", true);
     const link = safeUrl(project.link, false);
     return '<article class="work"><div class="work-cover">' + (cover ? '<img src="' + esc(cover) + '" alt="' + esc(project.title || "صورة العمل") + '" loading="lazy">' : '<span class="cover-mark" aria-hidden="true">مَدى</span>') + '</div><div class="work-body"><span class="work-category">' + esc(project.category || "عمل") + '</span><h3>' + esc(project.title || "عمل بدون عنوان") + '</h3>' + (project.description ? '<p>' + esc(String(project.description).slice(0, 300)) + '</p>' : "") + (link ? '<a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">فتح العمل ↗</a>' : "") + '</div></article>';
   }).join("");
@@ -108,12 +111,11 @@ module.exports = async function handler(req, res) {
     const name = String(profile.name || row.display_name || row.username).trim();
     const description = String(profile.bio || ("معرض أعمال " + name + " على منصة مَدى.")).replace(/\s+/g, " ").slice(0, 300);
     const projects = Array.isArray(portfolio.projects) ? portfolio.projects : [];
-    const firstCover = projects.map(project => safeUrl(
-      project.cover ||
-      (Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "") ||
-      (Array.isArray(project.mediaImages) ? project.mediaImages[0] : ""),
-      true
-    )).find(Boolean);
+    const firstCover = projects.map(project =>
+      safeUrl(project.cover, true) ||
+      safeUrl(Array.isArray(project.uploadedImages) ? project.uploadedImages[0] : "", true) ||
+      safeUrl(Array.isArray(project.mediaImages) ? project.mediaImages[0] : "", true)
+    ).find(Boolean);
     const rawHost = String(req.headers.host || "dama-20.vercel.app").split(",")[0].trim();
     const host = /^[a-z0-9.-]+(?::\d{1,5})?$/i.test(rawHost) ? rawHost : "dama-20.vercel.app";
     const origin = (host.startsWith("localhost") ? "http://" : "https://") + host;
