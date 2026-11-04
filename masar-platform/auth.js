@@ -2,6 +2,8 @@
   "use strict";
   const API = "/api/account";
   let user = null, syncing = false, pending = null, syncTimer = null, retryDelay = 1500, cloudRevision = 0, activeMode = "login", avatarUrl = "";
+  // Cloud state restoration must finish before an explicit save can write a snapshot.
+  let accountRestorePromise = Promise.resolve();
   const style = document.createElement("style");
   style.textContent = `
     .mada-auth-button{border:1px solid #e9e6f1;background:#fff;color:#5b46e6;border-radius:12px;padding:10px 14px;font:700 13px Arial,sans-serif;cursor:pointer;white-space:nowrap}
@@ -122,6 +124,9 @@
   }
 async function syncAndWait(data) {
     if (!data) throw new Error("لا توجد بيانات لحفظها.");
+    // Login can expose the user before the account snapshot has finished loading.
+    // Wait here so an early section save cannot race with restoreAccountData().
+    await accountRestorePromise;
     if (!user) throw new Error("سجّل الدخول أولًا لحفظ المشروع في حسابك.");
     // Wait for an in-flight background sync instead of rejecting an explicit save.
     // Otherwise a quick section save can be left only in local storage.
@@ -327,7 +332,7 @@ async function syncAndWait(data) {
     const submit = $("madaAuthSubmit"); submit.disabled = true; submit.textContent = register ? "جارٍ إنشاء الحساب…" : "جارٍ تسجيل الدخول…";
     try {
       const result = await request(register ? "register" : "login", "POST", { username, password, name });
-      setUser(result.user); await restoreAccountData(true); close();
+      setUser(result.user); accountRestorePromise = restoreAccountData(true); await accountRestorePromise; close();
       if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast(register ? "تم إنشاء حسابك وحفظ بياناتك" : "تم تسجيل الدخول ومزامنة بياناتك");
     } catch (error) { showError(error.message); }
     finally { submit.disabled = false; renderMode(); }
@@ -350,7 +355,7 @@ async function syncAndWait(data) {
   }
   window.MadaAuth = { sync, syncAndWait, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
   renderMode();
-  request("me", "GET").then(async result => {
+  accountRestorePromise = request("me", "GET").then(async result => {
     if (!result.user) { setUser(null); setSyncStatus("local", "وضع الزائر — حفظ محلي"); return; }
     setUser(result.user);
     try { await restoreAccountData(true); } catch (error) { console.error("Mada cloud restore failed:", error.message); }
