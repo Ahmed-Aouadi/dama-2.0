@@ -16,9 +16,9 @@ module.exports=async function(req,res){
   if(!q.rows[0])return send(res,401,{error:"انتهت الجلسة."});
   const uid=q.rows[0].id;
   const result=await handleUpload({body:req.body,request:req,onBeforeGenerateToken:async(pathname)=>{
-   if(!String(pathname||"").startsWith("mada-project-files/"+uid+"/"))throw new Error("مسار رفع غير صالح.");
+   if(!String(pathname||"").startsWith("mada-project-files/")||String(pathname||"").includes(".."))throw new Error("مسار رفع غير صالح.");
    return {allowedContentTypes:["application/pdf","application/zip","text/plain","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","image/png","image/jpeg","image/webp"],maximumSizeInBytes:25*1024*1024,addRandomSuffix:true,tokenPayload:JSON.stringify({uid})};
-  },onUploadCompleted:async({blob,tokenPayload})=>{const p=JSON.parse(tokenPayload||"{}");if(p.uid!==uid||!String(blob.pathname||"").startsWith("mada-project-files/"+uid+"/"))throw new Error("تعذر التحقق من الملف.");}});
+  },onUploadCompleted:async({blob,tokenPayload})=>{const p=JSON.parse(tokenPayload||"{}");if(p.uid!==uid||!String(blob.pathname||"").startsWith("mada-project-files/"))throw new Error("تعذر التحقق من الملف.");}});
   return send(res,200,result);
  }catch(e){console.error("Blob upload:",e&&e.message||e);return send(res,400,{error:e&&e.message||"تعذر رفع الملف."});}
 };
