@@ -34,6 +34,25 @@ const rewrites = {
 };
 
 const accountHandler = require(path.join(root, "api", "account.js"));
+const uploadHandler = require(path.join(root, "api", "upload.js"));
+const fileHandler = require(path.join(root, "api", "file.js"));
+
+function handleJsonApi(request, response, handler) {
+  const chunks = [];
+  request.on("data", chunk => chunks.push(chunk));
+  request.on("end", async () => {
+    try {
+      request.body = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+      await handler(request, response);
+    } catch (error) {
+      console.error("[mada] JSON API error:", error);
+      if (!response.headersSent) {
+        response.writeHead(400, { "content-type": "application/json; charset=utf-8" });
+        response.end(JSON.stringify({ error: "بيانات الرفع غير صالحة." }));
+      }
+    }
+  });
+}
 
 function handleAccountApi(request, response, url) {
   const chunks = [];
@@ -64,6 +83,14 @@ const server = http.createServer((request, response) => {
   const requestPath = url.pathname;
   if (requestPath === "/api/account") {
     handleAccountApi(request, response, url);
+    return;
+  }
+  if (requestPath === "/api/upload") {
+    uploadHandler(request, response);
+    return;
+  }
+  if (requestPath === "/api/file") {
+    fileHandler(request, response, parsedUrl);
     return;
   }
 
