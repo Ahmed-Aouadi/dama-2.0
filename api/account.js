@@ -586,8 +586,15 @@ module.exports = async function handler(req, res) {
       let responseData = storedData;
       if (galleryRow && galleryRow.sections && typeof galleryRow.sections === "object") {
         const base = storedData && typeof storedData === "object" ? storedData : {};
+        const assignments = galleryRow.sections.projectSectionAssignments && typeof galleryRow.sections.projectSectionAssignments === "object"
+          ? galleryRow.sections.projectSectionAssignments : {};
         responseData = Object.assign({}, base, {
-          portfolioSettings: Object.assign({}, base.portfolioSettings || {}, galleryRow.sections)
+          portfolioSettings: Object.assign({}, base.portfolioSettings || {}, galleryRow.sections),
+          projects: Array.isArray(base.projects) ? base.projects.map(project =>
+            project && project.id != null && Object.prototype.hasOwnProperty.call(assignments, String(project.id))
+              ? Object.assign({}, project, { gallerySection: String(assignments[String(project.id)] || "") })
+              : project
+          ) : base.projects
         });
       }
       return send(res, 200, { data: responseData, revision: Number(result.rows[0]?.revision || 0), gallerySectionsRevision: Number(galleryRow?.revision || 0), updatedAt: result.rows[0]?.updated_at || null });
@@ -605,10 +612,13 @@ module.exports = async function handler(req, res) {
           JSON.stringify(sections).length > 200000) {
         return send(res, 413, { error: "بيانات أقسام المعرض أكبر من الحد المسموح." });
       }
+      const assignments = sections.projectSectionAssignments && typeof sections.projectSectionAssignments === "object"
+        && !Array.isArray(sections.projectSectionAssignments) ? sections.projectSectionAssignments : {};
       const encoded = JSON.stringify({
         gallerySections: sections.gallerySections,
         deletedGallerySectionIds: sections.deletedGallerySectionIds,
-        defaultGallerySection: String(sections.defaultGallerySection || "general")
+        defaultGallerySection: String(sections.defaultGallerySection || "general"),
+        projectSectionAssignments: assignments
       });
       const expectedRevision = Number.isSafeInteger(Number(req.body?.expectedRevision)) && Number(req.body.expectedRevision) >= 0
         ? Number(req.body.expectedRevision) : null;
