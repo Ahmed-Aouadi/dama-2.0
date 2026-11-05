@@ -588,8 +588,13 @@ module.exports = async function handler(req, res) {
         const base = storedData && typeof storedData === "object" ? storedData : {};
         const assignments = galleryRow.sections.projectSectionAssignments && typeof galleryRow.sections.projectSectionAssignments === "object"
           ? galleryRow.sections.projectSectionAssignments : {};
+        const gallerySettings = {
+          gallerySections: Array.isArray(galleryRow.sections.gallerySections) ? galleryRow.sections.gallerySections : [],
+          deletedGallerySectionIds: Array.isArray(galleryRow.sections.deletedGallerySectionIds) ? galleryRow.sections.deletedGallerySectionIds : [],
+          defaultGallerySection: String(galleryRow.sections.defaultGallerySection || "general")
+        };
         responseData = Object.assign({}, base, {
-          portfolioSettings: Object.assign({}, base.portfolioSettings || {}, galleryRow.sections),
+          portfolioSettings: Object.assign({}, base.portfolioSettings || {}, gallerySettings),
           projects: Array.isArray(base.projects) ? base.projects.map(project =>
             project && project.id != null && Object.prototype.hasOwnProperty.call(assignments, String(project.id))
               ? Object.assign({}, project, { gallerySection: String(assignments[String(project.id)] || "") })
