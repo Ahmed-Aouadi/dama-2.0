@@ -1,13 +1,25 @@
 const { Pool } = require("@neondatabase/serverless");
 const { get } = require("@vercel/blob");
 const { Readable } = require("node:stream");
-const { collectPublicBlobPaths } = require("./_public-portfolio");
+const { collectPublicBlobPaths, collectBlobPathsDeep } = require("./_public-portfolio");
 
-let pool;
+let pool;\nlet privateFilesSchemaReady;
 function db() {
   if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not configured.");
   if (!pool) pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3, idleTimeoutMillis: 10000 });
   return pool;
+}
+
+async function ensurePrivateFilesSchema() {
+  if (!privateFilesSchemaReady) {
+    privateFilesSchemaReady = db().query(
+      "CREATE TABLE IF NOT EXISTS mada_private_files (pathname TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())"
+    ).then(() => db().query("CREATE INDEX IF NOT EXISTS mada_private_files_owner_idx ON mada_private_files(user_id)")).catch(error => {
+      privateFilesSchemaReady = null;
+      throw error;
+    });
+  }
+  return privateFilesSchemaReady;
 }
 
 function send(response, status, body) {
@@ -18,6 +30,26 @@ function send(response, status, body) {
     "referrer-policy": "no-referrer"
   });
   response.end(body);
+}
+
+function sessionCookie(request) {
+  const item = String(request.headers.cookie || "").split(";").map(value => value.trim()).find(value => value.startsWith("mada_session="));
+  try { return item ? decodeURIComponent(item.slice("mada_session=".length)) : ""; } catch (_) { return ""; }
+}
+
+async function isOwnedBySession(request, pathname) {
+  const token = sessionCookie(request);
+  if (token.length < 40) return false;
+  await ensurePrivateFilesSchema();
+  const tokenHash = require("node:crypto").createHash("sha256").update(token).digest("hex");
+  const session = await db().query(
+    "SELECT u.id,d.data FROM mada_sessions s JOIN mada_users u ON u.id=s.user_id LEFT JOIN mada_user_data d ON d.user_id=u.id WHERE s.token_hash=$1 AND s.expires_at>NOW() AND NOT EXISTS (SELECT 1 FROM mada_admin_user_flags f WHERE f.user_id=u.id AND f.disabled=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+    [tokenHash]
+  );
+  if (!session.rows[0]) return false;
+  const owner = await db().query("SELECT 1 FROM mada_private_files WHERE pathname=$1 AND user_id=$2 LIMIT 1", [pathname, session.rows[0].id]);
+  if (owner.rows[0]) return true;
+  return collectBlobPathsDeep(session.rows[0].data).has(pathname);
 }
 
 async function isPubliclyReferenced(pathname) {
@@ -54,7 +86,7 @@ module.exports = async function fileHandler(request, response) {
 
     // A private Blob object is served only when its exact path is referenced
     // by content in an active, publicly published gallery.
-    if (!(await isPubliclyReferenced(pathname))) {
+    if (!(await isPubliclyReferenced(pathname)) && !(await isOwnedBySession(request, pathname))) {
       return send(response, 404, "File not found");
     }
 
