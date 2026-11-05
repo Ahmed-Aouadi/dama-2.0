@@ -249,15 +249,39 @@ async function syncAndWait(data) {
           const c = cloud[key] && typeof cloud[key] === "object" ? cloud[key] : {};
           const g = guest[key] && typeof guest[key] === "object" ? guest[key] : {};
           const settings = mergeAccountState(c, g);
-          // Do not union section snapshots: removed entries must stay removed.
-if (Array.isArray(g.gallerySections)) settings.gallerySections = g.gallerySections;
-  else if (Array.isArray(c.gallerySections)) settings.gallerySections = c.gallerySections;
-  const deletedSectionIds = Array.from(new Set([...(Array.isArray(c.deletedGallerySectionIds) ? c.deletedGallerySectionIds : []), ...(Array.isArray(g.deletedGallerySectionIds) ? g.deletedGallerySectionIds : [])].map(String)));
-    if (deletedSectionIds.length) {
-      settings.deletedGallerySectionIds = deletedSectionIds;
-      if (Array.isArray(settings.gallerySections)) settings.gallerySections = settings.gallerySections.filter(section => section && (section.id === "general" || !deletedSectionIds.includes(String(section.id))));
-    }
-    if (Object.prototype.hasOwnProperty.call(g, "defaultGallerySection")) settings.defaultGallerySection = g.defaultGallerySection;
+          // A guest browser often contains only the initial "general" section.
+          // Do not let that empty/stale snapshot overwrite the account's saved sections.
+          // A guest snapshot is authoritative only when it contains custom sections or
+          // explicit deletion tombstones created by the section manager.
+          const guestHasCustomSections = Array.isArray(g.gallerySections) &&
+            g.gallerySections.some(section => section && String(section.id) !== "general");
+          const guestHasSectionTombstones = Array.isArray(g.deletedGallerySectionIds) &&
+            g.deletedGallerySectionIds.length > 0;
+          const guestSectionsAreAuthoritative = guestHasCustomSections || guestHasSectionTombstones;
+          if (guestSectionsAreAuthoritative && Array.isArray(g.gallerySections)) {
+            settings.gallerySections = g.gallerySections;
+          } else if (Array.isArray(c.gallerySections)) {
+            settings.gallerySections = c.gallerySections;
+          } else if (Array.isArray(g.gallerySections)) {
+            settings.gallerySections = g.gallerySections;
+          }
+          const deletedSectionIds = Array.from(new Set([
+            ...(Array.isArray(c.deletedGallerySectionIds) ? c.deletedGallerySectionIds : []),
+            ...(Array.isArray(g.deletedGallerySectionIds) ? g.deletedGallerySectionIds : [])
+          ].map(String)));
+          if (deletedSectionIds.length) {
+            settings.deletedGallerySectionIds = deletedSectionIds;
+            if (Array.isArray(settings.gallerySections)) {
+              settings.gallerySections = settings.gallerySections.filter(section =>
+                section && (section.id === "general" || !deletedSectionIds.includes(String(section.id)))
+              );
+            }
+          }
+          if (guestSectionsAreAuthoritative && Object.prototype.hasOwnProperty.call(g, "defaultGallerySection")) {
+            settings.defaultGallerySection = g.defaultGallerySection;
+          } else if (Object.prototype.hasOwnProperty.call(c, "defaultGallerySection")) {
+            settings.defaultGallerySection = c.defaultGallerySection;
+          }
           result[key] = settings;
           return;
         }
