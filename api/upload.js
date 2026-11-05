@@ -1,4 +1,35 @@
 const { put } = require("@vercel/blob");
+const { Pool } = require("@neondatabase/serverless");
+const crypto = require("node:crypto");
+
+let pool;
+function db() {
+  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL غير مضبوط.");
+  if (!pool) pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3 });
+  return pool;
+}
+function sessionCookie(request) {
+  const item = String(request.headers.cookie || "").split(";").map(value => value.trim()).find(value => value.startsWith("mada_session="));
+  try { return item ? decodeURIComponent(item.slice("mada_session=".length)) : ""; } catch (_) { return ""; }
+}
+async function hasActiveSession(request) {
+  const token = sessionCookie(request);
+  if (token.length < 40) return false;
+  const result = await db().query(
+    "SELECT u.id FROM mada_sessions s JOIN mada_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at>NOW() AND NOT EXISTS (SELECT 1 FROM mada_admin_user_flags f WHERE f.user_id=u.id AND f.disabled=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
+    [crypto.createHash("sha256").update(token).digest("hex")]
+  );
+  return Boolean(result.rows[0]);
+}
+function allowedOrigin(request) {
+  const origin = String(request.headers.origin || "");
+  const host = String(request.headers.host || "").split(",")[0].trim().toLowerCase();
+  try {
+    const url = new URL(origin);
+    const local = ["localhost", "127.0.0.1"].includes(url.hostname);
+    return Boolean(origin && url.host.toLowerCase() === host && (local ? ["http:", "https:"].includes(url.protocol) : url.protocol === "https:"));
+  } catch (_) { return false; }
+}
 
 const MAX_BYTES = 50 * 1024 * 1024;
 function isAllowedType(type) {
