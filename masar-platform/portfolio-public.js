@@ -2,7 +2,7 @@
 "use strict";
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
-const slug=(params.get("id")||"").trim();
+const slug=(params.get("id")||(location.pathname.startsWith("/p/")?location.pathname.slice(3).split("/")[0]:"")).trim();
 const usernameFromPath=(()=>{const raw=location.pathname.startsWith("/@")?location.pathname.slice(2):(params.get("username")||"");try{return decodeURIComponent(raw)}catch(_){return raw}})();
 const isPreview=params.get("preview")==="1";
 let portfolioData=null;
@@ -330,14 +330,14 @@ if(publicRecords.length){
 }
 async function load(){
 if(isPreview){$("loadStatus").textContent="جارٍ تجهيز المعاينة المباشرة…";return}
-if(window.__MADA_PUBLIC_DATA__&&window.__MADA_PUBLIC_DATA__.portfolio){const data=window.__MADA_PUBLIC_DATA__;if(data.username&&!location.pathname.startsWith("/@"))history.replaceState({},"","/@"+encodeURIComponent(data.username));render(data);return}
+if(window.__MADA_PUBLIC_DATA__&&window.__MADA_PUBLIC_DATA__.portfolio){const data=window.__MADA_PUBLIC_DATA__;if(data.username&&!location.pathname.startsWith("/p/")&&!location.pathname.startsWith("/@"))history.replaceState({},"","/p/"+encodeURIComponent(data.slug||slug));render(data);return}
 if(!slug&&!usernameFromPath){$("loadStatus").textContent="رابط المعرض غير مكتمل. افتح الرابط الذي شاركه صاحب العمل.";return}
 try{
  const query=usernameFromPath?"username="+encodeURIComponent(usernameFromPath):"id="+encodeURIComponent(slug);
  const r=await fetch("/api/account?action=public-portfolio&"+query,{credentials:"same-origin",cache:"no-store"});
  const data=await r.json().catch(()=>({}));
  if(!r.ok)throw new Error(data.error||"تعذّر تحميل المعرض.");
- if(data.username&&!location.pathname.startsWith("/@"))history.replaceState({},"","/@"+encodeURIComponent(data.username));
+ if(data.username&&!location.pathname.startsWith("/p/")&&!location.pathname.startsWith("/@"))history.replaceState({},"","/p/"+encodeURIComponent(data.slug||slug));
  render(data);
  document.title=(data.portfolio?.profile?.name||data.authorName||data.username)+" | معرض أعمال مَدى";
 }catch(error){$("loadStatus").textContent=error.message||"تعذّر تحميل المعرض.";const link=document.createElement("a");link.href="/";link.textContent="العودة إلى مَدى";link.style.color="var(--purple)";link.style.fontWeight="700";$("loadStatus").append(" ");$("loadStatus").appendChild(link)}}

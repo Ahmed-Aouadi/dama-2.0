@@ -305,6 +305,7 @@ function assert(condition, message) {
       contentType: "application/json",
       body: JSON.stringify({
         username: "gallery-regression",
+        slug: "opaque-gallery-regression-id",
         authorName: "اختبار المعرض",
         portfolio: {
           profile: { name: "اختبار المعرض", role: "مصمم ومطور", bio: "نبذة قصيرة لاختبار التخطيط." },
@@ -325,8 +326,8 @@ function assert(condition, message) {
 
     await galleryPage.goto("http://127.0.0.1:4173/masar-platform/portfolio.html?username=gallery-regression", { waitUntil: "domcontentloaded" });
     await galleryPage.waitForSelector("#portfolioView:not([hidden]) .project-tile", { timeout: 5000 });
-    await galleryPage.waitForFunction(() => location.pathname === "/@gallery-regression", undefined, { timeout: 3000 });
-    assert(await galleryPage.locator('link[rel="canonical"]').getAttribute("href") === "http://127.0.0.1:4173/@gallery-regression", "Username gallery lookup did not canonicalize to its public profile URL");
+    await galleryPage.waitForFunction(() => location.pathname === "/p/opaque-gallery-regression-id", undefined, { timeout: 3000 });
+    assert(await galleryPage.locator('link[rel="canonical"]').getAttribute("href") === "http://127.0.0.1:4173/p/opaque-gallery-regression-id", "Legacy username lookup did not canonicalize to its opaque public gallery URL");
 
     assert(await galleryPage.locator("#portfolioView .project-tile").count() === 1, "Hidden gallery section leaked into the public portfolio");
     const galleryLayout = await galleryPage.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));

@@ -497,12 +497,12 @@ module.exports = async function handler(req, res) {
       const portfolio = { profile, projects, records, display, publishedAt: new Date().toISOString() };
       const encoded = JSON.stringify(portfolio);
       if (encoded.length > 3500000) return send(res, 413, { error: "المعرض كبير جدًا للنشر. قلّل حجم الوسائط أو استخدم روابط مباشرة للملفات والصور." });
-      const slug = crypto.randomBytes(12).toString("base64url");
+      const slug = crypto.randomBytes(24).toString("base64url");
       const result = await db().query(
-        "INSERT INTO mada_public_portfolios(user_id,username,slug,portfolio,is_public,updated_at) VALUES($1,$2,$3,$4::jsonb,$5,NOW()) ON CONFLICT(user_id) DO UPDATE SET username=EXCLUDED.username,portfolio=EXCLUDED.portfolio,is_public=EXCLUDED.is_public,updated_at=NOW() RETURNING username,slug,is_public,updated_at",
+        "INSERT INTO mada_public_portfolios(user_id,username,slug,portfolio,is_public,updated_at) VALUES($1,$2,$3,$4::jsonb,$5,NOW()) ON CONFLICT(user_id) DO UPDATE SET username=EXCLUDED.username,slug=EXCLUDED.slug,portfolio=EXCLUDED.portfolio,is_public=EXCLUDED.is_public,updated_at=NOW() RETURNING username,slug,is_public,updated_at",
         [user.id, user.username, slug, encoded, isPublic]
       );
-      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, isPublic: result.rows[0].is_public, updatedAt: result.rows[0].updated_at, shareUrl: "/@" + encodeURIComponent(result.rows[0].username) });
+      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, isPublic: result.rows[0].is_public, updatedAt: result.rows[0].updated_at, shareUrl: "/p/" + encodeURIComponent(result.rows[0].slug) });
     }
 
     if (action === "public-portfolio" && req.method === "GET") {
