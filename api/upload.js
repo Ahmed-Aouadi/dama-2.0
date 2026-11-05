@@ -106,7 +106,8 @@ module.exports = async function uploadHandler(request, response) {
   if (request.method !== "POST") return json(response, 405, { error: "الطريقة غير مدعومة" });
   try {
     if (!allowedOrigin(request)) return json(response, 403, { error: "مصدر الطلب غير مسموح." });
-    const ownerId = await hasActiveSession(request);\n    if (!ownerId) return json(response, 401, { error: "سجّل الدخول أولًا." });
+    const ownerId = await hasActiveSession(request);
+    if (!ownerId) return json(response, 401, { error: "سجّل الدخول أولًا." });
 
     const contentType = String(request.headers["content-type"] || "");
     const body = await readBody(request);
@@ -131,7 +132,9 @@ module.exports = async function uploadHandler(request, response) {
       contentType: file.type,
       addRandomSuffix: true
     });
-    await db().query("CREATE TABLE IF NOT EXISTS mada_private_files (pathname TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())");\n    await db().query("INSERT INTO mada_private_files(pathname,user_id) VALUES($1,$2) ON CONFLICT(pathname) DO UPDATE SET user_id=EXCLUDED.user_id", [blob.pathname, ownerId]);\n    return json(response, 200, { url: `/api/file?pathname=${encodeURIComponent(blob.pathname)}`, pathname: blob.pathname });
+    await db().query("CREATE TABLE IF NOT EXISTS mada_private_files (pathname TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())");
+    await db().query("INSERT INTO mada_private_files(pathname,user_id) VALUES($1,$2) ON CONFLICT(pathname) DO UPDATE SET user_id=EXCLUDED.user_id", [blob.pathname, ownerId]);
+    return json(response, 200, { url: `/api/file?pathname=${encodeURIComponent(blob.pathname)}`, pathname: blob.pathname });
   } catch (error) {
     console.error("[mada] upload error:", error?.message || error);
     return json(response, error.statusCode || 500, {
