@@ -1,6 +1,7 @@
 const { Pool } = require("@neondatabase/serverless");
 const { get } = require("@vercel/blob");
 const { Readable } = require("node:stream");
+const crypto = require("node:crypto");
 const { collectPublicBlobPaths, collectBlobPathsDeep } = require("./_public-portfolio");
 
 let pool;\nlet privateFilesSchemaReady;
@@ -41,7 +42,7 @@ async function isOwnedBySession(request, pathname) {
   const token = sessionCookie(request);
   if (token.length < 40) return false;
   await ensurePrivateFilesSchema();
-  const tokenHash = require("node:crypto").createHash("sha256").update(token).digest("hex");
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
   const session = await db().query(
     "SELECT u.id,d.data FROM mada_sessions s JOIN mada_users u ON u.id=s.user_id LEFT JOIN mada_user_data d ON d.user_id=u.id WHERE s.token_hash=$1 AND s.expires_at>NOW() AND NOT EXISTS (SELECT 1 FROM mada_admin_user_flags f WHERE f.user_id=u.id AND f.disabled=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
     [tokenHash]
