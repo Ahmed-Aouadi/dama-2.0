@@ -69,4 +69,16 @@ function collectPublicBlobPaths(input) {
   return paths;
 }
 
-module.exports = { sanitizePublicPortfolio, publicBlobPath, collectPublicBlobPaths };
+function collectBlobPathsDeep(value, paths = new Set()) {
+  if (typeof value === "string") {
+    const pathname = publicBlobPath(value);
+    if (pathname) paths.add(pathname);
+  } else if (Array.isArray(value)) {
+    value.forEach(item => collectBlobPathsDeep(item, paths));
+  } else if (value && typeof value === "object") {
+    Object.values(value).forEach(item => collectBlobPathsDeep(item, paths));
+  }
+  return paths;
+}
+
+module.exports = { sanitizePublicPortfolio, publicBlobPath, collectPublicBlobPaths, collectBlobPathsDeep };
