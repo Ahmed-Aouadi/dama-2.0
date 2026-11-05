@@ -809,7 +809,7 @@ html,body{height:100%;overflow:hidden}
 <div class="field full project-section-title"><strong>تفاصيل الإنجاز</strong><small>وضّح فكرتك ودورك وما وصلت إليه</small></div><div class="field full"><label for="projectDescription">وصف المشروع</label><textarea id="projectDescription" maxlength="1200" rows="4" placeholder="ما المشكلة التي يحلها المشروع؟ ماذا أنجزت؟ وما النتيجة؟"></textarea></div>
 <div class="field"><label for="projectRole">دورك في المشروع</label><input id="projectRole" maxlength="120" placeholder="مثال: التصميم والبرمجة" /></div><div class="field"><label for="projectTools">الأدوات والتقنيات</label><input id="projectTools" maxlength="240" placeholder="مثال: Figma، HTML، Python" /></div><div class="field full"><label for="projectTags">المهارات أو الوسوم (افصل بفاصلة)</label><input id="projectTags" maxlength="300" placeholder="واجهة مستخدم، بحث، كتابة..." /></div><div class="field full"><label for="projectOutcome">النتيجة أو ما تعلمته</label><textarea id="projectOutcome" maxlength="600" rows="2" placeholder="ما النتيجة؟ وما الذي تعلمته؟"></textarea></div>
 <div class="field full project-section-title"><strong>الصور والروابط</strong><small>أضف ما يتوفر لديك الآن، ويمكنك إكماله لاحقًا</small></div><div class="field full project-type-field" data-work-fields="website app software general"><label for="projectLink">رابط العمل الأساسي (اختياري)</label><input id="projectLink" type="url" maxlength="2000" placeholder="https://موقع-مشروعك..." /></div><div class="field full project-type-field" data-work-fields="design gallery photography media journalism writing book research education community event general"><label for="projectImages">روابط الصور الإضافية (رابط في كل سطر)</label><textarea id="projectImages" rows="3" maxlength="12000" placeholder="https://example.com/image-1.jpg&#10;https://example.com/image-2.png"></textarea><small class="tiny-note">يمكنك وضع رابط في كل سطر أو رفع صور من جهازك.</small><label for="projectImagesInput">رفع مجموعة صور</label><input id="projectImagesInput" type="file" accept="image/jpeg,image/png,image/webp" multiple /><small class="tiny-note">حتى 8 صور، وستُضغط تلقائيًا.</small><div id="projectImagesUploadStatus" class="tiny-note" aria-live="polite"></div></div><div class="field full project-type-field" data-work-fields="video media journalism event general"><label for="projectVideoUrl">رابط فيديو العمل (اختياري)</label><input id="projectVideoUrl" type="url" maxlength="2000" placeholder="YouTube أو Vimeo أو رابط MP4" /><label for="projectVideoInput">أو رفع فيديو قصير</label><input id="projectVideoInput" type="file" accept="video/*" /><small class="tiny-note">يمكن رفع فيديو حتى 50 ميغابايت.</small></div><div class="field full project-type-field" data-work-fields="general software website app design video media journalism photography writing book research education business engineering community event document gallery"><label for="projectFileUrl">رابط ملف قابل للتنزيل (اختياري)</label><input id="projectFileUrl" type="url" maxlength="2000" placeholder="PDF أو ZIP أو ملف العمل..." /><label for="projectFileInput">أو رفع ملف من جهازك</label><input id="projectFileInput" type="file" accept="*/*" /><small class="tiny-note">يمكن رفع أي نوع ملف حتى 50 ميغابايت.</small><label class="project-feature-check"><input id="projectShowFileDownload" type="checkbox" /> إظهار زر اختيار التنزيل في تفاصيل العمل</label><div class="field"><p class="tiny-note">اختر العناصر التي تسمح للزوار بتنزيلها. عند اختيار أكثر من عنصر، ستُجمع في ملف ZIP واحد لتجنب منع المتصفح للتنزيلات المتعددة.</p></div><div class="field full" id="projectDownloadPermissionsWrap"><label>العناصر المسموح بتنزيلها</label><div id="projectDownloadPermissions" class="project-download-permissions"><small class="tiny-note">أضف صورًا أو ملفات أو روابط لعرض خيارات التنزيل هنا.</small></div></div></div><div class="field full project-type-field" data-work-fields="design gallery general website video document"><label for="projectCoverInput">صورة غلاف من جهازك (اختياري)</label><input id="projectCoverInput" type="file" accept="image/jpeg,image/png,image/webp" /><small class="tiny-note">اختر صورة من جهازك؛ ستُضغط قبل الحفظ. الأفضل استخدام لقطة شاشة أو صورة تمثل العمل.</small><div id="projectCoverPreview" class="project-cover-preview" hidden></div><button type="button" class="ghost" id="removeProjectCover">إزالة صورة الغلاف</button></div><div class="field full project-section-title"><strong>إعدادات العرض</strong><small>اختر كيف تريد ظهور المشروع داخل ملفك</small></div><div class="field"><label for="projectVisibility">ظهوره في ملف الإنجاز المُنزّل</label><select id="projectVisibility"><option value="profile">إظهار في نسخة HTML المُنزّلة</option><option value="private">إخفاء من نسخة HTML المُنزّلة</option></select><small class="tiny-note">هذا الخيار لا يتحكم في معرض الإنترنت؛ اضبطه بشكل مستقل أدناه.</small></div><div class="field"><label class="project-feature-check"><input id="projectGalleryVisible" type="checkbox" checked /> إظهار هذا المشروع في معرض أعمالي على الإنترنت</label></div><div class="field"><label class="project-feature-check"><input id="projectFeatured" type="checkbox" /> تمييز المشروع في المعرض</label></div>
-</div><button class="primary" type="submit" id="saveProjectButton">حفظ المشروع</button> <button class="ghost" type="button" id="cancelProjectEdit">إلغاء</button></form></div></div>
+</div><div class="project-form-actions"><button class="primary" type="submit" id="saveProjectButton">حفظ المشروع</button><button class="ghost" type="button" id="cancelProjectEdit">إلغاء</button></div></form></div></div>
 
 <div class="modal-backdrop" id="designModal"><div class="modal"><div class="modal-head"><h3 id="designModalTitle">تخصيص القالب</h3><button class="close" data-close="designModal">×</button></div><form id="designForm"><div class="form-grid">
 <div class="field full"><label for="designTitle">العنوان الرئيسي</label><input id="designTitle" required maxlength="100" /></div>
@@ -1730,46 +1730,17 @@ body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .
 #portfolioDesigner .portfolio-template-picker{display:none!important}
 
 
-/* Keep project editor actions reachable while the form content scrolls */
-#projectModal .modal{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  min-height:0;
+/* Keep both project form actions together in one fixed footer */
+#projectForm>.primary,#projectForm>.ghost{position:static;box-shadow:none;margin:0;min-width:0}
+#projectForm>.project-form-actions{
+  position:sticky;bottom:0;z-index:8;display:flex;flex-direction:row;
+  align-items:center;gap:10px;flex:0 0 auto;margin-top:auto;padding:12px 0 2px;
+  background:linear-gradient(to bottom,rgba(255,255,255,0),#fff 22%);
 }
-#projectModal .modal-head{
-  flex:0 0 auto;
-}
-#projectForm{
-  display:flex;
-  flex-direction:column;
-  flex:1 1 auto;
-  min-height:0;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-}
-#projectForm>.primary,
-#projectForm>.ghost{
-  position:sticky;
-  bottom:0;
-  z-index:5;
-  flex:0 0 auto;
-  box-shadow:0 -8px 16px rgba(255,255,255,.94);
-}
-#projectForm>.primary{margin-top:auto}
-#projectForm>.ghost{margin-top:8px}
+#projectForm>.project-form-actions>button{flex:1 1 0;width:auto;min-width:0;min-height:48px;margin:0}
 @media(max-width:760px){
-  #projectModal .modal{
-    max-height:92dvh;
-    min-height:0;
-  }
-  #projectForm{
-    padding-bottom:calc(12px + env(safe-area-inset-bottom));
-  }
-  #projectForm>.primary,
-  #projectForm>.ghost{
-    min-height:48px;
-  }
+ #projectForm>.project-form-actions{padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+ #projectForm>.project-form-actions>button{width:auto}
 }
 </style>
 <script id="mada-portfolio-dialog-repair">
