@@ -210,3 +210,87 @@
 @media (prefers-reduced-motion: reduce) {
   .app-scroll-shell { scroll-behavior:auto; }
 }
+
+
+/* Additional mobile usability refinements */
+@media (max-width:760px) {
+  html { scroll-padding-top:72px; }
+  body { overflow-x:clip; }
+  .app-scroll-shell { scroll-behavior:smooth; }
+  .section-intro { max-width:100%; }
+  .section-intro h1 { overflow-wrap:anywhere; }
+  .cards {
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+  .cards > * { min-width:0; }
+  .growth-tabs {
+    display:flex !important;
+    gap:8px !important;
+    max-width:100%;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    padding:4px 1px 10px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  .growth-tabs > button { flex:0 0 auto; min-height:44px; white-space:nowrap; }
+  .settings-row {
+    align-items:flex-start !important;
+    flex-wrap:wrap !important;
+    gap:10px !important;
+    padding:14px 0 !important;
+  }
+  .settings-row > div { flex:1 1 100%; min-width:0; }
+  .settings-row > button, .settings-row > select {
+    min-height:44px !important;
+    max-width:100%;
+  }
+  .field { min-width:0; }
+  .field label { display:block; margin-bottom:7px; line-height:1.7; }
+  .field input, .field select, .field textarea,
+  input:not([type=checkbox]):not([type=radio]):not([type=color]),
+  select, textarea {
+    min-height:46px;
+    font-size:16px !important;
+    line-height:1.5;
+  }
+  textarea { min-height:110px; }
+  .project-form-actions {
+    position:sticky !important;
+    bottom:0 !important;
+    z-index:12 !important;
+    padding:12px 0 calc(9px + env(safe-area-inset-bottom)) !important;
+    background:linear-gradient(to bottom,rgba(255,255,255,0),#fff 18%) !important;
+  }
+  .project-form-actions button { min-height:48px !important; }
+  .panel, .form-panel, .growth-hero, .journey-panel { min-width:0; }
+  .panel-title > button { max-width:100%; white-space:normal; }
+  .project-row { min-width:0; }
+  .project-row > * { min-width:0; }
+  .modal-backdrop.open { overscroll-behavior:contain; }
+  .modal input, .modal select, .modal textarea { font-size:16px !important; }
+  .modal .modal-head { gap:8px; }
+  .modal .modal-head h3 { min-width:0; overflow-wrap:anywhere; }
+  .modal .close { width:42px; height:42px; flex:0 0 42px; }
+  .toast { z-index:2147483200 !important; }
+}
+@media (max-width:420px) {
+  .cards { grid-template-columns:minmax(0,1fr) !important; }
+  .mobile-nav button { letter-spacing:-.15px; }
+  .top-actions .primary { max-width:148px; overflow:hidden; text-overflow:ellipsis; }
+}
+@media (max-width:360px) {
+  .mobile-nav button { font-size:8px !important; }
+  .mobile-nav button svg { width:18px; height:18px; }
+  .mobile-nav { padding-inline:2px !important; }
+}
+@media (orientation:landscape) and (max-height:520px) {
+  .mobile-nav { min-height:52px; }
+  .mobile-nav button { min-height:42px !important; flex-direction:row !important; gap:5px !important; }
+  .app-scroll-shell { padding-bottom:calc(60px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .app-scroll-shell { scroll-behavior:auto !important; }
+}
