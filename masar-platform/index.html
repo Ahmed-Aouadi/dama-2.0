@@ -854,7 +854,7 @@ try{state=JSON.parse(localStorage.getItem(KEY))||blankState()}catch(e){state=bla
 function save(syncCloud){try{localStorage.setItem(KEY,JSON.stringify(state));if(syncCloud!==false&&window.MadaAuth)window.MadaAuth.sync(state)}catch(e){toast("تعذّر الحفظ. مساحة المتصفح قد تكون ممتلئة.");}}
 function applyAppTheme(theme){const value=["light","dark","system"].includes(theme)?theme:"system";if(value==="system"){document.documentElement.removeAttribute("data-theme");}else{document.documentElement.setAttribute("data-theme",value)}document.documentElement.style.colorScheme=value==="system"?"light dark":value;}
 function esc(v){return String(v||"").replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function safeHttpUrl(value){const raw=String(value||"").trim();if(!raw)return "";try{const u=new URL(raw,window.location.href);return ["http:","https:"].includes(u.protocol)?u.href:""}catch(e){return ""}}
+function safeHttpUrl(value){const raw=String(value||"").trim();if(!raw)return "";try{const u=new URL(raw,window.location.href);const pathname=u.pathname.replace(/^\/+/,"");if(/^(?:mada-project-files|portfolio)\//.test(pathname)&&/(?:blob\.vercel-storage\.com|vusercontent\.net)$/i.test(u.hostname))return new URL("/api/file?pathname="+encodeURIComponent(pathname),window.location.origin).href;return ["http:","https:"].includes(u.protocol)?u.href:""}catch(e){return ""}}
 function toast(msg){if(!state.settings.notices)return;const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(function(){t.classList.remove("show")},2800)}
 function openModal(id){$("#"+id).classList.add("open")}
 function closeModal(id){$("#"+id).classList.remove("open")}
