@@ -325,6 +325,28 @@ async function syncAndWait(data) {
     } else {
       restoredState = result.data && cloudHasContent ? result.data : (result.data || latestState);
     }
+    // Once the account already has custom gallery sections, its cloud snapshot is
+    // authoritative during login. A stale guest browser snapshot must not roll them
+    // back or resurrect sections that were removed from the account.
+    const cloudPortfolioSettings = result.data && result.data.portfolioSettings;
+    const cloudHasCustomGallerySections = Boolean(
+      cloudPortfolioSettings &&
+      Array.isArray(cloudPortfolioSettings.gallerySections) &&
+      cloudPortfolioSettings.gallerySections.some(section => section && String(section.id) !== "general")
+    );
+    if (cloudHasCustomGallerySections) {
+      restoredState.portfolioSettings = Object.assign(
+        {},
+        restoredState.portfolioSettings || {},
+        {
+          gallerySections: cloudPortfolioSettings.gallerySections,
+          defaultGallerySection: cloudPortfolioSettings.defaultGallerySection || "general",
+          deletedGallerySectionIds: Array.isArray(cloudPortfolioSettings.deletedGallerySectionIds)
+            ? cloudPortfolioSettings.deletedGallerySectionIds
+            : []
+        }
+      );
+    }
     window.MadaApp.applyCloudState(restoredState, user.name);
     // Persist the merged result so both the device and the account have the same snapshot.
     try {
