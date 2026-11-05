@@ -3,6 +3,9 @@ const vm = require("node:vm");
 
 const javascriptFiles = [
   "api/account.js",
+  "api/file.js",
+  "api/upload.js",
+  "api/_public-portfolio.js",
   "api/admin.js",
   "legacy/api/db.js",
   "legacy/api/store.js",
@@ -292,3 +295,45 @@ if (!growthTemplateEditorRegression.includes("function setupBuilderModal()") || 
 if (!growthTemplateEditorRegression.includes("raw.length<=8000000") || !growthTemplateEditorRegression.includes("safeHttpUrl")) throw new Error("Growth template images and links must pass the updated size and URL handling");
 if (!growthTemplateEditorRegression.includes('localStorage.setItem("mada-platform-v1",JSON.stringify(s))') || !growthTemplateEditorRegression.includes("closeBuilderModal()")) throw new Error("Growth template save must persist locally and close the modal after a successful save");
 console.log("OK Growth Hub template editor modal, element geometry/style controls, image-size handling, URL validation and local persistence");
+
+
+const gallerySecurity = require("../api/_public-portfolio");
+const securityFixture = {
+  profile: { avatar: "/api/file?pathname=portfolio/avatar.png" },
+  display: {
+    featuredOnly: false,
+    gallerySections: [
+      { id: "visible", visible: true },
+      { id: "hidden", visible: false }
+    ]
+  },
+  projects: [
+    { id: "public", gallerySection: "visible", cover: "/api/file?pathname=portfolio/public-cover.jpg", uploadedFile: "/api/file?pathname=portfolio/public.pdf", downloadableItems: [] },
+    { id: "hidden-section", gallerySection: "hidden", uploadedFile: "/api/file?pathname=portfolio/hidden-section.pdf" },
+    { id: "private", visibility: "private", uploadedFile: "/api/file?pathname=portfolio/private.pdf" },
+    { id: "hidden-gallery", galleryVisible: false, uploadedFile: "/api/file?pathname=portfolio/hidden-gallery.pdf" }
+  ],
+  records: [
+    { public: true, url: "/api/file?pathname=portfolio/public-record.pdf" },
+    { public: false, url: "/api/file?pathname=portfolio/private-record.pdf" }
+  ]
+};
+const publicPaths = gallerySecurity.collectPublicBlobPaths(securityFixture);
+for (const expected of ["portfolio/avatar.png", "portfolio/public-cover.jpg", "portfolio/public.pdf", "portfolio/public-record.pdf"]) {
+  if (!publicPaths.has(expected)) throw new Error("Published gallery file reference was incorrectly blocked: " + expected);
+}
+for (const forbidden of ["portfolio/hidden-section.pdf", "portfolio/private.pdf", "portfolio/hidden-gallery.pdf", "portfolio/private-record.pdf"]) {
+  if (publicPaths.has(forbidden)) throw new Error("Private or hidden gallery file reference leaked: " + forbidden);
+}
+if (gallerySecurity.publicBlobPath("/api/file?pathname=portfolio%2F..%2Fsecret.pdf") !== "") throw new Error("Traversal-like file paths must be rejected");
+if (gallerySecurity.publicBlobPath("data:image/png;base64,AAAA") !== "") throw new Error("Inline data URLs must not be treated as private Blob objects");
+const fileSecuritySource = fs.readFileSync("api/file.js", "utf8");
+if (!fileSecuritySource.includes("isPubliclyReferenced(pathname)") || !fileSecuritySource.includes("collectPublicBlobPaths")) throw new Error("Private Blob file delivery must verify an active public gallery reference");
+if (fileSecuritySource.includes("access-control-allow-origin")) throw new Error("Private Blob file delivery must not grant wildcard CORS access");
+const uploadSecuritySource = fs.readFileSync("api/upload.js", "utf8");
+if (!uploadSecuritySource.includes("allowedOrigin(request)") || !uploadSecuritySource.includes("hasActiveSession(request)") || !uploadSecuritySource.includes("maxBody")) throw new Error("Legacy portfolio uploads must require same-origin authenticated sessions and bounded request bodies");
+if (uploadSecuritySource.includes("/^(image|video|audio|application|text|font)\\//")) throw new Error("Legacy uploads must not allow arbitrary active-content MIME types");
+const accountSecuritySource = fs.readFileSync("api/account.js", "utf8");
+const portfolioSecuritySource = fs.readFileSync("api/portfolio.js", "utf8");
+if (!accountSecuritySource.includes("sanitizePublicPortfolio(result.rows[0].portfolio)") || !portfolioSecuritySource.includes("sanitizePublicPortfolio(row.portfolio)")) throw new Error("Both public portfolio response paths must remove hidden projects and private records");
+console.log("OK public gallery file authorization, hidden-content filtering, authenticated uploads and unsafe-path rejection");
