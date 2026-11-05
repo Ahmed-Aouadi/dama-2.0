@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const API = "/api/account";
-  let user = null, syncing = false, pending = null, syncTimer = null, retryDelay = 1500, cloudRevision = 0, activeMode = "login", avatarUrl = "";
+  let user = null, syncing = false, pending = null, syncTimer = null, retryDelay = 1500, cloudRevision = 0, gallerySectionsRevision = 0, activeMode = "login", avatarUrl = "";
   // Cloud state restoration must finish before an explicit save can write a snapshot.
   let accountRestorePromise = Promise.resolve();
   const style = document.createElement("style");
@@ -163,6 +163,60 @@ async function syncAndWait(data) {
       if (pending && user) { if (syncTimer) clearTimeout(syncTimer); syncTimer = setTimeout(flushSync, retryDelay); }
     }
   }
+  async function syncGallerySectionsAndWait(value) {
+    await accountRestorePromise;
+    if (!user) throw new Error("سجّل الدخول أولًا لحفظ أقسام المعرض في حسابك.");
+    let waitCount = 0;
+    while (syncing && waitCount < 200) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      waitCount++;
+    }
+    if (syncing) throw new Error("المزامنة السابقة لم تنتهِ بعد. أعد المحاولة بعد لحظات.");
+    const payload = {
+      gallerySections: Array.isArray(value && value.gallerySections) ? value.gallerySections : [],
+      deletedGallerySectionIds: Array.isArray(value && value.deletedGallerySectionIds) ? value.deletedGallerySectionIds : [],
+      defaultGallerySection: String(value && value.defaultGallerySection || "general")
+    };
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const saved = await request("gallery-sections", "POST", {
+          sections: payload,
+          expectedRevision: gallerySectionsRevision
+        });
+        gallerySectionsRevision = Number(saved.revision || gallerySectionsRevision);
+        setSyncStatus("synced", "تم حفظ أقسام المعرض في الحساب");
+        return { ...saved, sections: payload };
+      } catch (error) {
+        if (error.status === 409 && error.data && attempt < 2) {
+          gallerySectionsRevision = Number(error.data.revision || 0);
+          const remote = error.data.sections && typeof error.data.sections === "object" ? error.data.sections : {};
+          const byId = new Map();
+          (Array.isArray(remote.gallerySections) ? remote.gallerySections : []).forEach(section => {
+            if (section && section.id != null) byId.set(String(section.id), section);
+          });
+          payload.gallerySections.forEach(section => {
+            if (section && section.id != null) byId.set(String(section.id), section);
+          });
+          payload.deletedGallerySectionIds = Array.from(new Set([
+            ...(Array.isArray(remote.deletedGallerySectionIds) ? remote.deletedGallerySectionIds : []),
+            ...payload.deletedGallerySectionIds
+          ].map(String)));
+          const deleted = new Set(payload.deletedGallerySectionIds);
+          payload.gallerySections = Array.from(byId.values()).filter(section =>
+            section && (String(section.id) === "general" || !deleted.has(String(section.id)))
+          );
+          if (!payload.gallerySections.some(section => String(section.id) === payload.defaultGallerySection)) {
+            payload.defaultGallerySection = String(remote.defaultGallerySection || "general");
+          }
+          continue;
+        }
+        setSyncStatus("error", "تعذّر حفظ أقسام المعرض");
+        if (window.MadaApp && window.MadaApp.toast) window.MadaApp.toast(error.message || "تعذّر حفظ أقسام المعرض. أعد المحاولة.");
+        throw error;
+      }
+    }
+    throw new Error("تعذّر تثبيت تعديلات أقسام المعرض.");
+  }
     async function flushSync() {
     if (!user || !pending || syncing) return;
     const snapshot = pending; pending = null; syncing = true;
@@ -299,7 +353,7 @@ async function syncAndWait(data) {
     const accountLocalState = window.MadaApp.getStoredState ? window.MadaApp.getStoredState("mada-platform-v1:" + user.id) : null;
     window.MadaApp.setKey("mada-platform-v1:" + user.id);
     let result;
-    try { result = await request("data", "GET"); cloudRevision = Number(result.revision || 0); }
+    try { result = await request("data", "GET"); cloudRevision = Number(result.revision || 0); gallerySectionsRevision = Number(result.gallerySectionsRevision || 0); }
     catch (error) { window.MadaApp.setKey("mada-platform-v1"); window.MadaApp.applyCloudState(guestState); setSyncStatus("error", "تعذّر تحميل السحابة — تعمل الآن محليًا"); throw error; }
     const latestState = accountLocalState || {};
     const guestHasContent = hasMeaningfulProfile(guestState) ||
@@ -407,7 +461,7 @@ async function syncAndWait(data) {
     setSyncStatus("local", "وضع الزائر — حفظ محلي");
     return result;
   }
-  window.MadaAuth = { sync, syncAndWait, waitForRestore: async () => { try { await accountRestorePromise; } catch (_) {} return !!user; }, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
+  window.MadaAuth = { sync, syncAndWait, syncGallerySectionsAndWait, waitForRestore: async () => { try { await accountRestorePromise; } catch (_) {} return !!user; }, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
   renderMode();
   accountRestorePromise = request("me", "GET").then(async result => {
     if (!result.user) { setUser(null); setSyncStatus("local", "وضع الزائر — حفظ محلي"); return; }
