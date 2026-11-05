@@ -1,6 +1,7 @@
 const { Pool } = require("@neondatabase/serverless");
 const crypto = require("node:crypto");
 const { promisify } = require("node:util");
+const { sanitizePublicPortfolio } = require("./_public-portfolio");
 
 const scrypt = promisify(crypto.scrypt);
 let pool;
@@ -525,7 +526,7 @@ module.exports = async function handler(req, res) {
         );
       }
       if (!result.rows[0]) return send(res, 404, { error: "هذا المعرض غير منشور أو أصبح خاصًا." });
-      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, authorName: result.rows[0].display_name, portfolio: result.rows[0].portfolio });
+      return send(res, 200, { ok: true, username: result.rows[0].username, slug: result.rows[0].slug, authorName: result.rows[0].display_name, portfolio: sanitizePublicPortfolio(result.rows[0].portfolio) });
     }
 
 

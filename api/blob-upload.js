@@ -18,7 +18,9 @@ module.exports=async function(req,res){
   const result=await handleUpload({body:req.body,request:req,onBeforeGenerateToken:async(pathname)=>{
    if(!String(pathname||"").startsWith("mada-project-files/")||String(pathname||"").includes(".."))throw new Error("مسار رفع غير صالح.");
    return {maximumSizeInBytes:50*1024*1024,addRandomSuffix:true,tokenPayload:JSON.stringify({uid})};
-  },onUploadCompleted:async({blob,tokenPayload})=>{const p=JSON.parse(tokenPayload||"{}");if(p.uid!==uid||!String(blob.pathname||"").startsWith("mada-project-files/"))throw new Error("تعذر التحقق من الملف.");}});
+  },onUploadCompleted:async({blob,tokenPayload})=>{const p=JSON.parse(tokenPayload||"{}");if(p.uid!==uid||!String(blob.pathname||"").startsWith("mada-project-files/"))throw new Error("تعذر التحقق من الملف.");
+   await db().query("CREATE TABLE IF NOT EXISTS mada_private_files (pathname TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())");
+   await db().query("INSERT INTO mada_private_files(pathname,user_id) VALUES($1,$2) ON CONFLICT(pathname) DO UPDATE SET user_id=EXCLUDED.user_id",[blob.pathname,uid]);}});
   return send(res,200,result);
  }catch(e){console.error("Blob upload:",e&&e.message||e);return send(res,400,{error:e&&e.message||"تعذر رفع الملف."});}
 };

@@ -1,6 +1,7 @@
 const { Pool } = require("@neondatabase/serverless");
 const fs = require("node:fs");
 const path = require("node:path");
+const { sanitizePublicPortfolio } = require("./_public-portfolio");
 
 let pool;
 function db() {
@@ -107,7 +108,7 @@ module.exports = async function handler(req, res) {
     );
     if (!result.rows[0]) return sendHtml(res, 404, publicError(404, "هذا المعرض غير متاح", "قد يكون المعرض خاصًا أو لم ينشر صاحبه ملفه بعد."), "no-store");
     const row = result.rows[0];
-    const portfolio = row.portfolio && typeof row.portfolio === "object" ? row.portfolio : {};
+    const portfolio = sanitizePublicPortfolio(row.portfolio);
     const profile = portfolio.profile || {};
     const name = String(profile.name || row.display_name || row.username).trim();
     const description = String(profile.bio || ("معرض أعمال " + name + " على منصة مَدى.")).replace(/\s+/g, " ").slice(0, 300);
