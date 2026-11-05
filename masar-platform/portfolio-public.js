@@ -10,11 +10,20 @@ function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,c=>({
 function safeUrl(value,allowImageData){const raw=String(value||"").trim();if(!raw)return "";if(allowImageData&&/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(raw)&&raw.length<250000)return raw;if(/^data:video\/(?:mp4|webm|ogg);base64,/i.test(raw)&&raw.length<1000000)return raw;if(/^data:application\/(?:pdf|zip|octet-stream|vnd\.[a-z0-9.+-]+);base64,/i.test(raw)&&raw.length<750000)return raw;if(/^data:text\/plain;base64,/i.test(raw)&&raw.length<750000)return raw;try{const u=new URL(raw,location.href);return ["http:","https:"].includes(u.protocol)?u.href:""}catch(e){return ""}}
 function getVideoMarkup(value){const url=safeUrl(value,false);if(!url)return "";try{const u=new URL(url),host=u.hostname.toLowerCase();if(host==="youtu.be"||host.endsWith("youtube.com")){const id=host==="youtu.be"?u.pathname.slice(1):(u.searchParams.get("v")||u.pathname.split("/").filter(Boolean).pop());if(id&&/^[A-Za-z0-9_-]{6,20}$/.test(id))return '<div style="margin-top:14px;aspect-ratio:16/9"><iframe title="فيديو العمل" src="https://www.youtube-nocookie.com/embed/'+esc(id)+'" loading="lazy" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div>'}if(host.endsWith("vimeo.com")){const id=u.pathname.split("/").filter(Boolean).pop();if(/^\d{5,15}$/.test(id||""))return '<div style="margin-top:14px;aspect-ratio:16/9"><iframe title="فيديو العمل" src="https://player.vimeo.com/video/'+esc(id)+'" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div>'}if(/\.(mp4|webm|ogg)(?:$|[?#])/i.test(u.pathname+u.search))return '<div style="margin-top:14px"><video controls preload="metadata" style="width:100%;max-height:320px;border-radius:12px;background:#17152b" src="'+esc(url)+'"></video></div>';return ""}catch(e){return ""}}
 function projectCard(p,index){
-const cover=safeUrl(p.cover,true)||(Array.isArray(p.mediaImages)&&safeUrl(p.mediaImages[0],true))||(Array.isArray(p.uploadedImages)&&safeUrl(p.uploadedImages[0],true))||"";
-return '<button type="button" class="work project-tile" data-project-index="'+index+'" aria-label="عرض تفاصيل '+esc(p.title||"العمل")+'">'+
-'<span class="work-cover">'+(cover?'<img loading="lazy" src="'+esc(cover)+'" alt="">':'<span class="cover-mark">✳</span>')+'</span>'+
-'<span class="project-tile-title">'+esc(p.title||"عمل بدون عنوان")+'</span></button>';
-}
+	 const cover=safeUrl(p.cover,true)||(Array.isArray(p.mediaImages)&&safeUrl(p.mediaImages[0],true))||(Array.isArray(p.uploadedImages)&&safeUrl(p.uploadedImages[0],true))||"";
+	 const file=safeUrl(p.uploadedFile||p.fileUrl,false),video=safeUrl(p.uploadedVideo||p.videoUrl,false),link=safeUrl(p.link,false);
+	 const isPdf=/\.pdf(?:$|[?#])/i.test(file)||/^data:application\/pdf/i.test(file),isImage=!!cover,isVideo=!!video;
+	 const kind=isVideo?"video":link?"website":isPdf?"pdf":file?"file":isImage?"image":"project";
+	 const labels={video:"فيديو",website:"موقع أو رابط",pdf:"ملف PDF",file:"ملف مرفق",image:"صورة",project:"مشروع"};
+	 let visual;
+	 if(isImage)visual='<span class="media-card-visual media-card-image"><img loading="lazy" src="'+esc(cover)+'" alt=""></span>';
+	 else if(kind==="video")visual='<span class="media-card-visual media-card-video"><span class="media-card-icon" aria-hidden="true">▶</span><span>فيديو قابل للتشغيل</span></span>';
+	 else if(kind==="website")visual='<span class="media-card-visual media-card-website"><span class="media-card-icon" aria-hidden="true">↗</span><span dir="ltr">'+esc((()=>{try{return new URL(link).hostname.replace(/^www\./i,"")}catch(_){return "رابط خارجي"}})())+'</span></span>';
+	 else if(kind==="pdf")visual='<span class="media-card-visual media-card-pdf"><strong>PDF</strong><span>قراءة الملف كاملًا</span></span>';
+	 else if(kind==="file")visual='<span class="media-card-visual media-card-file"><span class="media-card-icon" aria-hidden="true">▣</span><span>فتح الملف المرفق</span></span>';
+	 else visual='<span class="media-card-visual media-card-project"><span class="media-card-icon" aria-hidden="true">✦</span><span>تفاصيل المشروع</span></span>';
+	 return '<button type="button" class="work project-tile media-card media-card-'+kind+'" data-project-index="'+index+'" aria-label="عرض تفاصيل '+esc(p.title||"العمل")+'">'+visual+'<span class="media-card-copy"><span class="media-card-kind">'+labels[kind]+'</span><span class="project-tile-title">'+esc(p.title||"عمل بدون عنوان")+'</span><span class="media-card-action">فتح التفاصيل ↗</span></span></button>';
+	}
 function publicDownloadItems(p){
  const title=String(p.title||"work").replace(/[^a-zA-Z0-9._-]+/g,"-").slice(0,60)||"work",items=[];
  function add(key,label,name,url,type){if(url)items.push({key,label,name,url,type:type||"file"})}
