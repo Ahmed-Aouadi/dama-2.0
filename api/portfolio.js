@@ -122,8 +122,8 @@ module.exports = async function handler(req, res) {
     const host = /^[a-z0-9.-]+(?::\d{1,5})?$/i.test(rawHost) ? rawHost : "dama-20.vercel.app";
     const origin = (host.startsWith("localhost") ? "http://" : "https://") + host;
     const image = firstCover ? new URL(firstCover, origin).href : origin + "/icons/og-image.png";
-    const canonical = origin + "/@" + encodeURIComponent(row.username);
-    if (!username) {
+    const canonical = origin + "/p/" + encodeURIComponent(row.slug);
+    if (username) {
       res.statusCode = 308;
       res.setHeader("Location", canonical);
       res.setHeader("Cache-Control", "public, max-age=300, s-maxage=600");
