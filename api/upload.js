@@ -38,7 +38,7 @@ async function hasActiveSession(request) {
     "SELECT u.id FROM mada_sessions s JOIN mada_users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.expires_at>NOW() AND NOT EXISTS (SELECT 1 FROM mada_admin_user_flags f WHERE f.user_id=u.id AND f.disabled=TRUE AND (f.disabled_until IS NULL OR f.disabled_until>NOW())) LIMIT 1",
     [crypto.createHash("sha256").update(token).digest("hex")]
   );
-  return Boolean(result.rows[0]);
+  return result.rows[0]?.id || "";
 }
 function isAllowedType(type) {
   const normalized = String(type || "application/octet-stream").toLowerCase().split(";")[0].trim();
@@ -106,7 +106,7 @@ module.exports = async function uploadHandler(request, response) {
   if (request.method !== "POST") return json(response, 405, { error: "الطريقة غير مدعومة" });
   try {
     if (!allowedOrigin(request)) return json(response, 403, { error: "مصدر الطلب غير مسموح." });
-    if (!(await hasActiveSession(request))) return json(response, 401, { error: "سجّل الدخول أولًا." });
+    const ownerId = await hasActiveSession(request);\n    if (!ownerId) return json(response, 401, { error: "سجّل الدخول أولًا." });
 
     const contentType = String(request.headers["content-type"] || "");
     const body = await readBody(request);
@@ -131,7 +131,7 @@ module.exports = async function uploadHandler(request, response) {
       contentType: file.type,
       addRandomSuffix: true
     });
-    return json(response, 200, { url: `/api/file?pathname=${encodeURIComponent(blob.pathname)}`, pathname: blob.pathname });
+    await db().query("CREATE TABLE IF NOT EXISTS mada_private_files (pathname TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())");\n    await db().query("INSERT INTO mada_private_files(pathname,user_id) VALUES($1,$2) ON CONFLICT(pathname) DO UPDATE SET user_id=EXCLUDED.user_id", [blob.pathname, ownerId]);\n    return json(response, 200, { url: `/api/file?pathname=${encodeURIComponent(blob.pathname)}`, pathname: blob.pathname });
   } catch (error) {
     console.error("[mada] upload error:", error?.message || error);
     return json(response, error.statusCode || 500, {
