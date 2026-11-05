@@ -1,0 +1,212 @@
+/* Mada mobile-first usability layer. Scoped to the app shell; desktop layout remains unchanged. */
+@media (max-width: 760px) {
+  :root { --mada-mobile-gutter: 14px; }
+  html, body { width:100%; min-width:320px; }
+  .app-scroll-shell {
+    height:100dvh;
+    min-height:100dvh;
+    overflow-x:hidden;
+    overflow-y:auto;
+    padding-bottom:calc(76px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+  }
+  .shell { width:100%; max-width:100%; min-width:0; padding:0; }
+  .shell > main {
+    width:100%;
+    min-width:0;
+    padding:12px var(--mada-mobile-gutter) 28px !important;
+  }
+  .topbar {
+    position:sticky;
+    top:0;
+    z-index:15;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+    margin:0 calc(var(--mada-mobile-gutter) * -1) 16px !important;
+    padding:9px var(--mada-mobile-gutter) 11px;
+    background:rgba(246,244,255,.96);
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(14px);
+  }
+  .mobile-brand { display:flex !important; align-items:center; gap:6px; flex:0 0 auto; }
+  .mobile-brand strong { font-size:22px !important; }
+  .mobile-brand .brand-mark { width:34px; height:25px; }
+  .crumb { display:none; }
+  .top-actions { margin-inline-start:auto; gap:7px; }
+  .top-actions .icon-btn { width:40px; height:40px; }
+  .top-actions .primary { min-height:42px; padding:9px 12px; font-size:12px; white-space:nowrap; }
+  .page { min-width:0; overflow-wrap:anywhere; }
+  .section-intro { margin:4px 0 16px; }
+  .section-intro h1 { font-size:25px; line-height:1.4; }
+  .section-intro p { font-size:13px; line-height:1.9; }
+  .hero {
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+    margin:0 0 16px;
+    border-radius:20px;
+  }
+  .hero-copy { padding:23px 19px 12px; }
+  .hero h1 { font-size:clamp(25px,7vw,34px); line-height:1.5; margin:12px 0 8px; }
+  .hero p { font-size:13px; line-height:1.9; margin-bottom:15px; }
+  .hero-actions { display:grid; grid-template-columns:1fr; gap:8px; }
+  .hero-actions button { width:100%; min-height:46px; }
+  .hero-art { min-height:116px; height:116px; overflow:hidden; }
+  .hero-arcs { top:50% !important; width:145px !important; }
+  .float-card { transform:scale(.76); }
+  .journey-panel { padding:16px; margin:16px 0 20px; border-radius:18px; }
+  .journey-heading { flex-direction:column; gap:10px; margin-bottom:13px; }
+  .journey-heading h2 { font-size:18px; line-height:1.5; }
+  .journey-count { align-self:flex-start; }
+  .journey-steps, .home-grid, .home-path-grid, .stats-grid, .growth-grid {
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  .home-grid { gap:12px; }
+  .panel { padding:15px; border-radius:16px; }
+  .panel-title { align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:13px; }
+  .panel-title h3 { font-size:14px; }
+  .project-row { align-items:flex-start; gap:9px; padding:10px; }
+  .project-cover { width:44px; height:44px; flex-basis:44px; }
+  .project-info strong { overflow-wrap:anywhere; }
+  .project-insight-strip { display:grid !important; grid-template-columns:1fr !important; gap:9px !important; }
+  .project-insight-strip > div { min-width:0; }
+  #portfolioJsonBackup, #portfolioRecordsPanel { padding:15px !important; border-radius:16px !important; }
+  #portfolioJsonBackup > div { flex-direction:column; }
+  #portfolioJsonBackup > div > div:last-child { width:100%; display:grid !important; grid-template-columns:1fr 1fr; }
+  #portfolioJsonBackup button { min-width:0; white-space:normal; }
+  .form-grid, .form-row, .settings-grid, .profile-grid {
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  input:not([type=checkbox]):not([type=radio]):not([type=color]),
+  select, textarea { max-width:100%; min-width:0; }
+  .page button, .modal button, .page a[role=button] { touch-action:manipulation; }
+  .page button, .modal button { min-height:40px; }
+  .mobile-nav {
+    position:fixed !important;
+    inset:auto 0 0 !important;
+    z-index:1000 !important;
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:0 !important;
+    width:100% !important;
+    min-height:64px;
+    padding:5px 4px calc(5px + env(safe-area-inset-bottom)) !important;
+    background:rgba(23,21,43,.98) !important;
+    border-top:1px solid #ffffff20;
+    box-shadow:0 -8px 28px #17152b20;
+    backdrop-filter:blur(16px);
+  }
+  .mobile-nav button {
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+    gap:3px !important;
+    min-width:0 !important;
+    min-height:52px !important;
+    padding:5px 1px !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:transparent !important;
+    color:#c9c5e6 !important;
+    font-size:10px !important;
+    line-height:1.25 !important;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .mobile-nav button > span:first-child { display:grid; place-items:center; height:22px; }
+  .mobile-nav button svg { width:20px; height:20px; }
+  .mobile-nav button.active { color:var(--teal) !important; background:#ffffff10 !important; }
+  .mobile-nav button:focus-visible { outline:2px solid var(--teal); outline-offset:-2px; }
+  .toast { left:12px; right:12px; bottom:calc(78px + env(safe-area-inset-bottom)); max-width:none; }
+  body > .modal-backdrop, body > .media-preview-backdrop {
+    align-items:flex-end !important;
+    padding:0 !important;
+  }
+  body > .modal-backdrop > .modal,
+  body > .media-preview-backdrop > .modal {
+    width:100% !important;
+    max-width:100% !important;
+    max-height:94dvh !important;
+    margin:0 !important;
+    padding:18px 15px calc(18px + env(safe-area-inset-bottom)) !important;
+    border-radius:20px 20px 0 0 !important;
+    overflow-x:hidden !important;
+    overscroll-behavior:contain;
+  }
+  body > .modal-backdrop .modal-head {
+    position:sticky;
+    top:-18px;
+    margin:0 0 14px;
+    padding:10px 0 12px;
+  }
+  .project-details-actions { display:grid !important; grid-template-columns:1fr 1fr; gap:8px; }
+  .project-details-actions button { width:100%; min-width:0; white-space:normal; }
+  #customEditorModal .custom-editor-header { flex-wrap:wrap !important; padding:9px 12px !important; }
+  #customEditorModal .custom-editor-title { flex:1 1 100%; }
+  #customEditorModal .custom-editor-title h3 { font-size:17px; }
+  #customEditorModal .custom-header-actions { width:100%; max-width:100%; padding-bottom:3px; }
+  #customEditorModal .custom-editor-layout {
+    display:flex !important;
+    flex-direction:column !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+  }
+  #customEditorModal .custom-stage-wrap {
+    order:0;
+    flex:1 1 48%;
+    min-height:190px !important;
+    max-height:48dvh !important;
+    width:100% !important;
+  }
+  #customEditorModal .custom-tools {
+    order:1;
+    flex:1 1 52%;
+    width:100% !important;
+    min-height:150px !important;
+    max-height:44dvh !important;
+    overflow-y:auto !important;
+    padding:12px !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  #customEditorModal .custom-editor-modal { height:100dvh !important; max-height:100dvh !important; }
+  #portfolioDesignerModal .portfolio-editor-layout {
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+    overflow:hidden !important;
+  }
+  #portfolioDesignerModal .portfolio-live-preview-wrap {
+    flex:0 0 30dvh !important;
+    min-height:150px !important;
+    order:0;
+  }
+  #portfolioDesignerModal .portfolio-editor-controls {
+    flex:1 1 auto !important;
+    min-height:0 !important;
+    overflow-y:auto !important;
+  }
+  #portfolioDesignerModal .portfolio-editor-bottom {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  #portfolioDesignerModal .portfolio-editor-bottom button { flex:1 1 120px; }
+}
+@media (max-width: 420px) {
+  :root { --mada-mobile-gutter:12px; }
+  .shell > main { padding-inline:12px !important; }
+  .topbar { padding-inline:12px; }
+  .top-actions .primary { font-size:11px; padding-inline:9px; }
+  .mobile-nav button { font-size:9px !important; }
+  .panel { padding:13px; }
+  .hero-copy { padding-inline:16px; }
+  .journey-panel { padding:14px; }
+  .project-details-actions { grid-template-columns:1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-scroll-shell { scroll-behavior:auto; }
+}
