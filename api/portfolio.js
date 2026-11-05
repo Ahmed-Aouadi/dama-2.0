@@ -145,8 +145,10 @@ module.exports = async function handler(req, res) {
     html = html.replace("</head>", meta + "</head>");
     html = html.replace(/<div class="status" id="loadStatus" role="status">[\s\S]*?<\/div>/, '<div class="status" id="loadStatus" role="status" hidden></div>');
     const template = ["classic", "cv", "engineering", "marketing", "rose", "resume-sidebar", "resume-creative", "resume-minimal", "split", "bold", "studio", "gallery", "aurora"].includes(portfolio.display?.template) ? portfolio.display.template : "classic";
-    html = html.replace('<section id="portfolioView" hidden></section>', '<section id="portfolioView" class="portfolio-theme portfolio-template-' + template + '">' + renderSsr(portfolio, row.display_name, row.username) + '</section>');
-    html = html.replace('<script src="/masar-platform/portfolio-public.js?v=20261103a" defer></script>', '<script>window.__MADA_PUBLIC_DATA__=' + safeJson(data) + ';</script><script src="/masar-platform/portfolio-public.js?v=20261103a" defer></script>');
+    // Keep the gallery root empty until the original public viewer hydrates it.
+    // portfolio-public.js applies every saved template, section, typography and layout option.
+    html = html.replace('<section id="portfolioView" hidden></section>', '<section id="portfolioView" class="portfolio-theme" hidden></section>');
+    html = html.replace('<script src="/masar-platform/portfolio-public.js?v=20261105b" defer></script>', '<script>window.__MADA_PUBLIC_DATA__=' + safeJson(data) + ';</script><script src="/masar-platform/portfolio-public.js?v=20261105b" defer></script>');
     return sendHtml(res, 200, html, "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
   } catch (error) {
     console.error("Mada public portfolio SSR error:", error?.message || error);
