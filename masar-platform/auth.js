@@ -250,9 +250,14 @@ async function syncAndWait(data) {
           const g = guest[key] && typeof guest[key] === "object" ? guest[key] : {};
           const settings = mergeAccountState(c, g);
           // Do not union section snapshots: removed entries must stay removed.
-          if (Array.isArray(g.gallerySections)) settings.gallerySections = g.gallerySections;
-          else if (Array.isArray(c.gallerySections)) settings.gallerySections = c.gallerySections;
-          if (Object.prototype.hasOwnProperty.call(g, "defaultGallerySection")) settings.defaultGallerySection = g.defaultGallerySection;
+if (Array.isArray(g.gallerySections)) settings.gallerySections = g.gallerySections;
+  else if (Array.isArray(c.gallerySections)) settings.gallerySections = c.gallerySections;
+  const deletedSectionIds = Array.from(new Set([...(Array.isArray(c.deletedGallerySectionIds) ? c.deletedGallerySectionIds : []), ...(Array.isArray(g.deletedGallerySectionIds) ? g.deletedGallerySectionIds : [])].map(String)));
+    if (deletedSectionIds.length) {
+      settings.deletedGallerySectionIds = deletedSectionIds;
+      if (Array.isArray(settings.gallerySections)) settings.gallerySections = settings.gallerySections.filter(section => section && (section.id === "general" || !deletedSectionIds.includes(String(section.id))));
+    }
+    if (Object.prototype.hasOwnProperty.call(g, "defaultGallerySection")) settings.defaultGallerySection = g.defaultGallerySection;
           result[key] = settings;
           return;
         }
