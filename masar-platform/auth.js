@@ -251,14 +251,17 @@ async function syncAndWait(data) {
     const latestState = accountLocalState || {};
     const guestHasContent = hasMeaningfulProfile(guestState) ||
       ["projects", "records", "designs", "quizzes"].some(key => Array.isArray(guestState[key]) && guestState[key].length > 0) ||
-      hasMeaningfulGrowth(guestState);
+      hasMeaningfulGrowth(guestState) ||
+      Boolean(guestState.portfolioSettings && Array.isArray(guestState.portfolioSettings.gallerySections) && guestState.portfolioSettings.gallerySections.some(section => section && section.id !== "general"));
     const accountLocalHasContent = hasMeaningfulProfile(latestState) ||
       ["projects", "records", "designs", "quizzes"].some(key => Array.isArray(latestState[key]) && latestState[key].length > 0) ||
-      hasMeaningfulGrowth(latestState);
+      hasMeaningfulGrowth(latestState) ||
+      Boolean(latestState.portfolioSettings && Array.isArray(latestState.portfolioSettings.gallerySections) && latestState.portfolioSettings.gallerySections.some(section => section && section.id !== "general"));
     const cloudHasContent = result.data && (
       hasMeaningfulProfile(result.data) ||
       ["projects", "records", "designs", "quizzes"].some(key => Array.isArray(result.data[key]) && result.data[key].length > 0) ||
-      hasMeaningfulGrowth(result.data)
+      hasMeaningfulGrowth(result.data) ||
+      Boolean(result.data.portfolioSettings && Array.isArray(result.data.portfolioSettings.gallerySections) && result.data.portfolioSettings.gallerySections.some(section => section && section.id !== "general"))
     );
     let restoredState;
     if (migrateGuest && (guestHasContent || accountLocalHasContent)) {
