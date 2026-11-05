@@ -13,6 +13,10 @@
       "destination": "/authority-console/index.html"
     },
     {
+      "source": "/p/:id",
+      "destination": "/api/portfolio?id=:id"
+    },
+    {
       "source": "/@:username",
       "destination": "/api/portfolio?username=:username"
     },
