@@ -4,7 +4,8 @@ const { Readable } = require("node:stream");
 const crypto = require("node:crypto");
 const { collectPublicBlobPaths, collectBlobPathsDeep } = require("./_public-portfolio");
 
-let pool;\nlet privateFilesSchemaReady;
+let pool;
+let privateFilesSchemaReady;
 function db() {
   if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not configured.");
   if (!pool) pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3, idleTimeoutMillis: 10000 });
