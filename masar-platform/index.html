@@ -1728,6 +1728,49 @@ body>.media-preview-backdrop .media-preview-image,body>.media-preview-backdrop .
 @media(max-width:600px){body>.modal-backdrop,body>.media-preview-backdrop{padding:9px}body>.modal-backdrop>.modal,body>.media-preview-backdrop>.modal{max-height:94dvh!important;border-radius:18px;padding:17px!important}}
 /* The portfolio editor should no longer offer canned gallery themes. */
 #portfolioDesigner .portfolio-template-picker{display:none!important}
+
+
+/* Keep project editor actions reachable while the form content scrolls */
+#projectModal .modal{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  min-height:0;
+}
+#projectModal .modal-head{
+  flex:0 0 auto;
+}
+#projectForm{
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+#projectForm>.primary,
+#projectForm>.ghost{
+  position:sticky;
+  bottom:0;
+  z-index:5;
+  flex:0 0 auto;
+  box-shadow:0 -8px 16px rgba(255,255,255,.94);
+}
+#projectForm>.primary{margin-top:auto}
+#projectForm>.ghost{margin-top:8px}
+@media(max-width:760px){
+  #projectModal .modal{
+    max-height:92dvh;
+    min-height:0;
+  }
+  #projectForm{
+    padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  }
+  #projectForm>.primary,
+  #projectForm>.ghost{
+    min-height:48px;
+  }
+}
 </style>
 <script id="mada-portfolio-dialog-repair">
 (function(){
@@ -1773,46 +1816,3 @@ window.madaUploadProjectFile = async function(file, onProgress) {
 </script>
 </body>
 </html>
-
-
-/* Keep project editor actions reachable while the form content scrolls */
-#projectModal .modal{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  min-height:0;
-}
-#projectModal .modal-head{
-  flex:0 0 auto;
-}
-#projectForm{
-  display:flex;
-  flex-direction:column;
-  flex:1 1 auto;
-  min-height:0;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-}
-#projectForm>.primary,
-#projectForm>.ghost{
-  position:sticky;
-  bottom:0;
-  z-index:5;
-  flex:0 0 auto;
-  box-shadow:0 -8px 16px rgba(255,255,255,.94);
-}
-#projectForm>.primary{margin-top:auto}
-#projectForm>.ghost{margin-top:8px}
-@media(max-width:760px){
-  #projectModal .modal{
-    max-height:92dvh;
-    min-height:0;
-  }
-  #projectForm{
-    padding-bottom:calc(12px + env(safe-area-inset-bottom));
-  }
-  #projectForm>.primary,
-  #projectForm>.ghost{
-    min-height:48px;
-  }
-}
