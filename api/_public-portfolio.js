@@ -8,7 +8,8 @@ function sanitizePublicPortfolio(input) {
   const projects = (Array.isArray(source.projects) ? source.projects : []).filter(project => {
     if (!project || typeof project !== "object") return false;
     const isExplicitlyVisible = project.galleryVisible === true;
-    const isDefaultVisible = project.galleryVisible !== false && project.visibility !== "private";\n    if (!isExplicitlyVisible && !isDefaultVisible) return false;
+    const isDefaultVisible = project.galleryVisible !== false && project.visibility !== "private";
+    if (!isExplicitlyVisible && !isDefaultVisible) return false;
     const id = String(project.gallerySection || "general");
     const section = sections.find(item => item && String(item.id) === id);
     if (section && section.visible === false) return false;
