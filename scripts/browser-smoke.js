@@ -294,8 +294,8 @@ function assert(condition, message) {
     assert(guestStateCheck.name === "ضيف الاختبار", "Guest profile must load from localStorage without login: " + JSON.stringify(guestStateCheck));
     await guestPage.reload({ waitUntil: "domcontentloaded" });
     assert(await guestPage.evaluate(() => window.MadaApp.getState().profile.name) === "ضيف الاختبار", "Guest profile must persist across reloads");
-    assert(await guestPage.locator(".mobile-nav [data-page]").count() === 5, "Mobile navigation must expose exactly five primary items");
-    console.log("PASS guest workspace: local profile survives reload without login gate; five-item mobile nav and sync indicator");
+    assert(await guestPage.locator(".mobile-nav [data-page]").count() === 6, "Mobile navigation must expose exactly six primary items");
+    console.log("PASS guest workspace: local profile survives reload without login gate; six-item mobile nav and sync indicator");
     await guestContext.close();
 
 
