@@ -1470,7 +1470,7 @@ async function publishPortfolio(){
   const result=await response.json().catch(function(){return {}});
   if(!response.ok)throw new Error(result.error||("تعذّر نشر المعرض (HTTP "+response.status+")."));
   if(isPublic){
-   if(typeof result.shareUrl!=="string"||!(/^\/@[A-Za-z0-9_%.-]{3,160}$/.test(result.shareUrl)||/^\/portfolio\.html\?id=[A-Za-z0-9_-]{12,80}$/.test(result.shareUrl)))throw new Error("حُفظ الطلب لكن الخادم لم يُرجع رابط مشاركة صالحًا. أعد المحاولة، وإذا تكرر الخطأ فتحقق من إعدادات API.");
+   if(typeof result.shareUrl!=="string"||!(/^\/p\/[A-Za-z0-9_-]{20,80}$/.test(result.shareUrl)||/^\/@[A-Za-z0-9_%.-]{3,160}$/.test(result.shareUrl)||/^\/portfolio\.html\?id=[A-Za-z0-9_-]{12,80}$/.test(result.shareUrl)))throw new Error("حُفظ الطلب لكن الخادم لم يُرجع رابط مشاركة صالحًا. أعد المحاولة، وإذا تكرر الخطأ فتحقق من إعدادات API.");
    const full=new URL(result.shareUrl,window.location.origin).href;linkEl.href=full;linkEl.textContent=full;linkEl.hidden=false;copyButton.hidden=false;previewButton.hidden=false;status.textContent="تم نشر المعرض بنجاح. رابط المشاركة جاهز ويمكن فتحه أو نسخه.";
   }else{linkEl.hidden=true;linkEl.removeAttribute("href");linkEl.textContent="";copyButton.hidden=false;previewButton.hidden=false;status.textContent="تم إيقاف المشاركة العامة. أصبح الرابط غير متاح للزوار، ويمكنك معاينة المسودة محليًا."}
   toast(isPublic?"تم نشر معرض أعمالك":"تم جعل المعرض خاصًا");
