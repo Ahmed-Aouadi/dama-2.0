@@ -407,7 +407,7 @@ async function syncAndWait(data) {
     setSyncStatus("local", "وضع الزائر — حفظ محلي");
     return result;
   }
-  window.MadaAuth = { sync, syncAndWait, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
+  window.MadaAuth = { sync, syncAndWait, waitForRestore: async () => { try { await accountRestorePromise; } catch (_) {} return !!user; }, getUser: () => user, open, logout, setAvatar, syncProfileName, publishDesign, updateAccount, deleteAccount, getSyncStatus: () => syncStatus.dataset.status || "local" };
   renderMode();
   accountRestorePromise = request("me", "GET").then(async result => {
     if (!result.user) { setUser(null); setSyncStatus("local", "وضع الزائر — حفظ محلي"); return; }
