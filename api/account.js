@@ -21,6 +21,7 @@ async function ensureSchema() {
         "CREATE INDEX IF NOT EXISTS mada_sessions_user_idx ON mada_sessions(user_id)",
         "CREATE INDEX IF NOT EXISTS mada_sessions_expiry_idx ON mada_sessions(expires_at)",
         "CREATE TABLE IF NOT EXISTS mada_user_data (user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE, data JSONB NOT NULL DEFAULT '{}'::jsonb, revision BIGINT NOT NULL DEFAULT 1, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
+        "CREATE TABLE IF NOT EXISTS mada_user_gallery_sections (user_id TEXT PRIMARY KEY REFERENCES mada_users(id) ON DELETE CASCADE, sections JSONB NOT NULL DEFAULT '{}'::jsonb, revision BIGINT NOT NULL DEFAULT 0, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "ALTER TABLE mada_user_data ADD COLUMN IF NOT EXISTS revision BIGINT NOT NULL DEFAULT 1",
         "CREATE TABLE IF NOT EXISTS mada_login_attempts (ip_hash TEXT PRIMARY KEY, attempts INTEGER NOT NULL DEFAULT 0, window_started_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
         "CREATE TABLE IF NOT EXISTS mada_public_designs (design_id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mada_users(id) ON DELETE CASCADE, design JSONB NOT NULL, is_public BOOLEAN NOT NULL DEFAULT FALSE, price_dzd INTEGER NOT NULL DEFAULT 0 CHECK (price_dzd >= 0), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())",
@@ -139,9 +140,9 @@ module.exports = async function handler(req, res) {
       try { bodySize = Buffer.byteLength(JSON.stringify(req.body || {}), "utf8"); } catch { return send(res, 400, { error: "بيانات الطلب غير صالحة." }); }
       if (bodySize > 4 * 1024 * 1024) return send(res, 413, { error: "حجم الطلب أكبر من الحد المسموح (4 ميغابايت)." });
     }
-    const allowedActions = new Set(["register", "login", "profile", "account-settings", "delete-account", "logout", "me", "publish-design", "public-design", "sync-portfolio-projects", "publish-portfolio", "public-portfolio", "collaboration-create", "collaboration-list", "collaboration-update", "data"]);
+    const allowedActions = new Set(["register", "login", "profile", "account-settings", "delete-account", "logout", "me", "publish-design", "public-design", "sync-portfolio-projects", "publish-portfolio", "public-portfolio", "collaboration-create", "collaboration-list", "collaboration-update", "data", "gallery-sections"]);
     if (!allowedActions.has(action)) return send(res, 400, { error: "طلب غير معروف." });
-    const methodsByAction = { register: ["POST"], login: ["POST"], profile: ["POST"], "account-settings": ["POST"], "delete-account": ["POST"], logout: ["POST"], me: ["GET"], "publish-design": ["POST"], "public-design": ["GET"], "sync-portfolio-projects": ["POST"], "publish-portfolio": ["POST"], "public-portfolio": ["GET"], "collaboration-create": ["POST"], "collaboration-list": ["GET"], "collaboration-update": ["POST"], data: ["GET", "POST"] };
+    const methodsByAction = { register: ["POST"], login: ["POST"], profile: ["POST"], "account-settings": ["POST"], "delete-account": ["POST"], logout: ["POST"], me: ["GET"], "publish-design": ["POST"], "public-design": ["GET"], "sync-portfolio-projects": ["POST"], "publish-portfolio": ["POST"], "public-portfolio": ["GET"], "collaboration-create": ["POST"], "collaboration-list": ["GET"], "collaboration-update": ["POST"], data: ["GET", "POST"], "gallery-sections": ["POST"] };
     if (!methodsByAction[action].includes(req.method)) return send(res, 405, { error: "طريقة الطلب غير مسموحة لهذا الإجراء." }, { Allow: methodsByAction[action].join(", ") });
     await ensureSchema();
     if (req.method === "POST" && !["register", "login"].includes(action)) {
@@ -579,7 +580,80 @@ module.exports = async function handler(req, res) {
       const user = await currentUser(req);
       if (!user) return send(res, 401, { error: "سجّل الدخول أولًا." });
       const result = await db().query("SELECT data,revision,updated_at FROM mada_user_data WHERE user_id=$1", [user.id]);
-      return send(res, 200, { data: result.rows[0]?.data ?? null, revision: Number(result.rows[0]?.revision || 0), updatedAt: result.rows[0]?.updated_at || null });
+      const galleryResult = await db().query("SELECT sections,revision FROM mada_user_gallery_sections WHERE user_id=$1", [user.id]);
+      const storedData = result.rows[0]?.data ?? null;
+      const galleryRow = galleryResult.rows[0];
+      let responseData = storedData;
+      if (galleryRow && galleryRow.sections && typeof galleryRow.sections === "object") {
+        const base = storedData && typeof storedData === "object" ? storedData : {};
+        const assignments = galleryRow.sections.projectSectionAssignments && typeof galleryRow.sections.projectSectionAssignments === "object"
+          ? galleryRow.sections.projectSectionAssignments : {};
+        const gallerySettings = {
+          gallerySections: Array.isArray(galleryRow.sections.gallerySections) ? galleryRow.sections.gallerySections : [],
+          deletedGallerySectionIds: Array.isArray(galleryRow.sections.deletedGallerySectionIds) ? galleryRow.sections.deletedGallerySectionIds : [],
+          defaultGallerySection: String(galleryRow.sections.defaultGallerySection || "general")
+        };
+        responseData = Object.assign({}, base, {
+          portfolioSettings: Object.assign({}, base.portfolioSettings || {}, gallerySettings),
+          projects: Array.isArray(base.projects) ? base.projects.map(project =>
+            project && project.id != null && Object.prototype.hasOwnProperty.call(assignments, String(project.id))
+              ? Object.assign({}, project, { gallerySection: String(assignments[String(project.id)] || "") })
+              : project
+          ) : base.projects
+        });
+      }
+      return send(res, 200, { data: responseData, revision: Number(result.rows[0]?.revision || 0), gallerySectionsRevision: Number(galleryRow?.revision || 0), updatedAt: result.rows[0]?.updated_at || null });
+    }
+
+    if (action === "gallery-sections" && req.method === "POST") {
+      const user = await currentUser(req);
+      if (!user) return send(res, 401, { error: "انتهت الجلسة. سجّل الدخول مجددًا." });
+      const sections = req.body?.sections;
+      if (!sections || typeof sections !== "object" || Array.isArray(sections) ||
+          !Array.isArray(sections.gallerySections) || !Array.isArray(sections.deletedGallerySectionIds)) {
+        return send(res, 400, { error: "بيانات أقسام المعرض غير صالحة." });
+      }
+      if (sections.gallerySections.length > 200 || sections.deletedGallerySectionIds.length > 500 ||
+          JSON.stringify(sections).length > 200000) {
+        return send(res, 413, { error: "بيانات أقسام المعرض أكبر من الحد المسموح." });
+      }
+      const assignments = sections.projectSectionAssignments && typeof sections.projectSectionAssignments === "object"
+        && !Array.isArray(sections.projectSectionAssignments) ? sections.projectSectionAssignments : {};
+      const encoded = JSON.stringify({
+        gallerySections: sections.gallerySections,
+        deletedGallerySectionIds: sections.deletedGallerySectionIds,
+        defaultGallerySection: String(sections.defaultGallerySection || "general"),
+        projectSectionAssignments: assignments
+      });
+      const expectedRevision = Number.isSafeInteger(Number(req.body?.expectedRevision)) && Number(req.body.expectedRevision) >= 0
+        ? Number(req.body.expectedRevision) : null;
+      let saved;
+      if (expectedRevision === null) {
+        saved = await db().query(
+          "INSERT INTO mada_user_gallery_sections(user_id,sections,revision,updated_at) VALUES($1,$2::jsonb,1,NOW()) ON CONFLICT(user_id) DO UPDATE SET sections=EXCLUDED.sections,revision=mada_user_gallery_sections.revision+1,updated_at=NOW() RETURNING revision,updated_at",
+          [user.id, encoded]
+        );
+      } else if (expectedRevision === 0) {
+        saved = await db().query(
+          "INSERT INTO mada_user_gallery_sections(user_id,sections,revision,updated_at) VALUES($1,$2::jsonb,1,NOW()) ON CONFLICT(user_id) DO NOTHING RETURNING revision,updated_at",
+          [user.id, encoded]
+        );
+      } else {
+        saved = await db().query(
+          "UPDATE mada_user_gallery_sections SET sections=$2::jsonb,revision=revision+1,updated_at=NOW() WHERE user_id=$1 AND revision=$3 RETURNING revision,updated_at",
+          [user.id, encoded, expectedRevision]
+        );
+      }
+      if (!saved.rows[0]) {
+        const latest = await db().query("SELECT sections,revision FROM mada_user_gallery_sections WHERE user_id=$1", [user.id]);
+        return send(res, 409, {
+          error: "وجدنا تعديلات أحدث على أقسام المعرض. أعدنا أحدث نسخة للمزامنة.",
+          conflict: true,
+          sections: latest.rows[0]?.sections ?? null,
+          revision: Number(latest.rows[0]?.revision || 0)
+        });
+      }
+      return send(res, 200, { ok: true, revision: Number(saved.rows[0].revision), savedAt: saved.rows[0].updated_at || new Date().toISOString() });
     }
 
     if (action === "data" && req.method === "POST") {
