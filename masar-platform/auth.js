@@ -175,7 +175,9 @@ async function syncAndWait(data) {
     const payload = {
       gallerySections: Array.isArray(value && value.gallerySections) ? value.gallerySections : [],
       deletedGallerySectionIds: Array.isArray(value && value.deletedGallerySectionIds) ? value.deletedGallerySectionIds : [],
-      defaultGallerySection: String(value && value.defaultGallerySection || "general")
+      defaultGallerySection: String(value && value.defaultGallerySection || "general"),
+      projectSectionAssignments: value && value.projectSectionAssignments && typeof value.projectSectionAssignments === "object"
+        ? value.projectSectionAssignments : {}
     };
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
@@ -208,6 +210,11 @@ async function syncAndWait(data) {
           if (!payload.gallerySections.some(section => String(section.id) === payload.defaultGallerySection)) {
             payload.defaultGallerySection = String(remote.defaultGallerySection || "general");
           }
+          payload.projectSectionAssignments = Object.assign(
+            {},
+            remote.projectSectionAssignments && typeof remote.projectSectionAssignments === "object" ? remote.projectSectionAssignments : {},
+            payload.projectSectionAssignments
+          );
           continue;
         }
         setSyncStatus("error", "تعذّر حفظ أقسام المعرض");
