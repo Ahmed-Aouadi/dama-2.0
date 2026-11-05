@@ -348,6 +348,19 @@ async function syncAndWait(data) {
         }
         result[key] = key in cloud ? mergeAccountState(cloud[key], guest[key]) : guest[key];
       });
+      // Project arrays are merged for offline recovery, but explicit deletion tombstones always win.
+      const deletedProjectIds = Array.from(new Set(
+        (Array.isArray(cloud.deletedProjectIds) ? cloud.deletedProjectIds : [])
+          .concat(Array.isArray(guest.deletedProjectIds) ? guest.deletedProjectIds : [])
+          .map(String)
+      ));
+      if (deletedProjectIds.length) {
+        result.deletedProjectIds = deletedProjectIds;
+        if (Array.isArray(result.projects)) {
+          const deleted = new Set(deletedProjectIds);
+          result.projects = result.projects.filter(project => !project || project.id == null || !deleted.has(String(project.id)));
+        }
+      }
       return result;
     }
     const cloudIsEmpty = cloudValue == null || cloudValue === "";
