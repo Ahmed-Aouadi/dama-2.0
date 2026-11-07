@@ -196,6 +196,31 @@
   }
   #portfolioDesignerModal .portfolio-editor-bottom button { flex:1 1 120px; }
 }
+@media (max-width:600px) {
+  body > #projectModal,
+  body > #portfolioDesignerModal { align-items:stretch !important; padding:0 !important; }
+  body > #projectModal > .modal,
+  body > #portfolioDesignerModal > .modal { width:100% !important; max-width:100% !important; max-height:100dvh !important; height:100dvh !important; margin:0 !important; border-radius:0 !important; padding:14px 12px calc(18px + env(safe-area-inset-bottom)) !important; overflow-y:auto !important; }
+  #projectModal .modal-head,
+  #portfolioDesignerModal .modal-head { position:sticky; top:-14px; z-index:3; margin:0 -2px 12px; padding:8px 2px 12px; background:inherit; }
+  #projectForm { padding:12px !important; border-radius:15px !important; }
+  #projectForm .form-grid,
+  #projectForm .project-form-grid,
+  #projectForm .grid-2 { grid-template-columns:1fr !important; }
+  #projectForm .project-form-actions,
+  #projectForm .form-actions { display:grid !important; grid-template-columns:1fr !important; gap:8px; position:static !important; inset:auto !important; margin-top:16px; padding:0 0 calc(8px + env(safe-area-inset-bottom)) !important; background:transparent !important; box-shadow:none !important; }
+  #projectForm button { width:100%; min-height:46px; }
+  #projectForm .project-form-intro{padding:13px;margin-bottom:12px}
+  #projectForm .form-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  #projectForm .form-tabs button{min-height:42px;padding:7px 4px;font-size:11px}
+  .portfolio-editor-layout { display:flex !important; flex-direction:column !important; gap:10px !important; overflow:visible !important; }
+  .portfolio-live-preview-wrap { order:0; position:relative !important; flex:none !important; height:210px !important; min-height:210px !important; }
+  .portfolio-editor-controls { order:1; max-height:none !important; overflow:visible !important; padding:0 !important; }
+  .portfolio-editor-controls .portfolio-designer{padding:12px!important;border-radius:16px!important}
+  .portfolio-editor-controls .portfolio-designer form{display:grid;gap:10px}
+  .portfolio-editor-bottom { display:grid !important; grid-template-columns:1fr 1fr !important; gap:8px; }
+  .portfolio-editor-bottom button { width:100%; min-height:44px; }
+}
 @media (max-width: 420px) {
   :root { --mada-mobile-gutter:12px; }
   .shell > main { padding-inline:12px !important; }
