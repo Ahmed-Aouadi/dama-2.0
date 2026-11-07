@@ -77,14 +77,16 @@ function normalizeUsername(value) {
 }
 
 async function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
-  const derived = await scrypt(password, salt, 64);
-  return { encoded: salt + ":" + Buffer.from(derived).toString("hex"), salt };
+  const derived = await scrypt(password, salt, 64, { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 });
+  return { encoded: "v2$" + salt + ":" + Buffer.from(derived).toString("hex"), salt };
 }
 
 async function verifyPassword(password, stored) {
   const parts = String(stored || "").split(":");
   if (parts.length !== 2) return false;
-  const derived = Buffer.from(await scrypt(password, parts[0], 64));
+  const modern = parts[0].startsWith("v2$");
+  const salt = modern ? parts[0].slice(3) : parts[0];
+  const derived = Buffer.from(await scrypt(password, salt, 64, modern ? { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 } : undefined));
   const expected = Buffer.from(parts[1], "hex");
   return expected.length === derived.length && crypto.timingSafeEqual(expected, derived);
 }
