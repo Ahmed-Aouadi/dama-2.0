@@ -76,3 +76,40 @@ h1,h2,.section-intro h1{font-family:var(--display);font-weight:700;letter-spacin
 #appThemeSelect{color:var(--ink);background:#fff;border-color:var(--line)}
 :root[data-theme="dark"]{--paper:#17152b;--ink:#f6f4ff;--muted:#b9b4e0;--line:#373250}
 @media (prefers-color-scheme:dark){:root[data-theme="system"]{--paper:#17152b;--ink:#f6f4ff;--muted:#b9b4e0;--line:#373250}}
+
+/* Mobile shell: keep the header, content and navigation calm and usable. */
+@media (max-width:760px){
+  .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;margin:0 -2px 18px;padding:4px 0 10px;min-height:42px}
+  .topbar .crumb{display:none}
+  .top-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+  .top-actions #helpBtn,.top-actions .mada-sync-status{display:none!important}
+  .top-actions .mada-auth-button{display:grid;place-items:center;width:40px;height:38px;min-width:40px;padding:0;border-radius:12px;font-size:0;line-height:1}
+  .top-actions .mada-auth-button:before{content:"↪";font-size:18px}
+  .top-actions .primary{display:grid!important;place-items:center;width:40px;height:38px;min-width:40px;padding:0;border-radius:12px;font-size:0;line-height:1}
+  .top-actions .primary:before{content:"＋";font-size:20px;font-weight:700}
+  .mobile-brand{justify-self:start;gap:6px;white-space:nowrap}
+  .mobile-brand strong{font-size:20px}
+  .mobile-brand .brand-mark{width:34px;height:30px}
+  main{padding:14px 12px 88px;overflow-x:hidden}
+  .hero{border-radius:24px;overflow:hidden}
+  .hero-copy{padding:24px 18px 20px}
+  .hero-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hero-actions button{min-height:48px;padding-inline:10px}
+  .section-head{gap:10px;align-items:center}
+  .section-head h2{font-size:19px}
+  .mobile-nav{grid-template-columns:repeat(5,minmax(0,1fr));height:70px;padding:7px 8px 8px;align-items:stretch}
+  .mobile-nav button{min-width:0;min-height:54px;padding:5px 2px;gap:3px;font-size:10px;line-height:1.2;white-space:nowrap}
+  .mobile-nav button svg{width:19px;height:19px}
+  .mobile-nav button:last-child{grid-column:auto}
+  .cards{grid-template-columns:1fr;gap:12px}
+  .work-visual{height:150px}
+  .panel,.journey-panel{border-radius:18px}
+  .form-actions,.button-row{display:grid;grid-template-columns:1fr;gap:9px}
+  .form-actions button,.button-row button{width:100%;min-height:46px}
+}
+@media (max-width:390px){
+  .hero h1{font-size:28px;line-height:1.35}
+  .hero p{font-size:11px}
+  .hero-actions{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+}
