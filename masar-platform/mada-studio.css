@@ -162,7 +162,17 @@
  #customEditorModal .custom-selection-panel{width:100%;max-height:none}
 }
 @media(max-width:600px){
- #customEditorModal .custom-editor-header{padding:8px 10px}
+ #customEditorModal .custom-editor-header{padding:8px 10px;position:sticky;top:0;z-index:5}
  #customEditorModal .custom-editor-title h3{font-size:18px}
  #customEditorModal .custom-page-navigation{padding:7px 10px;gap:6px;flex-wrap:wrap}
+ #customEditorModal .custom-editor-modal{height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important}
+ #customEditorModal .custom-editor-layout{display:flex!important;flex-direction:column!important;overflow:visible!important;height:auto!important;min-height:0!important}
+ #customEditorModal .custom-stage-wrap{flex:none!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+ #customEditorModal .custom-page-workspace{display:flex!important;flex-direction:column!important;overflow:visible!important;padding-bottom:8px}
+ #customEditorModal .custom-page-workspace>#customPage{width:calc(100% - 24px)!important;max-width:none!important;min-height:270px!important;height:auto!important;margin:10px auto!important;transform:none!important}
+ #customEditorModal .custom-tools{flex:none!important;width:100%!important;max-height:none!important;min-height:0!important;overflow:visible!important;padding:10px!important;border-top:1px solid #ffffff16}
+ #customEditorModal .custom-tools .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #customEditorModal .custom-tools button,#customEditorModal .custom-tools input,#customEditorModal .custom-tools select{min-height:42px}
+ #customEditorModal .custom-header-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:100%!important}
+ #customEditorModal .custom-header-actions button{width:100%;min-height:40px;white-space:normal}
 }
