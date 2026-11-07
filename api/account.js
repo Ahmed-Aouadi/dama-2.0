@@ -145,6 +145,8 @@ module.exports = async function handler(req, res) {
     if (!allowedActions.has(action)) return send(res, 400, { error: "طلب غير معروف." });
     const methodsByAction = { register: ["POST"], login: ["POST"], profile: ["POST"], "account-settings": ["POST"], "delete-account": ["POST"], logout: ["POST"], me: ["GET"], "publish-design": ["POST"], "public-design": ["GET"], "sync-portfolio-projects": ["POST"], "publish-portfolio": ["POST"], "public-portfolio": ["GET"], "collaboration-create": ["POST"], "collaboration-list": ["GET"], "collaboration-update": ["POST"], data: ["GET", "POST"], "gallery-sections": ["POST"] };
     if (!methodsByAction[action].includes(req.method)) return send(res, 405, { error: "طريقة الطلب غير مسموحة لهذا الإجراء." }, { Allow: methodsByAction[action].join(", ") });
+    // Logged-out pages must remain fully usable when the optional database is not configured in local preview.
+    if (action === "me" && !process.env.DATABASE_URL) return send(res, 200, { user: null, localOnly: true });
     await ensureSchema();
     if (req.method === "POST" && !["register", "login"].includes(action)) {
       const rateKey = "api:" + action + ":" + ipHash(req);
