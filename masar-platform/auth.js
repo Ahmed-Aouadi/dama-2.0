@@ -487,5 +487,5 @@ async function syncAndWait(data) {
     if (!result.user) { setUser(null); setSyncStatus("local", "وضع الزائر — حفظ محلي"); return; }
     setUser(result.user);
     try { await restoreAccountData(true); } catch (error) { console.error("Mada cloud restore failed:", error.message); }
-  }).catch(error => { setUser(null); console.warn("Mada account service unavailable:", error.message); setSyncStatus("local", "وضع محلي — خدمة الحساب غير متاحة الآن"); });
+  }).catch(error => { setUser(null); if (error && error.status >= 500) console.warn("Mada account service unavailable:", error.message); setSyncStatus("local", "وضع محلي — بياناتك محفوظة على هذا الجهاز"); });
 })();
