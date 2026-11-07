@@ -66,6 +66,13 @@
 #page-growth .growth-template p,#page-growth .growth-path p,#page-growth .growth-history p,#page-growth .growth-request p{font-size:12px}
 #page-growth .growth-template-actions button,#page-growth .growth-small-btn{min-height:36px;padding:8px 12px;border-radius:10px}
 #page-growth .growth-custom-builder{padding:clamp(13px,2vw,22px);border-color:#e6e1f0;border-radius:18px;background:linear-gradient(180deg,#fcfbff,#fff)}
+#page-growth #growthCustomTemplateForm{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:0 22px;align-items:start}
+#page-growth #growthCustomTemplateForm>.growth-builder-controls{grid-column:1;min-width:0}
+#page-growth #growthCustomTemplateForm>.growth-builder-preview{grid-column:2;grid-row:1 / span 3;position:sticky;top:84px;align-self:start;padding:14px;border:1px solid #e6e1f0;border-radius:16px;background:#f8f7fc}
+#page-growth .growth-preview-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px;color:#2c254f}
+#page-growth .growth-preview-heading small{color:#77718d;font-size:11px}
+#page-growth #growthCustomTemplateForm>.growth-actions{grid-column:1}
+#page-growth #growthCustomCanvas{width:min(100%,360px)!important;margin:10px auto!important;max-height:calc(100vh - 190px)}
 #page-growth .growth-panel-subtitle{margin:20px 0 12px}
 #page-growth .growth-panel-subtitle strong{font-size:13px}
 #page-growth #growthCustomCanvas{max-width:100%;border-radius:12px;background-color:#fff;background-image:linear-gradient(#f2eff9 1px,transparent 1px),linear-gradient(90deg,#f2eff9 1px,transparent 1px);background-size:18px 18px;box-shadow:0 14px 36px #20174612}
@@ -99,6 +106,12 @@
  #page-growth .growth-template-icon,#page-growth .growth-list-icon{width:38px;height:38px;border-radius:12px}
  #page-growth .growth-template-actions{gap:6px}
  #page-growth .growth-template-actions button{flex:1 1 auto}
+ #page-growth #growthCustomTemplateForm{grid-template-columns:1fr;gap:0}
+ #page-growth #growthCustomTemplateForm>.growth-builder-controls{grid-column:1}
+ #page-growth #growthCustomTemplateForm>.growth-builder-preview{grid-column:1;grid-row:auto;position:static;margin-top:12px;padding:11px}
+ #page-growth .growth-preview-heading{display:grid;gap:3px}
+ #page-growth #growthCustomCanvas{width:min(100%,320px)!important;max-height:none}
+ #page-growth #growthCustomTemplateForm>.growth-actions{grid-column:1}
  #page-growth .growth-builder-field{grid-template-columns:1fr;gap:8px}
  #page-growth .growth-builder-field .growth-field:first-child{grid-column:auto}
  #page-growth .growth-field-check{padding-bottom:0}

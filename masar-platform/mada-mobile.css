@@ -156,18 +156,18 @@
     overflow:hidden !important;
   }
   #customEditorModal .custom-stage-wrap {
-    order:0;
-    flex:1 1 48%;
-    min-height:190px !important;
-    max-height:48dvh !important;
+    order:1;
+    flex:0 0 auto;
+    min-height:clamp(300px,48dvh,460px) !important;
+    max-height:none !important;
     width:100% !important;
   }
   #customEditorModal .custom-tools {
-    order:1;
-    flex:1 1 52%;
+    order:0;
+    flex:0 0 auto;
     width:100% !important;
-    min-height:150px !important;
-    max-height:44dvh !important;
+    min-height:0 !important;
+    max-height:none !important;
     overflow-y:auto !important;
     padding:12px !important;
     -webkit-overflow-scrolling:touch;
