@@ -29,7 +29,8 @@ function send(response, status, body) {
     "content-type": "text/plain; charset=utf-8",
     "cache-control": "no-store",
     "x-content-type-options": "nosniff",
-    "referrer-policy": "no-referrer"
+    "referrer-policy": "no-referrer",
+    "content-security-policy": "default-src 'none'; frame-ancestors 'none'"
   });
   response.end(body);
 }

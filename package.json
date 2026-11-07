@@ -9,6 +9,11 @@
     "@neondatabase/serverless": "^1.2.0",
     "@vercel/blob": "^2.6.1"
   },
+  "pnpm": {
+    "overrides": {
+      "zod": ">=4.6.6"
+    }
+  },
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "check": "node scripts/check-syntax.js"

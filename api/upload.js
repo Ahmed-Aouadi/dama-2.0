@@ -14,7 +14,9 @@ function json(response, status, payload) {
   response.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
-    "x-content-type-options": "nosniff"
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "no-referrer",
+    "content-security-policy": "default-src 'none'; frame-ancestors 'none'"
   });
   response.end(JSON.stringify(payload));
 }
